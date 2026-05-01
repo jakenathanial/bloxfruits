@@ -6,71 +6,103 @@
 <title>RentAFruit — Leviathan Hunt</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-<!-- Firebase SDKs -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot,
-    updateDoc, arrayUnion, arrayRemove, deleteDoc, query, where, orderBy, serverTimestamp, getDocs }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // ============================================================
-  //  🔥 PASTE YOUR FIREBASE CONFIG HERE
-  // ============================================================
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+  import { getAnalytics }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    collection,
+    addDoc,
+    onSnapshot,
+    updateDoc,
+    arrayUnion,
+    arrayRemove,
+    deleteDoc,
+    query,
+    where,
+    orderBy,
+    serverTimestamp,
+    getDocs
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
   const firebaseConfig = {
-  apiKey: "AIzaSyDlBIeNVDK5nBPpVFkFSxNY59e7gW-p18c",
-  authDomain: "rentafruit-f57d9.firebaseapp.com",
-  projectId: "rentafruit-f57d9",
-  storageBucket: "rentafruit-f57d9.firebasestorage.app",
-  messagingSenderId: "66702277537",
-  appId: "1:66702277537:web:e7f210f38252ad4fd0e9e0",
-  measurementId: "G-0J9TNJNEV5"
-};
+    apiKey:            "AIzaSyDlBIeNVDK5nBPpVFkFSxNY59e7gW-p18c",
+    authDomain:        "rentafruit-f57d9.firebaseapp.com",
+    projectId:         "rentafruit-f57d9",
+    storageBucket:     "rentafruit-f57d9.firebasestorage.app",
+    messagingSenderId: "66702277537",
+    appId:             "1:66702277537:web:e7f210f38252ad4fd0e9e0",
+    measurementId:     "G-0J9TNJNEV5"
+  };
 
-  // ============================================================
-
-  const app = initializeApp(firebaseConfig);
+  const app       = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const provider = new GoogleAuthProvider();
+  const auth      = getAuth(app);
+  const db        = getFirestore(app);
+  const provider  = new GoogleAuthProvider();
 
-  let currentUser = null;
-  let currentRoom = null;
+  provider.setCustomParameters({ prompt: "select_account" });
+
+  let currentUser        = null;
+  let currentRoom        = null;
   let currentDestination = null;
-  let roomsUnsub = null;
-  let chatUnsub = null;
+  let roomsUnsub         = null;
+  let chatUnsub          = null;
 
-  // ── AUTH ──────────────────────────────────────────────────
   window.loginWithGoogle = async () => {
-    try { await signInWithRedirect(auth, provider); }
-    catch(e){ console.error(e); }
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (e) {
+      console.error("Login error:", e.code, e.message);
+    }
   };
 
   window.logOut = async () => {
     await signOut(auth);
   };
 
-  onAuthStateChanged(auth, async user => {
-    // Handle redirect result
-  try {
-    await getRedirectResult(auth);
-  } catch(e) {
-    console.error(e);
-  }
+  onAuthStateChanged(auth, async (user) => {
+    console.log("AUTH STATE:", user ? user.displayName : "no user");
     currentUser = user;
+
     if (user) {
-      // Upsert user doc
-      const uRef = doc(db, "users", user.uid);
-      const snap = await getDoc(uRef);
-      if (!snap.exists()) {
-        await setDoc(uRef, { uid: user.uid, name: user.displayName, photo: user.photoURL, hasBeastBoat: false });
+      try {
+        const uRef = doc(db, "users", user.uid);
+        const snap = await getDoc(uRef);
+
+        if (!snap.exists()) {
+          await setDoc(uRef, {
+            uid:          user.uid,
+            name:         user.displayName,
+            photo:        user.photoURL,
+            hasBeastBoat: false
+          });
+        }
+
+        const userData = (await getDoc(uRef)).data();
+        window._myBoat = userData.hasBeastBoat || false;
+        renderApp("home");
+
+      } catch (e) {
+        console.error("ERROR:", e.code, e.message);
       }
-      const userData = (await getDoc(uRef)).data();
-      window._myBoat = userData.hasBeastBoat || false;
-      renderApp("home");
+
     } else {
       renderApp("login");
     }
