@@ -10,7 +10,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot,
     updateDoc, arrayUnion, arrayRemove, deleteDoc, query, where, orderBy, serverTimestamp, getDocs }
@@ -45,7 +45,7 @@
 
   // ── AUTH ──────────────────────────────────────────────────
   window.loginWithGoogle = async () => {
-    try { await signInWithPopup(auth, provider); }
+    try { await signInWithRedirect(auth, provider); }
     catch(e){ console.error(e); }
   };
 
@@ -54,6 +54,12 @@
   };
 
   onAuthStateChanged(auth, async user => {
+    // Handle redirect result
+  try {
+    await getRedirectResult(auth);
+  } catch(e) {
+    console.error(e);
+  }
     currentUser = user;
     if (user) {
       // Upsert user doc
