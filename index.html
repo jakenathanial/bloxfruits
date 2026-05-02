@@ -21,18 +21,9 @@
     --gp:      0 0 24px rgba(176,110,243,0.45);
     --gb:      0 0 24px rgba(79,158,248,0.45);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg); color: var(--text);
-    font-family: 'Nunito', sans-serif; min-height: 100vh; overflow-x: hidden;
-  }
-  body::before {
-    content:''; position:fixed; inset:0;
-    background:
-      radial-gradient(ellipse at 15% 15%, rgba(176,110,243,0.1) 0%, transparent 55%),
-      radial-gradient(ellipse at 85% 85%, rgba(79,158,248,0.08) 0%, transparent 55%);
-    pointer-events:none; z-index:0;
-  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Nunito',sans-serif; min-height:100vh; overflow-x:hidden; }
+  body::before { content:''; position:fixed; inset:0; background: radial-gradient(ellipse at 15% 15%, rgba(176,110,243,0.1) 0%, transparent 55%), radial-gradient(ellipse at 85% 85%, rgba(79,158,248,0.08) 0%, transparent 55%); pointer-events:none; z-index:0; }
   #app { position:relative; z-index:1; min-height:100vh; }
 
   /* LOADER */
@@ -45,13 +36,7 @@
   .login-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
   .login-glow { position:fixed; inset:0; background:radial-gradient(ellipse at 50% 40%, rgba(176,110,243,0.13) 0%, transparent 65%); animation:breathe 4s ease-in-out infinite; }
   @keyframes breathe { 0%,100%{opacity:1} 50%{opacity:0.5} }
-  .login-box {
-    position:relative; background:rgba(14,14,40,0.97);
-    border:1.5px solid var(--border); border-radius:24px;
-    padding:48px 40px; max-width:430px; width:100%; text-align:center;
-    box-shadow:var(--gp), 0 32px 64px rgba(0,0,0,0.55);
-    animation:floatin 0.5s cubic-bezier(0.34,1.56,0.64,1);
-  }
+  .login-box { position:relative; background:rgba(14,14,40,0.97); border:1.5px solid var(--border); border-radius:24px; padding:48px 40px; max-width:430px; width:100%; text-align:center; box-shadow:var(--gp), 0 32px 64px rgba(0,0,0,0.55); animation:floatin 0.5s cubic-bezier(0.34,1.56,0.64,1); }
   @keyframes floatin { from{opacity:0;transform:translateY(24px) scale(0.96)} to{opacity:1;transform:none} }
   .login-fruit { font-size:68px; display:block; filter:drop-shadow(0 0 20px rgba(176,110,243,0.9)); margin-bottom:10px; }
   .login-title { font-family:'Orbitron',sans-serif; font-size:1.8rem; font-weight:900; background:linear-gradient(130deg,var(--purple),var(--blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
@@ -60,23 +45,10 @@
   .divider { display:flex; align-items:center; gap:10px; margin:18px 0; }
   .divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--border); }
   .divider span { font-size:0.78rem; color:var(--muted); font-weight:700; }
-  .btn-google {
-    display:flex; align-items:center; gap:10px; justify-content:center;
-    width:100%; padding:14px 20px; background:rgba(255,255,255,0.06);
-    border:1.5px solid rgba(255,255,255,0.13); border-radius:12px; color:var(--text);
-    font-family:'Nunito',sans-serif; font-size:1rem; font-weight:700;
-    cursor:pointer; transition:all 0.22s;
-  }
-  .btn-google:hover { background:rgba(255,255,255,0.11); transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.3); }
+  .btn-google { display:flex; align-items:center; gap:10px; justify-content:center; width:100%; padding:14px 20px; background:rgba(255,255,255,0.06); border:1.5px solid rgba(255,255,255,0.13); border-radius:12px; color:var(--text); font-family:'Nunito',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:all 0.22s; }
+  .btn-google:hover { background:rgba(255,255,255,0.11); transform:translateY(-2px); }
   .btn-google:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
-  .btn-guest {
-    display:flex; align-items:center; gap:10px; justify-content:center;
-    width:100%; padding:13px 20px; margin-top:10px;
-    background:rgba(176,110,243,0.1); border:1.5px solid rgba(176,110,243,0.3);
-    border-radius:12px; color:var(--purple);
-    font-family:'Nunito',sans-serif; font-size:1rem; font-weight:700;
-    cursor:pointer; transition:all 0.22s;
-  }
+  .btn-guest { display:flex; align-items:center; gap:10px; justify-content:center; width:100%; padding:13px 20px; margin-top:10px; background:rgba(176,110,243,0.1); border:1.5px solid rgba(176,110,243,0.3); border-radius:12px; color:var(--purple); font-family:'Nunito',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:all 0.22s; }
   .btn-guest:hover { background:rgba(176,110,243,0.18); transform:translateY(-2px); }
   .login-err { margin-top:14px; padding:10px 14px; background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); border-radius:9px; color:var(--red); font-size:0.85rem; display:none; }
 
@@ -90,15 +62,15 @@
   .name-input:focus { border-color:var(--purple); }
   .name-input::placeholder { color:var(--muted); }
   .btn-enter { width:100%; padding:13px; background:linear-gradient(130deg,var(--purple2),var(--purple)); border:none; border-radius:11px; color:#fff; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; cursor:pointer; transition:all 0.2s; box-shadow:0 0 18px rgba(176,110,243,0.4); }
-  .btn-enter:hover { transform:translateY(-2px); box-shadow:0 0 28px rgba(176,110,243,0.6); }
+  .btn-enter:hover { transform:translateY(-2px); }
 
   /* TOPBAR */
   .topbar { display:flex; align-items:center; justify-content:space-between; padding:12px 22px; background:rgba(7,7,26,0.92); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; }
   .topbar-logo { font-family:'Orbitron',sans-serif; font-weight:900; font-size:1rem; background:linear-gradient(90deg,var(--purple),var(--blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; cursor:pointer; letter-spacing:1px; user-select:none; }
   .topbar-right { display:flex; align-items:center; gap:10px; }
   .avatar { width:34px; height:34px; border-radius:50%; border:2px solid var(--purple); object-fit:cover; }
-  .uname  { font-size:0.88rem; font-weight:700; color:var(--muted); display:none; }
-  @media(min-width:480px){ .uname { display:block; } }
+  .uname { font-size:0.88rem; font-weight:700; color:var(--muted); display:none; }
+  @media(min-width:480px){ .uname{display:block;} }
   .btn-sm { padding:6px 13px; background:transparent; border:1.5px solid var(--border); border-radius:8px; color:var(--muted); font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
   .btn-sm:hover { border-color:var(--purple); color:var(--purple); }
 
@@ -122,7 +94,7 @@
   input:checked + .slider::before { transform:translateX(24px); background:var(--green); box-shadow:0 0 10px var(--green); }
   .boat-indicator { display:flex; align-items:center; gap:6px; font-size:0.88rem; font-weight:800; padding:5px 12px; border-radius:20px; transition:all 0.3s; }
   .boat-indicator.on  { background:rgba(52,211,153,0.15); color:var(--green); border:1.5px solid rgba(52,211,153,0.35); }
-  .boat-indicator.off { background:rgba(248,113,113,0.12); color:var(--red);   border:1.5px solid rgba(248,113,113,0.3); }
+  .boat-indicator.off { background:rgba(248,113,113,0.12); color:var(--red); border:1.5px solid rgba(248,113,113,0.3); }
   .dot { width:8px; height:8px; border-radius:50%; }
   .dot.on  { background:var(--green); box-shadow:0 0 8px var(--green); animation:blink 1.5s ease-in-out infinite; }
   .dot.off { background:var(--red); }
@@ -138,8 +110,8 @@
   /* DEST CARDS */
   .dest-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:20px; }
   .dest-card { position:relative; overflow:hidden; background:rgba(14,14,40,0.9); border:1.5px solid var(--border); border-radius:20px; padding:38px 26px; text-align:center; cursor:pointer; transition:all 0.28s ease; animation:floatin 0.45s ease both; }
-  .dest-card:hover { transform:translateY(-7px); border-color:var(--purple); box-shadow:var(--gp), 0 20px 40px rgba(0,0,0,0.4); }
-  .dest-card:nth-child(2):hover { border-color:var(--blue); box-shadow:var(--gb), 0 20px 40px rgba(0,0,0,0.4); }
+  .dest-card:hover { transform:translateY(-7px); border-color:var(--purple); box-shadow:var(--gp),0 20px 40px rgba(0,0,0,0.4); }
+  .dest-card:nth-child(2):hover { border-color:var(--blue); box-shadow:var(--gb),0 20px 40px rgba(0,0,0,0.4); }
   .dest-glow { position:absolute; top:-50px; left:50%; transform:translateX(-50%); width:200px; height:200px; background:radial-gradient(circle, rgba(176,110,243,0.12), transparent 70%); pointer-events:none; }
   .dest-glow.b { background:radial-gradient(circle, rgba(79,158,248,0.12), transparent 70%); }
   .dest-icon { font-size:58px; display:block; margin-bottom:14px; filter:drop-shadow(0 0 14px rgba(176,110,243,0.7)); }
@@ -155,7 +127,7 @@
   .btn-back:hover { border-color:var(--purple); color:var(--purple); }
   .btn-create { padding:10px 20px; background:linear-gradient(130deg,var(--purple2),var(--purple)); border:none; border-radius:10px; color:#fff; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; cursor:pointer; transition:all 0.25s; box-shadow:0 0 18px rgba(176,110,243,0.4); }
   .btn-create:hover { transform:translateY(-2px); box-shadow:0 0 28px rgba(176,110,243,0.65); }
-  .btn-create:active { transform:scale(0.97); }
+  .btn-create:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 
   /* ROOM LIST */
   .room-list { display:grid; grid-template-columns:repeat(auto-fill, minmax(270px,1fr)); gap:15px; min-height:120px; }
@@ -170,16 +142,15 @@
   .room-beast { font-size:0.82rem; font-weight:800; }
   .room-beast.yes { color:var(--green); }
   .room-beast.no  { color:var(--red); }
-  .btn-join { width:100%; padding:9px; background:linear-gradient(90deg,var(--blue2),var(--blue)); border:none; border-radius:9px; color:#fff; font-family:'Nunito',sans-serif; font-size:0.82rem; font-weight:800; cursor:pointer; letter-spacing:1px; transition:all 0.18s; }
+  .btn-join { width:100%; padding:9px; background:linear-gradient(90deg,var(--blue2),var(--blue)); border:none; border-radius:9px; color:#fff; font-family:'Nunito',sans-serif; font-size:0.82rem; font-weight:800; cursor:pointer; transition:all 0.18s; }
   .btn-join:hover { opacity:0.85; transform:translateY(-1px); }
-  .btn-join:active { transform:scale(0.97); }
   .btn-join.full { background:rgba(255,255,255,0.07); color:var(--muted); cursor:not-allowed; transform:none; }
   .empty-msg { grid-column:1/-1; text-align:center; color:var(--muted); padding:55px 20px; border:1.5px dashed var(--border); border-radius:16px; font-size:0.95rem; font-weight:600; }
-  .status-bar { grid-column:1/-1; text-align:center; font-size:0.8rem; font-weight:700; color:var(--muted); padding:8px; }
+  .connecting-msg { grid-column:1/-1; text-align:center; color:var(--muted); padding:40px 20px; font-size:0.9rem; font-weight:700; }
 
   /* ROOM VIEW */
   .room-layout { display:grid; grid-template-columns:1fr; gap:18px; }
-  @media(min-width:768px){ .room-layout { grid-template-columns:1fr 360px; align-items:start; } }
+  @media(min-width:768px){ .room-layout{grid-template-columns:1fr 360px; align-items:start;} }
   .room-title-row { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
   .room-h2 { font-family:'Orbitron',sans-serif; font-size:1.25rem; font-weight:900; color:var(--purple); text-shadow:0 0 16px rgba(176,110,243,0.65); }
   .room-timer-pill { font-size:0.82rem; font-weight:800; color:var(--blue2); background:rgba(34,211,238,0.1); border:1px solid rgba(34,211,238,0.3); padding:6px 14px; border-radius:20px; }
@@ -211,8 +182,7 @@
   .chat-input:focus { border-color:var(--purple); }
   .chat-input::placeholder { color:var(--muted); }
   .btn-send { padding:9px 15px; background:linear-gradient(130deg,var(--purple2),var(--purple)); border:none; border-radius:10px; color:#fff; font-size:1rem; cursor:pointer; transition:all 0.18s; box-shadow:0 0 10px rgba(176,110,243,0.4); }
-  .btn-send:hover  { opacity:0.85; transform:scale(1.06); }
-  .btn-send:active { transform:scale(0.96); }
+  .btn-send:hover { opacity:0.85; transform:scale(1.06); }
 
   ::-webkit-scrollbar { width:5px; }
   ::-webkit-scrollbar-track { background:transparent; }
@@ -235,16 +205,14 @@
     <p>What should we call you? Pick a fun name!</p>
     <input type="text" id="guestNameInput" class="name-input"
       placeholder="e.g. CoolHunter99" maxlength="24"
-      onkeypress="if(event.key==='Enter') confirmGuest()" />
+      onkeypress="if(event.key==='Enter') confirmGuest()"/>
     <button class="btn-enter" onclick="confirmGuest()">Let's Go! 🚀</button>
   </div>
 </div>
 
 <script type="module">
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     IMPORTS
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── IMPORTS ── */
   import { initializeApp }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAnalytics }
@@ -257,16 +225,14 @@
     getFirestore,
     doc, setDoc, getDoc, updateDoc,
     collection, addDoc,
-    onSnapshot,                   // ← REALTIME: used for ALL room/chat listeners
+    onSnapshot,
     arrayUnion, arrayRemove,
     deleteDoc,
-    query, where, orderBy, limit, // ← PERFORMANCE: optimized queries
-    serverTimestamp               // ← ROOM CREATION: accurate server time
+    query, where,
+    serverTimestamp
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     FIREBASE CONFIG
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── CONFIG ── */
   const firebaseConfig = {
     apiKey:            "AIzaSyDlBIeNVDK5nBPpVFkFSxNY59e7gW-p18c",
     authDomain:        "rentafruit-f57d9.firebaseapp.com",
@@ -277,6 +243,7 @@
     measurementId:     "G-0J9TNJNEV5"
   };
 
+  /* ── INIT ── */
   const app       = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
   const auth      = getAuth(app);
@@ -284,19 +251,15 @@
   const provider  = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     STATE
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── STATE ── */
   let currentUser        = null;
   let currentRoom        = null;
   let currentDestination = null;
-  let roomsUnsub         = null;   // ← holds onSnapshot unsubscribe fn
-  let chatUnsub          = null;   // ← holds onSnapshot unsubscribe fn
+  let roomsUnsub         = null;
+  let chatUnsub          = null;
   let isGuest            = false;
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     AUTH
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── AUTH ── */
   window.loginWithGoogle = async () => {
     const btn = document.getElementById("loginBtn");
     const err = document.getElementById("loginErr");
@@ -305,14 +268,13 @@
     try {
       console.log("[AUTH] Starting Google sign-in...");
       await signInWithPopup(auth, provider);
-      // onAuthStateChanged fires automatically after this
     } catch (e) {
-      console.error("[AUTH] Login error:", e.code, e.message);
+      console.error("[AUTH] Error:", e.code, e.message);
       if (btn) btn.disabled = false;
       if (err) {
         err.style.display = "block";
         if (e.code === "auth/popup-blocked")
-          err.textContent = "⚠️ Popup blocked! Allow popups for this site.";
+          err.textContent = "⚠️ Popup blocked! Please allow popups for this site.";
         else if (e.code === "auth/popup-closed-by-user")
           err.textContent = "You closed the window. Try again!";
         else if (e.code === "auth/unauthorized-domain")
@@ -331,10 +293,7 @@
   window.confirmGuest = () => {
     const inp  = document.getElementById("guestNameInput");
     const name = inp?.value.trim();
-    if (!name || name.length < 2) {
-      inp.style.borderColor = "var(--red)";
-      return;
-    }
+    if (!name || name.length < 2) { inp.style.borderColor = "var(--red)"; return; }
     document.getElementById("guestModal").classList.remove("show");
     isGuest     = true;
     currentUser = {
@@ -359,37 +318,27 @@
     }
   };
 
-  /* ── onAuthStateChanged: fires once on load and on every sign-in/out ── */
   onAuthStateChanged(auth, async (user) => {
-    if (isGuest) return; // guest mode — skip Firebase auth listener
+    if (isGuest) return;
     console.log("[AUTH] State changed:", user ? user.displayName : "signed out");
     currentUser = user;
-
     if (user) {
       try {
-        /* PERFORMANCE: only one doc read per login, not per action */
         const uRef = doc(db, "users", user.uid);
         const snap = await getDoc(uRef);
-
         if (!snap.exists()) {
-          // First time user — create their profile
           await setDoc(uRef, {
-            uid:          user.uid,
-            name:         user.displayName,
-            photo:        user.photoURL,
-            hasBeastBoat: false
+            uid: user.uid, name: user.displayName,
+            photo: user.photoURL, hasBeastBoat: false
           });
-          console.log("[PROFILE] New user profile created");
+          console.log("[PROFILE] New user created");
         }
-
-        /* Read boat status once — cached in window._myBoat */
         const data     = (await getDoc(uRef)).data();
         window._myBoat = data.hasBeastBoat === true;
-        console.log("[PROFILE] Boat status loaded:", window._myBoat);
+        console.log("[PROFILE] Boat status:", window._myBoat);
         renderApp("home");
-
       } catch (e) {
-        console.error("[PROFILE] Firestore error:", e.code, e.message);
+        console.error("[PROFILE] Firestore error:", e.message);
         window._myBoat = false;
         renderApp("home");
       }
@@ -398,36 +347,26 @@
     }
   });
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     PROFILE / BEAST BOAT TOGGLE
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── BOAT TOGGLE ── */
   window.toggleBeastBoat = async () => {
     const newVal = !window._myBoat;
     window._myBoat = newVal;
-
-    /* Instant UI update — no waiting for Firestore */
     const ind = document.getElementById("boatIndicator");
     const tog = document.getElementById("boatToggle");
     if (ind) {
       ind.className = "boat-indicator " + (newVal ? "on" : "off");
-      ind.innerHTML = `<span class="dot ${newVal ? "on":"off"}"></span>${newVal ? "🚢 Active!" : "Not Active"}`;
+      ind.innerHTML = `<span class="dot ${newVal?"on":"off"}"></span>${newVal ? "🚢 Active!" : "Not Active"}`;
     }
     if (tog) tog.checked = newVal;
-
-    /* Save to Firestore in background (Google users only) */
     if (!isGuest && currentUser?.uid) {
       try {
         await updateDoc(doc(db, "users", currentUser.uid), { hasBeastBoat: newVal });
-        console.log("[PROFILE] Boat status saved:", newVal);
-      } catch (e) {
-        console.error("[PROFILE] Save failed:", e.code);
-      }
+        console.log("[PROFILE] Boat saved:", newVal);
+      } catch (e) { console.error("[PROFILE] Save error:", e.code); }
     }
   };
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     NAVIGATION
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── NAVIGATION ── */
   window.goHome = () => {
     cleanupListeners();
     currentRoom = null; currentDestination = null;
@@ -438,71 +377,54 @@
     cleanupListeners();
     currentDestination = dest;
     renderApp("destination");
-    listenRooms(dest); // ← REALTIME: immediately attaches onSnapshot listener
+    listenRooms(dest);
   };
 
   function cleanupListeners() {
-    /* Always unsubscribe before attaching new listeners — prevents memory leaks */
     if (roomsUnsub) { roomsUnsub(); roomsUnsub = null; console.log("[LISTENER] Rooms unsubscribed"); }
     if (chatUnsub)  { chatUnsub();  chatUnsub  = null; console.log("[LISTENER] Chat unsubscribed"); }
   }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     ROOMS — REALTIME LISTENER  ★ KEY FIX ★
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── ROOMS REALTIME LISTENER ── */
   function listenRooms(dest) {
-    console.log("[ROOMS] Attaching realtime listener for:", dest);
+    console.log("[ROOMS] Attaching listener for:", dest);
 
     /*
-     * PERFORMANCE FIX:
-     * - Filter by destination  → only fetch rooms for this location
-     * - orderBy createdAt desc → newest rooms first
-     * - limit(20)              → never download more than 20 rooms at once
-     *
-     * onSnapshot fires:
-     *   1. Immediately with cached/server data  → instant first render
-     *   2. Every time ANY room changes           → live updates for all users
+     * NO orderBy — simple query works without any index
+     * Rooms appear instantly for all users via onSnapshot
      */
-     const q = query(
-       collection(db, "rooms"),
-       where("destination", "==", dest)
-     );
+    const q = query(
+      collection(db, "rooms"),
+      where("destination", "==", dest)
+    );
 
     roomsUnsub = onSnapshot(q, (snap) => {
       console.log("[ROOMS] Snapshot received —", snap.size, "rooms");
-
       const now   = Date.now();
       const rooms = [];
 
       snap.forEach((d) => {
         const r = { id: d.id, ...d.data() };
-
-        /* AUTO-DELETE expired rooms */
-        if (r.expiresAt < now) {
+        if (r.expiresAt && r.expiresAt < now) {
           console.log("[ROOMS] Deleting expired room:", d.id);
           deleteDoc(doc(db, "rooms", d.id));
           return;
         }
-
         rooms.push(r);
       });
 
-      /* RENDER: clear then re-render all rooms — prevents duplicates */
       renderRoomList(rooms);
-
     }, (err) => {
-      console.error("[ROOMS] onSnapshot error:", err.code, err.message);
+      console.error("[ROOMS] Listener error:", err.code, err.message);
     });
   }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     RENDER ROOM LIST
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── RENDER ROOM LIST ── */
   function renderRoomList(rooms) {
     const el = document.getElementById("roomList");
     if (!el) return;
 
-    /* Clear first — prevent duplicate cards */
+    // Clear first — prevents duplicates
     el.innerHTML = "";
 
     if (rooms.length === 0) {
@@ -511,28 +433,25 @@
     }
 
     el.innerHTML = rooms.map((r) => {
-      /* BEAST HUNTER DETECTION: check if ANY player has the boat */
-      const hasBeast  = r.players.some((p) => p.hasBeastBoat === true);
-      const full      = r.players.length >= 7;
-      const remaining = Math.max(0, r.expiresAt - Date.now());
+      const hasBeast  = r.players && r.players.some((p) => p.hasBeastBoat === true);
+      const full      = r.players && r.players.length >= 7;
+      const count     = r.players ? r.players.length : 0;
+      const remaining = r.expiresAt ? Math.max(0, r.expiresAt - Date.now()) : 0;
       const mins      = Math.floor(remaining / 60000);
       const secs      = Math.floor((remaining % 60000) / 1000);
-
       return `
         <div class="room-card" onclick="enterRoom('${r.id}')">
           <div class="room-head">
-            <span class="room-host">👑 ${r.host}</span>
+            <span class="room-host">👑 ${r.host || "Unknown"}</span>
             <span class="timer-pill">⏱ ${mins}m ${secs}s</span>
           </div>
           <div class="room-stats">
-            <span class="room-count ${full ? "full":""}">
-              👥 ${r.players.length} / 7 players
-            </span>
-            <span class="room-beast ${hasBeast ? "yes":"no"}">
+            <span class="room-count ${full ? "full" : ""}">👥 ${count} / 7 players</span>
+            <span class="room-beast ${hasBeast ? "yes" : "no"}">
               ${hasBeast ? "🚢 Beast Hunter Available!" : "❌ No Beast Hunter yet"}
             </span>
           </div>
-          <button class="btn-join ${full ? "full":""}"
+          <button class="btn-join ${full ? "full" : ""}"
             onclick="event.stopPropagation(); joinRoom('${r.id}')">
             ${full ? "Room Full 😔" : "Join Room →"}
           </button>
@@ -540,27 +459,16 @@
     }).join("");
   }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     CREATE ROOM  ★ KEY FIX ★
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── CREATE ROOM ── */
   window.createRoom = async () => {
     if (!currentUser || !currentDestination) return;
-
     console.log("[CREATE] Creating room in:", currentDestination);
 
-    /* Disable button to prevent double-click */
     const btn = document.querySelector(".btn-create");
-    if (btn) { btn.disabled = true; btn.textContent = "Creating..."; }
+    if (btn) { btn.disabled = true; btn.textContent = "Creating... ✨"; }
 
     const now = Date.now();
-
     try {
-      /*
-       * ROOM CREATION FIX:
-       * - createdAt: serverTimestamp() → accurate server time for ordering
-       * - expiresAt: client now + 1hr  → reliable expiry check
-       * - hasBeastBoat: window._myBoat === true → never undefined
-       */
       const ref = await addDoc(collection(db, "rooms"), {
         destination: currentDestination,
         host:        currentUser.displayName,
@@ -568,229 +476,159 @@
         players: [{
           uid:          currentUser.uid,
           name:         currentUser.displayName,
-          hasBeastBoat: window._myBoat === true  // ← FIX: never undefined
+          hasBeastBoat: window._myBoat === true
         }],
-        createdAt: serverTimestamp(),  // ← FIX: server timestamp for correct ordering
-        expiresAt: now + 3600000       // ← client time + 1 hour
+        createdAt: serverTimestamp(),
+        expiresAt: now + 3600000
       });
-
       console.log("[CREATE] Room created:", ref.id);
       enterRoom(ref.id);
-
     } catch (e) {
       console.error("[CREATE] Failed:", e.code, e.message);
-      alert("❌ Couldn't create room! Check your internet and try again.");
+      alert("❌ Couldn't create room!\n\nError: " + e.message + "\n\nCheck your internet and Firestore rules.");
       if (btn) { btn.disabled = false; btn.textContent = "✨ Create Room"; }
     }
   };
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     JOIN ROOM  ★ KEY FIX ★
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── JOIN ROOM ── */
   window.joinRoom = async (roomId) => {
-    console.log("[JOIN] Attempting to join room:", roomId);
-
+    console.log("[JOIN] Joining room:", roomId);
     try {
       const rRef = doc(db, "rooms", roomId);
       const snap = await getDoc(rRef);
-
-      if (!snap.exists()) {
-        console.warn("[JOIN] Room not found:", roomId);
-        alert("This room no longer exists!");
-        return;
-      }
-
+      if (!snap.exists()) { alert("This room no longer exists!"); return; }
       const r = snap.data();
-
-      /* PREVENT joining full rooms */
-      if (r.players.length >= 7) {
-        console.warn("[JOIN] Room is full");
-        alert("😔 Room is full! Try another one.");
-        return;
+      if (r.players && r.players.length >= 7) { alert("😔 Room is full!"); return; }
+      if (r.players && r.players.find((p) => p.uid === currentUser.uid)) {
+        console.log("[JOIN] Already in room");
+        enterRoom(roomId); return;
       }
-
-      /* PREVENT duplicate join */
-      if (r.players.find((p) => p.uid === currentUser.uid)) {
-        console.log("[JOIN] Already in room — entering");
-        enterRoom(roomId);
-        return;
-      }
-
-      /*
-       * JOIN FIX:
-       * - arrayUnion prevents duplicate entries at the database level
-       * - hasBeastBoat always boolean (never undefined)
-       */
       await updateDoc(rRef, {
         players: arrayUnion({
           uid:          currentUser.uid,
           name:         currentUser.displayName,
-          hasBeastBoat: window._myBoat === true  // ← FIX: never undefined
+          hasBeastBoat: window._myBoat === true
         })
       });
-
-      console.log("[JOIN] Successfully joined:", roomId);
+      console.log("[JOIN] Joined:", roomId);
       enterRoom(roomId);
-
     } catch (e) {
       console.error("[JOIN] Failed:", e.code, e.message);
       alert("Couldn't join room. Try again!");
     }
   };
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     LEAVE ROOM
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── LEAVE ROOM ── */
   window.leaveRoom = async () => {
     if (!currentRoom) return;
     console.log("[LEAVE] Leaving room:", currentRoom);
-
     try {
       const rRef = doc(db, "rooms", currentRoom);
       const snap = await getDoc(rRef);
-
-      if (!snap.exists()) {
-        goDestination(currentDestination);
-        return;
+      if (snap.exists()) {
+        const r  = snap.data();
+        const me = r.players && r.players.find((p) => p.uid === currentUser.uid);
+        if (me) await updateDoc(rRef, { players: arrayRemove(me) });
+        const upd = await getDoc(rRef);
+        if (upd.exists() && (!upd.data().players || upd.data().players.length === 0)) {
+          await deleteDoc(rRef);
+          console.log("[LEAVE] Empty room deleted");
+        }
       }
-
-      const r  = snap.data();
-      const me = r.players.find((p) => p.uid === currentUser.uid);
-      if (me) await updateDoc(rRef, { players: arrayRemove(me) });
-
-      /* Auto-delete empty rooms */
-      const upd = await getDoc(rRef);
-      if (upd.exists() && upd.data().players.length === 0) {
-        await deleteDoc(rRef);
-        console.log("[LEAVE] Empty room deleted:", currentRoom);
-      }
-
-    } catch (e) {
-      console.error("[LEAVE] Error:", e.code);
-    }
-
+    } catch (e) { console.error("[LEAVE] Error:", e.code); }
     cleanupListeners();
     currentRoom = null;
     renderApp("destination");
-    listenRooms(currentDestination); // ← re-attach realtime listener
+    listenRooms(currentDestination);
   };
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     ENTER ROOM
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── ENTER ROOM ── */
   window.enterRoom = (roomId) => {
     console.log("[ENTER] Entering room:", roomId);
     cleanupListeners();
     currentRoom = roomId;
     renderApp("room");
-    listenRoomDoc(roomId);  // ← REALTIME: live room updates
-    listenChat(roomId);     // ← REALTIME: live chat updates
+    listenRoomDoc(roomId);
+    listenChat(roomId);
   };
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     ROOM DOC — REALTIME LISTENER  ★ KEY FIX ★
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── ROOM DOC REALTIME ── */
   function listenRoomDoc(roomId) {
-    console.log("[ROOM] Attaching realtime listener to room doc:", roomId);
-
-    /*
-     * onSnapshot on a single document:
-     * - Fires immediately with current data
-     * - Fires again whenever players join/leave, timer etc.
-     * - All users in the room see updates within ~100ms
-     */
+    console.log("[ROOM] Attaching listener to room:", roomId);
     roomsUnsub = onSnapshot(doc(db, "rooms", roomId), (snap) => {
       if (!snap.exists()) {
-        console.warn("[ROOM] Room deleted — redirecting");
-        goDestination(currentDestination);
-        return;
+        console.warn("[ROOM] Room deleted — going back");
+        goDestination(currentDestination); return;
       }
-
       const r = { id: snap.id, ...snap.data() };
-
-      /* Auto-redirect if expired */
-      if (r.expiresAt < Date.now()) {
-        console.log("[ROOM] Room expired — deleting and redirecting");
+      if (r.expiresAt && r.expiresAt < Date.now()) {
         deleteDoc(doc(db, "rooms", roomId));
-        goDestination(currentDestination);
-        return;
+        goDestination(currentDestination); return;
       }
-
       renderRoomView(r);
-
-    }, (err) => {
-      console.error("[ROOM] onSnapshot error:", err.code);
-    });
+    }, (err) => { console.error("[ROOM] Listener error:", err.code); });
   }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     RENDER ROOM VIEW
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── RENDER ROOM VIEW ── */
   function renderRoomView(r) {
-    /* BEAST HUNTER DETECTION: any player with hasBeastBoat === true */
-    const hasBeast  = r.players.some((p) => p.hasBeastBoat === true);
-    const remaining = Math.max(0, r.expiresAt - Date.now());
+    const hasBeast  = r.players && r.players.some((p) => p.hasBeastBoat === true);
+    const remaining = r.expiresAt ? Math.max(0, r.expiresAt - Date.now()) : 0;
     const mins      = Math.floor(remaining / 60000);
     const secs      = Math.floor((remaining % 60000) / 1000);
     const el        = document.getElementById("roomContent");
     if (!el) return;
-
     el.innerHTML = `
       <div class="room-title-row">
         <h2 class="room-h2">📍 ${r.destination}</h2>
         <span class="room-timer-pill">⏱ ${mins}:${String(secs).padStart(2,"0")}</span>
       </div>
-      <div class="beast-banner ${hasBeast ? "yes":"no"}">
-        ${hasBeast
-          ? "🚢 BEAST HUNTER IS HERE! You're ready to hunt!"
-          : "❌ No Beast Hunter yet — someone needs the boat!"}
+      <div class="beast-banner ${hasBeast ? "yes" : "no"}">
+        ${hasBeast ? "🚢 BEAST HUNTER IS HERE! You're all set!" : "❌ No Beast Hunter yet — someone needs the boat!"}
       </div>
       <div class="player-grid">
-        ${r.players.map((p) => `
-          <div class="p-chip ${p.uid === currentUser?.uid ? "me":""}">
+        ${(r.players || []).map((p) => `
+          <div class="p-chip ${p.uid === currentUser?.uid ? "me" : ""}">
             <span class="p-name">${p.uid === currentUser?.uid ? "⭐ You" : p.name}</span>
-            <span class="p-boat ${p.hasBeastBoat ? "yes":"no"}">${p.hasBeastBoat ? "🚢":"🚫"}</span>
+            <span class="p-boat ${p.hasBeastBoat ? "yes" : "no"}">${p.hasBeastBoat ? "🚢" : "🚫"}</span>
           </div>`).join("")}
-        ${Array(Math.max(0, 7 - r.players.length)).fill(0).map(() =>
+        ${Array(Math.max(0, 7 - (r.players || []).length)).fill(0).map(() =>
           `<div class="p-chip empty">Waiting...</div>`).join("")}
       </div>`;
   }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     CHAT — REALTIME LISTENER  ★ KEY FIX ★
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── CHAT REALTIME ── */
   function listenChat(roomId) {
-    console.log("[CHAT] Attaching realtime listener for room:", roomId);
-
-    /*
-     * orderBy("ts","asc") — messages in chronological order
-     * onSnapshot fires every time a new message is sent
-     */
+    console.log("[CHAT] Attaching listener for room:", roomId);
     const q = query(
       collection(db, "rooms", roomId, "chat"),
-      orderBy("ts", "asc")
+      where("roomId", "==", roomId)
     );
 
-    chatUnsub = onSnapshot(q, (snap) => {
-      const box = document.getElementById("chatBox");
-      if (!box) return;
-
-      /* Clear and re-render all messages — prevents duplicates */
-      box.innerHTML = snap.docs.map((d) => {
-        const m    = d.data();
-        const isMe = m.uid === currentUser?.uid;
-        return `
-          <div class="msg ${isMe ? "me":"other"}">
-            <span class="msg-who">${isMe ? "You" : m.name}</span>
-            <span class="msg-txt">${esc(m.text)}</span>
-          </div>`;
-      }).join("");
-
-      box.scrollTop = box.scrollHeight;
-
-    }, (err) => {
-      console.error("[CHAT] onSnapshot error:", err.code);
-    });
+    // Fallback: simple collection listen without orderBy
+    chatUnsub = onSnapshot(
+      collection(db, "rooms", roomId, "chat"),
+      (snap) => {
+        const box = document.getElementById("chatBox");
+        if (!box) return;
+        const msgs = [];
+        snap.forEach((d) => msgs.push({ id: d.id, ...d.data() }));
+        // Sort by ts client-side
+        msgs.sort((a, b) => {
+          const ta = a.ts?.toMillis ? a.ts.toMillis() : 0;
+          const tb = b.ts?.toMillis ? b.ts.toMillis() : 0;
+          return ta - tb;
+        });
+        box.innerHTML = msgs.map((m) => {
+          const isMe = m.uid === currentUser?.uid;
+          return `
+            <div class="msg ${isMe ? "me" : "other"}">
+              <span class="msg-who">${isMe ? "You" : m.name}</span>
+              <span class="msg-txt">${esc(m.text)}</span>
+            </div>`;
+        }).join("");
+        box.scrollTop = box.scrollHeight;
+      }, (err) => { console.error("[CHAT] Listener error:", err.code); }
+    );
   }
 
   window.sendMessage = async () => {
@@ -800,25 +638,19 @@
     input.value = "";
     try {
       await addDoc(collection(db, "rooms", currentRoom, "chat"), {
-        uid:  currentUser.uid,
-        name: currentUser.displayName,
-        text: text,
-        ts:   serverTimestamp()
+        uid: currentUser.uid, name: currentUser.displayName,
+        text: text, ts: serverTimestamp()
       });
-    } catch (e) {
-      console.error("[CHAT] Send failed:", e.code);
-    }
+    } catch (e) { console.error("[CHAT] Send failed:", e.code); }
   };
 
   window.onChatKey = (e) => { if (e.key === "Enter") window.sendMessage(); };
 
   function esc(t) {
-    return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     RENDERER
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── RENDERER ── */
   function renderApp(view) {
     const root  = document.getElementById("app");
     const photo = currentUser?.photoURL || "https://api.dicebear.com/7.x/bottts/svg?seed=guest";
@@ -832,7 +664,7 @@
             <span class="login-fruit">🍊</span>
             <div class="login-title">RentAFruit</div>
             <div class="login-sub">LEVIATHAN HUNT MATCHMAKER</div>
-            <p class="login-desc">Team up with other players, find a Beast Hunter boat, and take down the Leviathan! 🐉</p>
+            <p class="login-desc">Team up, find a Beast Hunter boat, and take down the Leviathan! 🐉</p>
             <button class="btn-google" id="loginBtn" onclick="loginWithGoogle()">
               <svg width="20" height="20" viewBox="0 0 48 48">
                 <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.3 30.2 0 24 0 14.7 0 6.7 5.4 2.7 13.4l7.8 6C12.3 13.2 17.7 9.5 24 9.5z"/>
@@ -878,8 +710,8 @@
                         onchange="toggleBeastBoat()"/>
                       <span class="slider"></span>
                     </label>
-                    <div id="boatIndicator" class="boat-indicator ${window._myBoat ? "on":"off"}">
-                      <span class="dot ${window._myBoat ? "on":"off"}"></span>
+                    <div id="boatIndicator" class="boat-indicator ${window._myBoat ? "on" : "off"}">
+                      <span class="dot ${window._myBoat ? "on" : "off"}"></span>
                       ${window._myBoat ? "🚢 Active!" : "Not Active"}
                     </div>
                   </div>
@@ -887,13 +719,11 @@
               </div>
             </div>
           </div>
-
           <div class="hero">
             <div class="hero-eye">PICK WHERE TO HUNT</div>
             <h1 class="hero-h1">Find your <span class="grad">Leviathan Heart</span> 🐉</h1>
             <p class="hero-tip">Click a location to see who's hunting there right now!</p>
           </div>
-
           <div class="dest-grid">
             <div class="dest-card" onclick="goDestination('Tiki Outpost')">
               <div class="dest-glow"></div>
@@ -923,7 +753,7 @@
             <button class="btn-create" onclick="createRoom()">✨ Create Room</button>
           </div>
           <div id="roomList" class="room-list">
-            <div class="status-bar">🔍 Connecting to live rooms...</div>
+            <div class="connecting-msg">🔍 Looking for rooms...</div>
           </div>
         </main>`;
       return;
