@@ -463,12 +463,10 @@
      *   1. Immediately with cached/server data  → instant first render
      *   2. Every time ANY room changes           → live updates for all users
      */
-    const q = query(
-      collection(db, "rooms"),
-      where("destination", "==", dest),
-      orderBy("createdAt", "desc"),
-      limit(20)
-    );
+     const q = query(
+       collection(db, "rooms"),
+       where("destination", "==", dest)
+     );
 
     roomsUnsub = onSnapshot(q, (snap) => {
       console.log("[ROOMS] Snapshot received —", snap.size, "rooms");
