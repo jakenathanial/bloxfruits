@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>RentAFruit — Leviathan Hunt</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RentAFruit 🍊 Leviathan Hunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --bg:           #050510;
-    --purple:       #a855f7;
-    --purple2:      #7c3aed;
-    --blue:         #3b82f6;
-    --blue2:        #06b6d4;
-    --green:        #22c55e;
-    --red:          #ef4444;
-    --text:         #e2e8f0;
-    --text-dim:     #94a3b8;
-    --border:       rgba(168,85,247,0.2);
-    --glow-purple:  0 0 20px rgba(168,85,247,0.5);
-    --glow-blue:    0 0 20px rgba(59,130,246,0.5);
+    --bg:      #07071a;
+    --card:    #0e0e28;
+    --purple:  #b06ef3;
+    --purple2: #7c3aed;
+    --blue:    #4f9ef8;
+    --blue2:   #22d3ee;
+    --green:   #34d399;
+    --red:     #f87171;
+    --yellow:  #fbbf24;
+    --text:    #eef2ff;
+    --muted:   #8b9bb4;
+    --border:  rgba(176,110,243,0.18);
+    --gp:      0 0 24px rgba(176,110,243,0.45);
+    --gb:      0 0 24px rgba(79,158,248,0.45);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,653 +28,376 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Rajdhani', sans-serif;
+    font-family: 'Nunito', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
   }
 
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background:
-      radial-gradient(ellipse at 20% 20%, rgba(168,85,247,0.07) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.07) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
+      radial-gradient(ellipse at 15% 15%, rgba(176,110,243,0.1) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 85%, rgba(79,158,248,0.08) 0%, transparent 55%);
+    pointer-events: none; z-index: 0;
   }
 
   #app { position: relative; z-index: 1; min-height: 100vh; }
 
-  /* INIT */
-  .init-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    gap: 20px;
+  /* ── LOADER ── */
+  .loader {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100vh; gap: 18px;
   }
+  .loader-fruit { font-size: 52px; animation: bounce 1s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  .loader-text { font-size: 1rem; font-weight: 700; color: var(--purple); letter-spacing: 2px; }
 
-  .spinner {
-    width: 42px; height: 42px;
-    border: 3px solid rgba(168,85,247,0.2);
-    border-top-color: var(--purple);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+  /* ── LOGIN ── */
+  .login-wrap {
+    min-height: 100vh; display: flex;
+    align-items: center; justify-content: center; padding: 20px;
   }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .init-label {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 4px;
-    color: var(--purple);
+  .login-glow {
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, rgba(176,110,243,0.13) 0%, transparent 65%);
+    animation: breathe 4s ease-in-out infinite;
   }
+  @keyframes breathe { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-  /* LOGIN */
-  .login-screen {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .login-bg {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(ellipse at 50% 40%, rgba(168,85,247,0.15) 0%, transparent 65%);
-    animation: pulse 4s ease-in-out infinite;
-  }
-
-  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
-
-  .login-card {
+  .login-box {
     position: relative;
-    background: rgba(10,10,26,0.97);
-    border: 1px solid var(--border);
-    border-radius: 22px;
-    padding: 52px 48px;
-    max-width: 420px;
-    width: 92%;
+    background: rgba(14,14,40,0.97);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 48px 40px;
+    max-width: 430px; width: 100%;
     text-align: center;
-    box-shadow: var(--glow-purple), 0 40px 80px rgba(0,0,0,0.6);
-    animation: popin 0.55s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: var(--gp), 0 32px 64px rgba(0,0,0,0.55);
+    animation: floatin 0.5s cubic-bezier(0.34,1.56,0.64,1);
   }
+  @keyframes floatin { from{opacity:0;transform:translateY(24px) scale(0.96)} to{opacity:1;transform:none} }
 
-  @keyframes popin {
-    from { opacity:0; transform: translateY(28px) scale(0.95); }
-    to   { opacity:1; transform: none; }
-  }
+  .login-fruit { font-size: 68px; display: block; filter: drop-shadow(0 0 20px rgba(176,110,243,0.9)); margin-bottom: 10px; }
+  .login-title { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 900; background: linear-gradient(130deg, var(--purple), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .login-sub { font-size: 0.7rem; letter-spacing: 4px; color: var(--muted); font-weight: 700; margin-top: 4px; }
+  .login-desc { margin: 18px 0 26px; color: var(--muted); font-size: 1.02rem; line-height: 1.6; }
 
-  .logo-emoji {
-    font-size: 62px;
-    display: block;
-    margin-bottom: 14px;
-    filter: drop-shadow(0 0 18px rgba(168,85,247,0.9));
-  }
-
-  .logo-name {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.9rem;
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--purple), var(--blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: 2px;
-  }
-
-  .logo-tagline {
-    font-size: 0.62rem;
-    letter-spacing: 4px;
-    color: var(--text-dim);
-    margin-top: 5px;
-    font-weight: 600;
-  }
-
-  .login-desc {
-    margin: 22px 0 30px;
-    color: var(--text-dim);
-    font-size: 0.98rem;
-    line-height: 1.65;
-  }
+  .divider { display: flex; align-items: center; gap: 10px; margin: 18px 0; }
+  .divider::before, .divider::after { content:''; flex:1; height:1px; background: var(--border); }
+  .divider span { font-size: 0.78rem; color: var(--muted); font-weight: 700; }
 
   .btn-google {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    justify-content: center;
-    width: 100%;
-    padding: 14px 20px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.14);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: all 0.25s;
+    display: flex; align-items: center; gap: 10px; justify-content: center;
+    width: 100%; padding: 14px 20px;
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.13);
+    border-radius: 12px; color: var(--text);
+    font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: all 0.22s;
   }
+  .btn-google:hover { background: rgba(255,255,255,0.11); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+  .btn-google:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-  .btn-google:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: rgba(255,255,255,0.28);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  .btn-guest {
+    display: flex; align-items: center; gap: 10px; justify-content: center;
+    width: 100%; padding: 13px 20px; margin-top: 10px;
+    background: rgba(176,110,243,0.1);
+    border: 1.5px solid rgba(176,110,243,0.3);
+    border-radius: 12px; color: var(--purple);
+    font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: all 0.22s;
   }
+  .btn-guest:hover { background: rgba(176,110,243,0.18); transform: translateY(-2px); }
 
-  .btn-google:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+  /* Guest name modal */
+  .guest-modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+    z-index: 999; align-items: center; justify-content: center;
+  }
+  .guest-modal.show { display: flex; }
+  .guest-box {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: 20px; padding: 36px 32px; max-width: 360px; width: 92%;
+    text-align: center; box-shadow: var(--gp);
+    animation: floatin 0.35s ease;
+  }
+  .guest-box h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
+  .guest-box p  { color: var(--muted); font-size: 0.95rem; margin-bottom: 20px; }
+  .name-input {
+    width: 100%; padding: 12px 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.12);
+    border-radius: 10px; color: var(--text);
+    font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 600;
+    outline: none; transition: border-color 0.2s; margin-bottom: 14px;
+  }
+  .name-input:focus { border-color: var(--purple); }
+  .name-input::placeholder { color: var(--muted); }
+  .btn-enter {
+    width: 100%; padding: 13px;
+    background: linear-gradient(130deg, var(--purple2), var(--purple));
+    border: none; border-radius: 11px; color: #fff;
+    font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800;
+    cursor: pointer; transition: all 0.2s; box-shadow: 0 0 18px rgba(176,110,243,0.4);
+  }
+  .btn-enter:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(176,110,243,0.6); }
 
   .login-err {
-    margin-top: 14px;
-    padding: 10px 14px;
-    background: rgba(239,68,68,0.1);
-    border: 1px solid rgba(239,68,68,0.35);
-    border-radius: 8px;
-    color: var(--red);
-    font-size: 0.84rem;
-    display: none;
-    text-align: left;
+    margin-top: 14px; padding: 10px 14px;
+    background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3);
+    border-radius: 9px; color: var(--red); font-size: 0.85rem; display: none;
   }
 
-  /* TOPBAR */
+  /* ── TOPBAR ── */
   .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 13px 24px;
-    background: rgba(5,5,16,0.92);
-    backdrop-filter: blur(14px);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 22px;
+    background: rgba(7,7,26,0.92); backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    position: sticky; top: 0; z-index: 100;
   }
-
   .topbar-logo {
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 700;
-    font-size: 1.05rem;
+    font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1rem;
     background: linear-gradient(90deg, var(--purple), var(--blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: 2px;
-    cursor: pointer;
-    user-select: none;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    cursor: pointer; letter-spacing: 1px; user-select: none;
   }
-
-  .topbar-right { display: flex; align-items: center; gap: 11px; }
-
-  .avatar {
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    border: 2px solid var(--purple);
-    object-fit: cover;
-  }
-
-  .uname {
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--text-dim);
-    display: none;
-  }
-
-  @media(min-width:480px){ .uname { display: block; } }
-
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--purple); object-fit: cover; }
+  .uname  { font-size: 0.88rem; font-weight: 700; color: var(--muted); display: none; }
+  @media(min-width:480px){ .uname { display:block; } }
   .btn-sm {
-    padding: 6px 13px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text-dim);
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.2s;
+    padding: 6px 13px; background: transparent;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    color: var(--muted); font-family: 'Nunito', sans-serif;
+    font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
   }
-
   .btn-sm:hover { border-color: var(--purple); color: var(--purple); }
 
-  /* MAIN */
-  .main { max-width: 1100px; margin: 0 auto; padding: 28px 18px; }
+  /* ── MAIN ── */
+  .main { max-width: 1080px; margin: 0 auto; padding: 26px 18px; }
 
-  /* PROFILE PANEL */
+  /* ── PROFILE PANEL ── */
   .profile-panel {
-    background: rgba(168,85,247,0.05);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 20px;
-    margin-bottom: 34px;
+    background: rgba(176,110,243,0.06);
+    border: 1.5px solid var(--border);
+    border-radius: 18px; padding: 16px 20px; margin-bottom: 30px;
   }
+  .profile-inner { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .profile-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--purple); object-fit: cover; box-shadow: 0 0 12px rgba(176,110,243,0.4); }
+  .profile-name { font-size: 1rem; font-weight: 800; color: var(--purple); }
+  .profile-badge { font-size: 0.75rem; color: var(--muted); font-weight: 600; margin-top: 2px; }
 
-  .profile-inner { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+  .boat-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .boat-label { font-size: 0.9rem; font-weight: 700; color: var(--text); }
 
-  .profile-avatar {
-    width: 50px; height: 50px;
-    border-radius: 50%;
-    border: 2px solid var(--purple);
-    object-fit: cover;
-    box-shadow: 0 0 14px rgba(168,85,247,0.4);
-  }
-
-  .profile-name {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--purple);
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-  }
-
-  .boat-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-
-  .boat-label { font-size: 0.83rem; color: var(--text-dim); font-weight: 500; letter-spacing: 1px; }
-
-  .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+  /* Toggle switch */
+  .toggle-wrap { display: flex; align-items: center; gap: 8px; }
+  .switch { position: relative; display: inline-block; width: 52px; height: 28px; }
   .switch input { opacity: 0; width: 0; height: 0; }
-
   .slider {
-    position: absolute;
-    cursor: pointer;
-    inset: 0;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 24px;
-    transition: 0.3s;
+    position: absolute; cursor: pointer; inset: 0;
+    background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.15);
+    border-radius: 28px; transition: 0.3s;
   }
-
   .slider::before {
-    content: '';
-    position: absolute;
-    width: 16px; height: 16px;
-    left: 3px; bottom: 3px;
-    background: var(--text-dim);
-    border-radius: 50%;
-    transition: 0.3s;
+    content: ''; position: absolute;
+    width: 20px; height: 20px; left: 3px; bottom: 3px;
+    background: var(--muted); border-radius: 50%; transition: 0.3s;
   }
+  input:checked + .slider { background: rgba(52,211,153,0.25); border-color: var(--green); }
+  input:checked + .slider::before { transform: translateX(24px); background: var(--green); box-shadow: 0 0 10px var(--green); }
 
-  input:checked + .slider { background: rgba(168,85,247,0.3); border-color: var(--purple); }
-  input:checked + .slider::before { transform: translateX(20px); background: var(--purple); box-shadow: 0 0 8px var(--purple); }
-
-  .boat-status { font-size: 0.83rem; font-weight: 600; }
-
-  /* HERO */
-  .hero { text-align: center; margin-bottom: 40px; }
-
-  .hero-eyebrow {
-    font-size: 0.72rem;
-    letter-spacing: 6px;
-    color: var(--text-dim);
-    font-weight: 600;
-    margin-bottom: 8px;
+  .boat-indicator {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.88rem; font-weight: 800;
+    padding: 5px 12px; border-radius: 20px;
+    transition: all 0.3s;
   }
+  .boat-indicator.on  { background: rgba(52,211,153,0.15); color: var(--green);  border: 1.5px solid rgba(52,211,153,0.35); }
+  .boat-indicator.off { background: rgba(248,113,113,0.12); color: var(--red);   border: 1.5px solid rgba(248,113,113,0.3); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot.on  { background: var(--green); box-shadow: 0 0 8px var(--green); animation: blink 1.5s ease-in-out infinite; }
+  .dot.off { background: var(--red); }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  .hero-h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(1.4rem, 4vw, 2.6rem);
-    font-weight: 900;
-    line-height: 1.22;
-  }
+  /* ── HERO ── */
+  .hero { text-align: center; margin-bottom: 36px; }
+  .hero-eye { font-size: 0.72rem; letter-spacing: 5px; color: var(--muted); font-weight: 700; margin-bottom: 8px; }
+  .hero-h1  { font-family: 'Orbitron', sans-serif; font-size: clamp(1.3rem, 4vw, 2.4rem); font-weight: 900; line-height: 1.25; }
+  .grad { background: linear-gradient(90deg, var(--purple), var(--blue2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-tip { margin-top: 10px; font-size: 0.9rem; color: var(--muted); font-weight: 600; }
 
-  .grad-text {
-    background: linear-gradient(90deg, var(--purple), var(--blue2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 18px rgba(168,85,247,0.55));
-  }
-
-  /* DESTINATION CARDS */
-  .dest-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 22px;
-  }
-
+  /* ── DEST CARDS ── */
+  .dest-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
   .dest-card {
-    position: relative;
-    background: rgba(10,10,26,0.85);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 40px 28px;
-    text-align: center;
-    cursor: pointer;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    animation: popin 0.45s ease both;
+    position: relative; overflow: hidden;
+    background: rgba(14,14,40,0.9); border: 1.5px solid var(--border);
+    border-radius: 20px; padding: 38px 26px; text-align: center;
+    cursor: pointer; transition: all 0.28s ease;
+    animation: floatin 0.45s ease both;
   }
+  .dest-card:hover { transform: translateY(-7px); border-color: var(--purple); box-shadow: var(--gp), 0 20px 40px rgba(0,0,0,0.4); }
+  .dest-card:nth-child(2):hover { border-color: var(--blue); box-shadow: var(--gb), 0 20px 40px rgba(0,0,0,0.4); }
+  .dest-glow { position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 200px; height: 200px; background: radial-gradient(circle, rgba(176,110,243,0.12), transparent 70%); pointer-events: none; }
+  .dest-glow.b { background: radial-gradient(circle, rgba(79,158,248,0.12), transparent 70%); }
+  .dest-icon { font-size: 58px; display: block; margin-bottom: 14px; filter: drop-shadow(0 0 14px rgba(176,110,243,0.7)); }
+  .dest-name { font-size: 1.2rem; font-weight: 900; margin-bottom: 6px; }
+  .dest-desc { font-size: 0.85rem; color: var(--muted); margin-bottom: 16px; font-weight: 600; }
+  .dest-cta  { font-size: 0.88rem; font-weight: 800; color: var(--purple); display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .dest-card:nth-child(2) .dest-cta { color: var(--blue); }
 
-  .dest-card:hover {
-    border-color: var(--purple);
-    transform: translateY(-6px);
-    box-shadow: var(--glow-purple), 0 20px 40px rgba(0,0,0,0.4);
-  }
-
-  .dest-card:nth-child(2):hover {
-    border-color: var(--blue);
-    box-shadow: var(--glow-blue), 0 20px 40px rgba(0,0,0,0.4);
-  }
-
-  .dest-glow {
-    position: absolute;
-    top: -40px; left: 50%;
-    transform: translateX(-50%);
-    width: 180px; height: 180px;
-    background: radial-gradient(circle, rgba(168,85,247,0.13), transparent 70%);
-    pointer-events: none;
-  }
-
-  .dest-glow.blue { background: radial-gradient(circle, rgba(59,130,246,0.13), transparent 70%); }
-
-  .dest-icon { font-size: 60px; display: block; margin-bottom: 14px; filter: drop-shadow(0 0 14px rgba(168,85,247,0.6)); }
-  .dest-name { font-family: 'Orbitron', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 7px; }
-  .dest-desc { font-size: 0.83rem; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 18px; }
-  .dest-arrow { font-size: 1.4rem; color: var(--purple); display: block; transition: transform 0.3s; }
-  .dest-card:hover .dest-arrow { transform: translateX(8px); }
-
-  /* PAGE HEADER */
-  .page-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 26px;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .page-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--purple);
-    letter-spacing: 2px;
-    text-shadow: 0 0 18px rgba(168,85,247,0.5);
-  }
-
+  /* ── PAGE HEADER ── */
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 12px; }
+  .page-title  { font-family: 'Orbitron', sans-serif; font-size: 1.25rem; font-weight: 900; color: var(--purple); letter-spacing: 1px; }
   .btn-back {
-    padding: 8px 15px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text-dim);
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
+    padding: 8px 14px; background: transparent;
+    border: 1.5px solid var(--border); border-radius: 9px;
+    color: var(--muted); font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
   }
-
   .btn-back:hover { border-color: var(--purple); color: var(--purple); }
-
   .btn-create {
-    padding: 9px 20px;
-    background: linear-gradient(135deg, var(--purple2), var(--purple));
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.93rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.25s;
-    box-shadow: 0 0 18px rgba(168,85,247,0.4);
+    padding: 10px 20px;
+    background: linear-gradient(130deg, var(--purple2), var(--purple));
+    border: none; border-radius: 10px; color: #fff;
+    font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800;
+    cursor: pointer; transition: all 0.25s; box-shadow: 0 0 18px rgba(176,110,243,0.4);
   }
+  .btn-create:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(176,110,243,0.65); }
+  .btn-create:active { transform: scale(0.97); }
 
-  .btn-create:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(168,85,247,0.65); }
-
-  /* ROOM LIST */
-  .room-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
-    gap: 16px;
-  }
-
+  /* ── ROOM LIST ── */
+  .room-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 15px; }
   .room-card {
-    background: rgba(10,10,26,0.92);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px;
-    cursor: pointer;
-    transition: all 0.28s;
-    animation: popin 0.38s ease both;
+    background: rgba(14,14,40,0.94); border: 1.5px solid var(--border);
+    border-radius: 16px; padding: 18px; cursor: pointer;
+    transition: all 0.25s; animation: floatin 0.35s ease both;
   }
-
-  .room-card:hover { border-color: var(--blue); transform: translateY(-3px); box-shadow: var(--glow-blue); }
-
-  .room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 11px; }
-  .room-host { font-weight: 600; font-size: 0.93rem; }
-
-  .timer-badge {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.68rem;
-    color: var(--blue2);
-    background: rgba(6,182,212,0.1);
-    border: 1px solid rgba(6,182,212,0.3);
-    padding: 3px 8px;
-    border-radius: 6px;
-    letter-spacing: 1px;
+  .room-card:hover { border-color: var(--blue); transform: translateY(-3px); box-shadow: var(--gb); }
+  .room-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .room-host { font-size: 0.95rem; font-weight: 800; }
+  .timer-pill {
+    font-size: 0.7rem; font-weight: 800; color: var(--blue2);
+    background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.3);
+    padding: 3px 9px; border-radius: 20px;
   }
-
-  .room-info { display: flex; flex-direction: column; gap: 5px; margin-bottom: 13px; }
-  .p-count { font-size: 0.83rem; color: var(--text-dim); }
-  .p-count.full { color: var(--red); }
-  .beast-tag { font-size: 0.78rem; font-weight: 600; letter-spacing: 1px; }
-  .beast-tag.yes { color: var(--green); }
-  .beast-tag.no  { color: var(--red); }
-
+  .room-stats { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .room-count { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+  .room-count.full { color: var(--red); font-weight: 800; }
+  .room-beast { font-size: 0.82rem; font-weight: 800; }
+  .room-beast.yes { color: var(--green); }
+  .room-beast.no  { color: var(--red); }
   .btn-join {
-    width: 100%;
-    padding: 9px;
+    width: 100%; padding: 9px;
     background: linear-gradient(90deg, var(--blue2), var(--blue));
-    border: none;
-    border-radius: 7px;
-    color: #fff;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.2s;
+    border: none; border-radius: 9px; color: #fff;
+    font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 800;
+    cursor: pointer; letter-spacing: 1px; transition: all 0.18s;
   }
-
   .btn-join:hover { opacity: 0.85; transform: translateY(-1px); }
-  .btn-join.full  { background: rgba(255,255,255,0.08); color: var(--text-dim); cursor: not-allowed; transform: none; }
+  .btn-join:active { transform: scale(0.97); }
+  .btn-join.full { background: rgba(255,255,255,0.07); color: var(--muted); cursor: not-allowed; transform: none; }
+  .empty-msg { grid-column:1/-1; text-align:center; color:var(--muted); padding:55px 20px; border:1.5px dashed var(--border); border-radius:16px; font-size:0.95rem; font-weight:600; }
 
-  .empty-msg {
-    grid-column: 1/-1;
-    text-align: center;
-    color: var(--text-dim);
-    padding: 60px 20px;
-    border: 1px dashed var(--border);
-    border-radius: 14px;
-    font-size: 0.95rem;
+  /* ── ROOM VIEW ── */
+  .room-layout { display: grid; grid-template-columns: 1fr; gap: 18px; }
+  @media(min-width:768px){ .room-layout { grid-template-columns: 1fr 360px; align-items: start; } }
+
+  .room-title-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+  .room-h2 { font-family: 'Orbitron', sans-serif; font-size: 1.25rem; font-weight: 900; color: var(--purple); text-shadow: 0 0 16px rgba(176,110,243,0.65); }
+  .room-timer-pill {
+    font-size: 0.82rem; font-weight: 800; color: var(--blue2);
+    background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.3);
+    padding: 6px 14px; border-radius: 20px;
   }
-
-  /* ROOM LAYOUT */
-  .room-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  @media(min-width:768px){ .room-layout { grid-template-columns: 1fr 370px; align-items: start; } }
-
-  .room-top { margin-bottom: 14px; }
-
-  .room-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-
-  .glow-h2 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--purple);
-    text-shadow: 0 0 18px rgba(168,85,247,0.7);
-    letter-spacing: 2px;
-  }
-
-  .room-timer {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.88rem;
-    color: var(--blue2);
-    background: rgba(6,182,212,0.1);
-    border: 1px solid rgba(6,182,212,0.3);
-    padding: 6px 13px;
-    border-radius: 8px;
-    letter-spacing: 2px;
-  }
-
   .beast-banner {
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-align: center;
-    margin-bottom: 16px;
+    padding: 11px 16px; border-radius: 11px; font-size: 0.85rem; font-weight: 800;
+    letter-spacing: 1px; text-align: center; margin-bottom: 16px;
   }
+  .beast-banner.yes { background: rgba(52,211,153,0.1); border: 1.5px solid rgba(52,211,153,0.4); color: var(--green); }
+  .beast-banner.no  { background: rgba(248,113,113,0.1); border: 1.5px solid rgba(248,113,113,0.35); color: var(--red); }
 
-  .beast-banner.yes { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.4); color: var(--green); }
-  .beast-banner.no  { background: rgba(239,68,68,0.1);  border: 1px solid rgba(239,68,68,0.4);  color: var(--red); }
-
-  .player-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-    gap: 9px;
-  }
-
+  .player-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 9px; }
   .p-chip {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 8px;
-    padding: 9px 11px;
-    font-size: 0.84rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 9px 11px; font-size: 0.84rem; font-weight: 700;
   }
-
-  .p-chip.me { border-color: var(--purple); background: rgba(168,85,247,0.08); }
-  .p-chip.empty { border-style: dashed; color: rgba(255,255,255,0.2); font-size: 0.78rem; justify-content: center; }
-
-  .p-name { font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .p-chip.me    { border-color: var(--purple); background: rgba(176,110,243,0.09); }
+  .p-chip.empty { border-style: dashed; color: rgba(255,255,255,0.18); font-size: 0.78rem; justify-content: center; font-weight: 600; }
+  .p-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .p-boat { font-size: 0.95rem; flex-shrink: 0; }
-  .p-boat.yes { filter: drop-shadow(0 0 5px rgba(34,197,94,0.9)); }
-  .p-boat.no  { opacity: 0.35; }
+  .p-boat.yes { filter: drop-shadow(0 0 5px rgba(52,211,153,0.9)); }
+  .p-boat.no  { opacity: 0.3; }
 
-  /* CHAT */
+  /* ── CHAT ── */
   .chat-panel {
-    background: rgba(10,10,26,0.92);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    display: flex;
-    flex-direction: column;
-    height: 490px;
+    background: rgba(14,14,40,0.95); border: 1.5px solid var(--border);
+    border-radius: 18px; display: flex; flex-direction: column; height: 490px;
   }
-
   .chat-head {
-    padding: 13px 16px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: var(--purple);
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
+    padding: 13px 16px; font-size: 0.88rem; font-weight: 800;
+    color: var(--purple); border-bottom: 1px solid var(--border); flex-shrink: 0;
   }
-
   .chat-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(168,85,247,0.4) transparent;
+    flex: 1; overflow-y: auto; padding: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    scrollbar-width: thin; scrollbar-color: rgba(176,110,243,0.35) transparent;
   }
-
-  .msg { display: flex; flex-direction: column; gap: 2px; max-width: 88%; }
+  .msg { display: flex; flex-direction: column; gap: 3px; max-width: 86%; }
   .msg.me    { align-self: flex-end;   align-items: flex-end; }
   .msg.other { align-self: flex-start; align-items: flex-start; }
-
-  .msg-who { font-size: 0.68rem; color: var(--text-dim); font-weight: 600; letter-spacing: 1px; }
-
-  .msg-txt {
-    padding: 7px 12px;
-    border-radius: 10px;
-    font-size: 0.88rem;
-    line-height: 1.42;
-    word-break: break-word;
-  }
-
-  .msg.me    .msg-txt { background: linear-gradient(135deg, var(--purple2), var(--purple)); color: #fff; }
-  .msg.other .msg-txt { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.08); }
-
-  .chat-foot {
-    display: flex;
-    gap: 8px;
-    padding: 11px;
-    border-top: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-
+  .msg-who { font-size: 0.68rem; color: var(--muted); font-weight: 700; margin: 0 4px; }
+  .msg-txt  { padding: 8px 13px; border-radius: 12px; font-size: 0.9rem; line-height: 1.45; word-break: break-word; font-weight: 600; }
+  .msg.me    .msg-txt { background: linear-gradient(130deg, var(--purple2), var(--purple)); color: #fff; }
+  .msg.other .msg-txt { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.07); }
+  .chat-foot { display: flex; gap: 8px; padding: 11px; border-top: 1px solid var(--border); flex-shrink: 0; }
   .chat-input {
-    flex: 1;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    padding: 9px 13px;
-    color: var(--text);
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.93rem;
-    outline: none;
-    transition: border-color 0.2s;
+    flex: 1; background: rgba(255,255,255,0.05);
+    border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px;
+    padding: 9px 13px; color: var(--text);
+    font-family: 'Nunito', sans-serif; font-size: 0.93rem; font-weight: 600;
+    outline: none; transition: border-color 0.2s;
   }
-
   .chat-input:focus { border-color: var(--purple); }
-  .chat-input::placeholder { color: var(--text-dim); }
-
+  .chat-input::placeholder { color: var(--muted); }
   .btn-send {
     padding: 9px 15px;
-    background: linear-gradient(135deg, var(--purple2), var(--purple));
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 0 11px rgba(168,85,247,0.4);
+    background: linear-gradient(130deg, var(--purple2), var(--purple));
+    border: none; border-radius: 10px; color: #fff;
+    font-size: 1rem; cursor: pointer; transition: all 0.18s;
+    box-shadow: 0 0 10px rgba(176,110,243,0.4);
   }
-
-  .btn-send:hover { opacity: 0.85; transform: scale(1.06); }
+  .btn-send:hover  { opacity: 0.85; transform: scale(1.06); }
+  .btn-send:active { transform: scale(0.96); }
 
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.4); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: rgba(176,110,243,0.35); border-radius: 3px; }
 </style>
 </head>
 <body>
 
 <div id="app">
-  <div class="init-screen">
-    <div class="spinner"></div>
-    <div class="init-label">INITIALIZING...</div>
+  <div class="loader">
+    <span class="loader-fruit">🍊</span>
+    <div class="loader-text">Loading...</div>
+  </div>
+</div>
+
+<!-- Guest Name Modal -->
+<div class="guest-modal" id="guestModal">
+  <div class="guest-box">
+    <h3>👋 Hey there!</h3>
+    <p>What should we call you? Pick a fun name!</p>
+    <input type="text" id="guestNameInput" class="name-input"
+      placeholder="e.g. CoolHunter99" maxlength="24"
+      onkeypress="if(event.key==='Enter') confirmGuest()" />
+    <button class="btn-enter" onclick="confirmGuest()">Let's Go! 🚀</button>
   </div>
 </div>
 
@@ -681,37 +405,18 @@
 
   import { initializeApp }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-
   import { getAnalytics }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-
   import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    signOut,
-    onAuthStateChanged
+    getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
   import {
-    getFirestore,
-    doc,
-    setDoc,
-    getDoc,
-    collection,
-    addDoc,
-    onSnapshot,
-    updateDoc,
-    arrayUnion,
-    arrayRemove,
-    deleteDoc,
-    query,
-    where,
-    orderBy,
-    serverTimestamp
+    getFirestore, doc, setDoc, getDoc, collection, addDoc,
+    onSnapshot, updateDoc, arrayUnion, arrayRemove,
+    deleteDoc, query, where, orderBy, serverTimestamp
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  /* ── CONFIG ─────────────────────────────────────────────── */
+  /* ── CONFIG ── */
   const firebaseConfig = {
     apiKey:            "AIzaSyDlBIeNVDK5nBPpVFkFSxNY59e7gW-p18c",
     authDomain:        "rentafruit-f57d9.firebaseapp.com",
@@ -722,13 +427,11 @@
     measurementId:     "G-0J9TNJNEV5"
   };
 
-  /* ── INIT ────────────────────────────────────────────────── */
-  const app      = initializeApp(firebaseConfig);
+  const app       = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
-  const auth     = getAuth(app);
-  const db       = getFirestore(app);
-  const provider = new GoogleAuthProvider();
-
+  const auth      = getAuth(app);
+  const db        = getFirestore(app);
+  const provider  = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
 
   let currentUser        = null;
@@ -736,8 +439,9 @@
   let currentDestination = null;
   let roomsUnsub         = null;
   let chatUnsub          = null;
+  let isGuest            = false;
 
-  /* ── AUTH ────────────────────────────────────────────────── */
+  /* ── AUTH ── */
   window.loginWithGoogle = async () => {
     const btn = document.getElementById("loginBtn");
     const err = document.getElementById("loginErr");
@@ -746,48 +450,71 @@
     try {
       await signInWithPopup(auth, provider);
     } catch (e) {
-      console.error("Login error:", e.code, e.message);
+      console.error(e.code, e.message);
       if (btn) btn.disabled = false;
       if (err) {
         err.style.display = "block";
         if (e.code === "auth/popup-blocked")
-          err.textContent = "Popup blocked — please allow popups for this site and try again.";
+          err.textContent = "⚠️ Popup blocked! Please allow popups for this site.";
         else if (e.code === "auth/popup-closed-by-user")
-          err.textContent = "Sign-in cancelled. Please try again.";
+          err.textContent = "You closed the sign-in window. Try again!";
         else if (e.code === "auth/unauthorized-domain")
-          err.textContent = "Domain not authorised. Add this domain in Firebase → Authentication → Authorized Domains.";
+          err.textContent = "This website isn't authorised yet. Add it in Firebase → Authentication → Authorized Domains.";
         else
-          err.textContent = "Sign-in failed (" + e.code + "). Please try again.";
+          err.textContent = "Oops! Sign-in failed (" + e.code + "). Try again.";
       }
     }
   };
 
+  window.showGuestModal = () => {
+    document.getElementById("guestModal").classList.add("show");
+    setTimeout(() => document.getElementById("guestNameInput")?.focus(), 100);
+  };
+
+  window.confirmGuest = () => {
+    const name = document.getElementById("guestNameInput")?.value.trim();
+    if (!name || name.length < 2) {
+      document.getElementById("guestNameInput").style.borderColor = "var(--red)";
+      return;
+    }
+    document.getElementById("guestModal").classList.remove("show");
+    isGuest = true;
+    currentUser = {
+      uid:         "guest_" + Math.random().toString(36).slice(2, 10),
+      displayName: name,
+      photoURL:    "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(name),
+      isGuest:     true
+    };
+    window._myBoat = false;
+    renderApp("home");
+  };
+
   window.logOut = async () => {
     cleanupListeners();
-    await signOut(auth);
+    if (isGuest) {
+      isGuest = false; currentUser = null;
+      renderApp("login");
+    } else {
+      await signOut(auth);
+    }
   };
 
   onAuthStateChanged(auth, async (user) => {
-    console.log("AUTH STATE:", user ? user.displayName : "signed out");
+    if (isGuest) return;
+    console.log("Auth:", user ? user.displayName : "none");
     currentUser = user;
-
     if (user) {
       try {
         const uRef = doc(db, "users", user.uid);
         const snap = await getDoc(uRef);
         if (!snap.exists()) {
-          await setDoc(uRef, {
-            uid:          user.uid,
-            name:         user.displayName,
-            photo:        user.photoURL,
-            hasBeastBoat: false
-          });
+          await setDoc(uRef, { uid: user.uid, name: user.displayName, photo: user.photoURL, hasBeastBoat: false });
         }
-        const data     = (await getDoc(uRef)).data();
-        window._myBoat = data.hasBeastBoat || false;
+        window._myBoat = (await getDoc(uRef)).data().hasBeastBoat || false;
         renderApp("home");
       } catch (e) {
-        console.error("Firestore error:", e.code, e.message);
+        console.error("Firestore:", e.code, e.message);
+        window._myBoat = false;
         renderApp("home");
       }
     } else {
@@ -795,29 +522,30 @@
     }
   });
 
-  /* ── PROFILE ─────────────────────────────────────────────── */
+  /* ── PROFILE / BOAT ── */
   window.toggleBeastBoat = async () => {
-    const uRef = doc(db, "users", currentUser.uid);
-    const snap = await getDoc(uRef);
-    const cur  = snap.data().hasBeastBoat || false;
-    await updateDoc(uRef, { hasBeastBoat: !cur });
-    window._myBoat = !cur;
-    const toggle = document.getElementById("boatToggle");
-    const status = document.getElementById("boatStatus");
-    if (toggle) toggle.checked = !cur;
-    if (status) {
-      status.textContent = !cur ? "Yes — Beast Hunter" : "No Beast Hunter";
-      status.style.color = !cur ? "var(--green)" : "var(--red)";
+    const newVal = !window._myBoat;
+    window._myBoat = newVal;
+
+    // Update UI instantly
+    const ind = document.getElementById("boatIndicator");
+    const tog = document.getElementById("boatToggle");
+    if (ind) {
+      ind.className = "boat-indicator " + (newVal ? "on" : "off");
+      ind.innerHTML = `<span class="dot ${newVal ? "on" : "off"}"></span>${newVal ? "🚢 Active!" : "Not Active"}`;
+    }
+    if (tog) tog.checked = newVal;
+
+    // Save to Firestore (only if not guest)
+    if (!isGuest && currentUser) {
+      try {
+        await updateDoc(doc(db, "users", currentUser.uid), { hasBeastBoat: newVal });
+      } catch (e) { console.error(e); }
     }
   };
 
-  /* ── NAVIGATION ──────────────────────────────────────────── */
-  window.goHome = () => {
-    cleanupListeners();
-    currentRoom = null;
-    currentDestination = null;
-    renderApp("home");
-  };
+  /* ── NAVIGATION ── */
+  window.goHome = () => { cleanupListeners(); currentRoom = null; currentDestination = null; renderApp("home"); };
 
   window.goDestination = (dest) => {
     cleanupListeners();
@@ -831,29 +559,45 @@
     if (chatUnsub)  { chatUnsub();  chatUnsub  = null; }
   }
 
-  /* ── ROOMS ───────────────────────────────────────────────── */
+  /* ── ROOMS ── */
   window.createRoom = async () => {
     if (!currentUser || !currentDestination) return;
+
+    // Instant UI feedback — show a temp loading card
+    const list = document.getElementById("roomList");
+    if (list) {
+      const tmp = document.createElement("div");
+      tmp.className = "room-card";
+      tmp.style.opacity = "0.6";
+      tmp.innerHTML = `<div style="text-align:center;padding:10px;color:var(--muted);font-weight:700;">Creating your room... ✨</div>`;
+      list.prepend(tmp);
+    }
+
     const now = Date.now();
-    const ref = await addDoc(collection(db, "rooms"), {
-      destination: currentDestination,
-      host:        currentUser.displayName,
-      hostUid:     currentUser.uid,
-      players: [{
-        uid:          currentUser.uid,
-        name:         currentUser.displayName,
-        hasBeastBoat: window._myBoat
-      }],
-      createdAt: now,
-      expiresAt: now + 3600000
-    });
-    enterRoom(ref.id);
+    try {
+      const ref = await addDoc(collection(db, "rooms"), {
+        destination: currentDestination,
+        host:        currentUser.displayName,
+        hostUid:     currentUser.uid,
+        players: [{
+          uid:          currentUser.uid,
+          name:         currentUser.displayName,
+          hasBeastBoat: window._myBoat === true
+        }],
+        createdAt: now,
+        expiresAt: now + 3600000
+      });
+      enterRoom(ref.id);
+    } catch (e) {
+      console.error("Create room failed:", e);
+      alert("Couldn't create room. Check your internet!");
+    }
   };
 
   function loadRooms(dest) {
     const q = query(collection(db, "rooms"), where("destination", "==", dest));
     roomsUnsub = onSnapshot(q, (snap) => {
-      const now   = Date.now();
+      const now = Date.now();
       const rooms = [];
       snap.forEach((d) => {
         const r = { id: d.id, ...d.data() };
@@ -861,6 +605,8 @@
         rooms.push(r);
       });
       renderRoomList(rooms);
+    }, (err) => {
+      console.error("Rooms listener:", err);
     });
   }
 
@@ -868,7 +614,7 @@
     const el = document.getElementById("roomList");
     if (!el) return;
     if (rooms.length === 0) {
-      el.innerHTML = `<div class="empty-msg">No active rooms — be the first to create one!</div>`;
+      el.innerHTML = `<div class="empty-msg">😴 No rooms yet! Hit <b>Create Room</b> to start the hunt!</div>`;
       return;
     }
     el.innerHTML = rooms.map((r) => {
@@ -879,19 +625,19 @@
       const secs      = Math.floor((remaining % 60000) / 1000);
       return `
         <div class="room-card" onclick="enterRoom('${r.id}')">
-          <div class="room-header">
+          <div class="room-head">
             <span class="room-host">👑 ${r.host}</span>
-            <span class="timer-badge">⏱ ${mins}m ${secs}s</span>
+            <span class="timer-pill">⏱ ${mins}m ${secs}s</span>
           </div>
-          <div class="room-info">
-            <span class="p-count ${full ? "full" : ""}">👥 ${r.players.length} / 7</span>
-            <span class="beast-tag ${hasBeast ? "yes" : "no"}">
-              ${hasBeast ? "🚢 Beast Hunter Available" : "❌ No Beast Hunter"}
+          <div class="room-stats">
+            <span class="room-count ${full ? "full" : ""}">👥 ${r.players.length} / 7 players</span>
+            <span class="room-beast ${hasBeast ? "yes" : "no"}">
+              ${hasBeast ? "🚢 Beast Hunter is here!" : "❌ No Beast Hunter yet"}
             </span>
           </div>
           <button class="btn-join ${full ? "full" : ""}"
             onclick="event.stopPropagation(); joinRoom('${r.id}')">
-            ${full ? "FULL" : "JOIN ROOM"}
+            ${full ? "Room Full 😔" : "Join Room →"}
           </button>
         </div>`;
     }).join("");
@@ -902,12 +648,10 @@
     const snap = await getDoc(rRef);
     if (!snap.exists()) return;
     const r = snap.data();
-    if (r.players.length >= 7) { alert("Room is full!"); return; }
+    if (r.players.length >= 7) { alert("😔 Room is full! Try another one."); return; }
     if (r.players.find((p) => p.uid === currentUser.uid)) { enterRoom(roomId); return; }
     await updateDoc(rRef, {
-      players: arrayUnion({
-        uid: currentUser.uid, name: currentUser.displayName, hasBeastBoat: window._myBoat
-      })
+      players: arrayUnion({ uid: currentUser.uid, name: currentUser.displayName, hasBeastBoat: window._myBoat === true })
     });
     enterRoom(roomId);
   };
@@ -920,20 +664,15 @@
     const r  = snap.data();
     const me = r.players.find((p) => p.uid === currentUser.uid);
     if (me) await updateDoc(rRef, { players: arrayRemove(me) });
-    const updated = await getDoc(rRef);
-    if (updated.exists() && updated.data().players.length === 0) await deleteDoc(rRef);
-    cleanupListeners();
-    currentRoom = null;
-    renderApp("destination");
-    loadRooms(currentDestination);
+    const upd = await getDoc(rRef);
+    if (upd.exists() && upd.data().players.length === 0) await deleteDoc(rRef);
+    cleanupListeners(); currentRoom = null;
+    renderApp("destination"); loadRooms(currentDestination);
   };
 
   window.enterRoom = (roomId) => {
-    cleanupListeners();
-    currentRoom = roomId;
-    renderApp("room");
-    listenRoom(roomId);
-    listenChat(roomId);
+    cleanupListeners(); currentRoom = roomId;
+    renderApp("room"); listenRoom(roomId); listenChat(roomId);
   };
 
   function listenRoom(roomId) {
@@ -954,24 +693,24 @@
     if (!el) return;
     el.innerHTML = `
       <div class="room-title-row">
-        <h2 class="glow-h2">${r.destination}</h2>
-        <span class="room-timer">⏱ ${mins}:${String(secs).padStart(2,"0")}</span>
+        <h2 class="room-h2">📍 ${r.destination}</h2>
+        <span class="room-timer-pill">⏱ ${mins}:${String(secs).padStart(2,"0")}</span>
       </div>
       <div class="beast-banner ${hasBeast ? "yes" : "no"}">
-        ${hasBeast ? "🚢 BEAST HUNTER AVAILABLE" : "❌ NO BEAST HUNTER IN ROOM"}
+        ${hasBeast ? "🚢 BEAST HUNTER IS IN THIS ROOM! You're all set!" : "❌ No Beast Hunter here yet — someone needs the boat!"}
       </div>
       <div class="player-grid">
         ${r.players.map((p) => `
           <div class="p-chip ${p.uid === currentUser?.uid ? "me" : ""}">
-            <span class="p-name">${p.name}</span>
+            <span class="p-name">${p.uid === currentUser?.uid ? "⭐ You" : p.name}</span>
             <span class="p-boat ${p.hasBeastBoat ? "yes" : "no"}">${p.hasBeastBoat ? "🚢" : "🚫"}</span>
           </div>`).join("")}
         ${Array(Math.max(0, 7 - r.players.length)).fill(0).map(() =>
-          `<div class="p-chip empty">Empty Slot</div>`).join("")}
+          `<div class="p-chip empty">Waiting...</div>`).join("")}
       </div>`;
   }
 
-  /* ── CHAT ────────────────────────────────────────────────── */
+  /* ── CHAT ── */
   function listenChat(roomId) {
     const q = query(collection(db, "rooms", roomId, "chat"), orderBy("ts", "asc"));
     chatUnsub = onSnapshot(q, (snap) => {
@@ -982,7 +721,7 @@
         const isMe = m.uid === currentUser?.uid;
         return `
           <div class="msg ${isMe ? "me" : "other"}">
-            <span class="msg-who">${m.name}</span>
+            <span class="msg-who">${isMe ? "You" : m.name}</span>
             <span class="msg-txt">${esc(m.text)}</span>
           </div>`;
       }).join("");
@@ -996,10 +735,7 @@
     if (!text || !currentRoom) return;
     input.value = "";
     await addDoc(collection(db, "rooms", currentRoom, "chat"), {
-      uid:  currentUser.uid,
-      name: currentUser.displayName,
-      text: text,
-      ts:   serverTimestamp()
+      uid: currentUser.uid, name: currentUser.displayName, text, ts: serverTimestamp()
     });
   };
 
@@ -1009,19 +745,19 @@
     return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
 
-  /* ── RENDERER ────────────────────────────────────────────── */
+  /* ── RENDERER ── */
   function renderApp(view) {
     const root = document.getElementById("app");
 
     if (view === "login") {
       root.innerHTML = `
-        <div class="login-screen">
-          <div class="login-bg"></div>
-          <div class="login-card">
-            <span class="logo-emoji">🍊</span>
-            <div class="logo-name">RentAFruit</div>
-            <div class="logo-tagline">LEVIATHAN HUNT MATCHMAKER</div>
-            <p class="login-desc">Join forces. Hunt the beast. Dominate the seas.</p>
+        <div class="login-wrap">
+          <div class="login-glow"></div>
+          <div class="login-box">
+            <span class="login-fruit">🍊</span>
+            <div class="login-title">RentAFruit</div>
+            <div class="login-sub">LEVIATHAN HUNT MATCHMAKER</div>
+            <p class="login-desc">Team up with other players, find a Beast Hunter boat, and take down the Leviathan! 🐉</p>
             <button class="btn-google" id="loginBtn" onclick="loginWithGoogle()">
               <svg width="20" height="20" viewBox="0 0 48 48">
                 <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.3 30.2 0 24 0 14.7 0 6.7 5.4 2.7 13.4l7.8 6C12.3 13.2 17.7 9.5 24 9.5z"/>
@@ -1031,18 +767,25 @@
               </svg>
               Sign in with Google
             </button>
+            <div class="divider"><span>OR</span></div>
+            <button class="btn-guest" onclick="showGuestModal()">
+              👤 Continue as Guest
+            </button>
             <div class="login-err" id="loginErr"></div>
           </div>
         </div>`;
       return;
     }
 
+    const photo = currentUser?.photoURL || "https://api.dicebear.com/7.x/bottts/svg?seed=guest";
+    const name  = currentUser?.displayName || "Guest";
+
     const header = `
       <header class="topbar">
         <span class="topbar-logo" onclick="goHome()">🍊 RentAFruit</span>
         <div class="topbar-right">
-          <img src="${currentUser?.photoURL}" class="avatar" alt="" />
-          <span class="uname">${currentUser?.displayName}</span>
+          <img src="${photo}" class="avatar" alt="" />
+          <span class="uname">${name}</span>
           <button class="btn-sm" onclick="logOut()">Logout</button>
         </div>
       </header>`;
@@ -1050,31 +793,36 @@
     if (view === "home") {
       root.innerHTML = header + `
         <main class="main">
+
           <div class="profile-panel">
             <div class="profile-inner">
-              <img src="${currentUser?.photoURL}" class="profile-avatar" alt="" />
-              <div>
-                <div class="profile-name">${currentUser?.displayName}</div>
+              <img src="${photo}" class="profile-avatar" alt="" />
+              <div style="flex:1">
+                <div class="profile-name">${name}</div>
+                <div class="profile-badge">${isGuest ? "👤 Playing as Guest" : "✅ Signed in with Google"}</div>
                 <div class="boat-row">
-                  <span class="boat-label">Beast Hunter Boat</span>
-                  <label class="switch">
-                    <input type="checkbox" id="boatToggle"
-                      ${window._myBoat ? "checked" : ""}
-                      onchange="toggleBeastBoat()" />
-                    <span class="slider"></span>
-                  </label>
-                  <span id="boatStatus" class="boat-status"
-                    style="color:${window._myBoat ? "var(--green)" : "var(--red)"}">
-                    ${window._myBoat ? "Yes — Beast Hunter" : "No Beast Hunter"}
-                  </span>
+                  <span class="boat-label">🚢 Beast Hunter Boat:</span>
+                  <div class="toggle-wrap">
+                    <label class="switch">
+                      <input type="checkbox" id="boatToggle"
+                        ${window._myBoat ? "checked" : ""}
+                        onchange="toggleBeastBoat()" />
+                      <span class="slider"></span>
+                    </label>
+                    <div id="boatIndicator" class="boat-indicator ${window._myBoat ? "on" : "off"}">
+                      <span class="dot ${window._myBoat ? "on" : "off"}"></span>
+                      ${window._myBoat ? "🚢 Active!" : "Not Active"}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="hero">
-            <div class="hero-eyebrow">SELECT YOUR</div>
-            <h1 class="hero-h1">Destination of<br/><span class="grad-text">Leviathan Heart</span></h1>
+            <div class="hero-eye">PICK WHERE TO HUNT</div>
+            <h1 class="hero-h1">Find your <span class="grad">Leviathan Heart</span> 🐉</h1>
+            <p class="hero-tip">Click a location below to see who's hunting there!</p>
           </div>
 
           <div class="dest-grid">
@@ -1082,17 +830,18 @@
               <div class="dest-glow"></div>
               <span class="dest-icon">🏝️</span>
               <div class="dest-name">Tiki Outpost</div>
-              <div class="dest-desc">Tropical hunting grounds</div>
-              <span class="dest-arrow">→</span>
+              <div class="dest-desc">Sunny island, big waves, bigger loot!</div>
+              <div class="dest-cta">Hunt here <span>→</span></div>
             </div>
             <div class="dest-card" onclick="goDestination('Hydra Island')">
-              <div class="dest-glow blue"></div>
+              <div class="dest-glow b"></div>
               <span class="dest-icon">🐉</span>
               <div class="dest-name">Hydra Island</div>
-              <div class="dest-desc">Dragon-infested waters</div>
-              <span class="dest-arrow">→</span>
+              <div class="dest-desc">Dangerous waters — for the brave only!</div>
+              <div class="dest-cta">Hunt here <span>→</span></div>
             </div>
           </div>
+
         </main>`;
       return;
     }
@@ -1102,11 +851,11 @@
         <main class="main">
           <div class="page-header">
             <button class="btn-back" onclick="goHome()">← Back</button>
-            <h2 class="page-title">${currentDestination}</h2>
-            <button class="btn-create" onclick="createRoom()">+ Create Room</button>
+            <h2 class="page-title">📍 ${currentDestination}</h2>
+            <button class="btn-create" onclick="createRoom()">✨ Create Room</button>
           </div>
           <div id="roomList" class="room-list">
-            <div class="empty-msg" style="border:none;">Loading rooms...</div>
+            <div class="empty-msg" style="border:none;">Looking for rooms... 🔍</div>
           </div>
         </main>`;
       return;
@@ -1116,7 +865,7 @@
       root.innerHTML = header + `
         <main class="main room-layout">
           <div>
-            <div class="room-top">
+            <div style="margin-bottom:14px">
               <button class="btn-back" onclick="leaveRoom()">← Leave Room</button>
             </div>
             <div id="roomContent"></div>
@@ -1126,7 +875,7 @@
             <div class="chat-body" id="chatBox"></div>
             <div class="chat-foot">
               <input id="chatInput" class="chat-input"
-                placeholder="Type a message..."
+                placeholder="Say something fun... 😄"
                 onkeypress="onChatKey(event)" />
               <button class="btn-send" onclick="sendMessage()">➤</button>
             </div>
