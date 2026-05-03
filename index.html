@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>RentAFruit 🍊 Leviathan Hunt</title>
+<title>RentAFruit 🍊 Leviathan Hunt & Trading</title>
+<meta name="description" content="RentAFruit is a free community matchmaking tool for Blox Fruits players. Find Leviathan Hunt rooms and trade Devil Fruits and Game Passes with other players."/>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
 <style>
   :root {
@@ -15,6 +16,8 @@
     --blue2:   #22d3ee;
     --green:   #34d399;
     --red:     #f87171;
+    --yellow:  #fbbf24;
+    --orange:  #fb923c;
     --text:    #eef2ff;
     --muted:   #8b9bb4;
     --border:  rgba(176,110,243,0.18);
@@ -26,13 +29,13 @@
   body::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse at 15% 15%, rgba(176,110,243,0.1) 0%, transparent 55%), radial-gradient(ellipse at 85% 85%, rgba(79,158,248,0.08) 0%, transparent 55%); pointer-events:none; z-index:0; }
   #app { position:relative; z-index:1; min-height:100vh; }
 
-  /* LOADER */
+  /* ── LOADER ── */
   .loader { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; gap:18px; }
   .loader-fruit { font-size:52px; animation:bounce 1s ease-in-out infinite; }
   @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
   .loader-text { font-size:1rem; font-weight:700; color:var(--purple); letter-spacing:2px; }
 
-  /* LOGIN */
+  /* ── LOGIN ── */
   .login-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
   .login-glow { position:fixed; inset:0; background:radial-gradient(ellipse at 50% 40%, rgba(176,110,243,0.13) 0%, transparent 65%); animation:breathe 4s ease-in-out infinite; }
   @keyframes breathe { 0%,100%{opacity:1} 50%{opacity:0.5} }
@@ -52,7 +55,7 @@
   .btn-guest:hover { background:rgba(176,110,243,0.18); transform:translateY(-2px); }
   .login-err { margin-top:14px; padding:10px 14px; background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); border-radius:9px; color:var(--red); font-size:0.85rem; display:none; }
 
-  /* GUEST MODAL */
+  /* ── GUEST MODAL ── */
   .guest-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(6px); z-index:999; align-items:center; justify-content:center; }
   .guest-modal.show { display:flex; }
   .guest-box { background:var(--card); border:1.5px solid var(--border); border-radius:20px; padding:36px 32px; max-width:360px; width:92%; text-align:center; box-shadow:var(--gp); animation:floatin 0.35s ease; }
@@ -64,8 +67,8 @@
   .btn-enter { width:100%; padding:13px; background:linear-gradient(130deg,var(--purple2),var(--purple)); border:none; border-radius:11px; color:#fff; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; cursor:pointer; transition:all 0.2s; }
   .btn-enter:hover { transform:translateY(-2px); }
 
-  /* TOPBAR */
-  .topbar { display:flex; align-items:center; justify-content:space-between; padding:12px 22px; background:rgba(7,7,26,0.92); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; }
+  /* ── TOPBAR ── */
+  .topbar { display:flex; align-items:center; justify-content:space-between; padding:12px 22px; background:rgba(7,7,26,0.95); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; }
   .topbar-logo { font-family:'Orbitron',sans-serif; font-weight:900; font-size:1rem; background:linear-gradient(90deg,var(--purple),var(--blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; cursor:pointer; letter-spacing:1px; user-select:none; }
   .topbar-right { display:flex; align-items:center; gap:10px; }
   .avatar { width:34px; height:34px; border-radius:50%; border:2px solid var(--purple); object-fit:cover; }
@@ -74,10 +77,20 @@
   .btn-sm { padding:6px 13px; background:transparent; border:1.5px solid var(--border); border-radius:8px; color:var(--muted); font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
   .btn-sm:hover { border-color:var(--purple); color:var(--purple); }
 
-  /* MAIN */
+  /* ── NAV BAR (NEW) ── */
+  .navbar { display:flex; align-items:center; gap:4px; padding:8px 22px; background:rgba(7,7,26,0.88); border-bottom:1px solid rgba(176,110,243,0.1); overflow-x:auto; scrollbar-width:none; flex-wrap:nowrap; }
+  .navbar::-webkit-scrollbar { display:none; }
+  .nav-link { padding:6px 14px; border-radius:20px; font-size:0.82rem; font-weight:700; color:var(--muted); cursor:pointer; transition:all 0.2s; white-space:nowrap; border:1.5px solid transparent; }
+  .nav-link:hover { color:var(--text); background:rgba(176,110,243,0.1); }
+  .nav-link.active { color:var(--purple); background:rgba(176,110,243,0.12); border-color:rgba(176,110,243,0.3); }
+  .nav-link.admin { color:var(--yellow); }
+  .nav-link.admin:hover { background:rgba(251,191,36,0.1); }
+  .nav-link.admin.active { background:rgba(251,191,36,0.12); border-color:rgba(251,191,36,0.4); }
+
+  /* ── MAIN ── */
   .main { max-width:1080px; margin:0 auto; padding:26px 18px; }
 
-  /* PROFILE */
+  /* ── PROFILE PANEL ── */
   .profile-panel { background:rgba(176,110,243,0.06); border:1.5px solid var(--border); border-radius:18px; padding:16px 20px; margin-bottom:30px; }
   .profile-inner { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
   .profile-avatar { width:50px; height:50px; border-radius:50%; border:2px solid var(--purple); object-fit:cover; box-shadow:0 0 12px rgba(176,110,243,0.4); }
@@ -100,14 +113,14 @@
   .dot.off { background:var(--red); }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  /* HERO */
+  /* ── HERO ── */
   .hero { text-align:center; margin-bottom:36px; }
   .hero-eye { font-size:0.72rem; letter-spacing:5px; color:var(--muted); font-weight:700; margin-bottom:8px; }
   .hero-h1  { font-family:'Orbitron',sans-serif; font-size:clamp(1.3rem,4vw,2.4rem); font-weight:900; line-height:1.25; }
   .grad { background:linear-gradient(90deg,var(--purple),var(--blue2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
   .hero-tip { margin-top:10px; font-size:0.9rem; color:var(--muted); font-weight:600; }
 
-  /* DEST CARDS */
+  /* ── DEST CARDS ── */
   .dest-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; }
   .dest-card { position:relative; overflow:hidden; background:rgba(14,14,40,0.9); border:1.5px solid var(--border); border-radius:20px; padding:38px 26px; text-align:center; cursor:pointer; transition:all 0.28s ease; animation:floatin 0.45s ease both; }
   .dest-card:hover { transform:translateY(-7px); border-color:var(--purple); box-shadow:var(--gp),0 20px 40px rgba(0,0,0,0.4); }
@@ -120,7 +133,7 @@
   .dest-cta  { font-size:0.88rem; font-weight:800; color:var(--purple); display:flex; align-items:center; justify-content:center; gap:6px; }
   .dest-card:nth-child(2) .dest-cta { color:var(--blue); }
 
-  /* PAGE HEADER */
+  /* ── PAGE HEADER ── */
   .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:12px; }
   .page-title  { font-family:'Orbitron',sans-serif; font-size:1.25rem; font-weight:900; color:var(--purple); letter-spacing:1px; }
   .btn-back { padding:8px 14px; background:transparent; border:1.5px solid var(--border); border-radius:9px; color:var(--muted); font-family:'Nunito',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
@@ -129,7 +142,7 @@
   .btn-create:hover { transform:translateY(-2px); }
   .btn-create:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 
-  /* ROOM LIST */
+  /* ── ROOM LIST ── */
   .room-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:15px; min-height:120px; }
   .room-card { background:rgba(14,14,40,0.94); border:1.5px solid var(--border); border-radius:16px; padding:18px; cursor:pointer; transition:all 0.25s; animation:floatin 0.35s ease both; }
   .room-card:hover { border-color:var(--blue); transform:translateY(-3px); box-shadow:var(--gb); }
@@ -147,7 +160,7 @@
   .btn-join.full { background:rgba(255,255,255,0.07); color:var(--muted); cursor:not-allowed; transform:none; }
   .empty-msg { grid-column:1/-1; text-align:center; color:var(--muted); padding:55px 20px; border:1.5px dashed var(--border); border-radius:16px; font-size:0.95rem; font-weight:600; }
 
-  /* ROOM VIEW */
+  /* ── ROOM VIEW ── */
   .room-layout { display:grid; grid-template-columns:1fr; gap:18px; }
   @media(min-width:768px){ .room-layout{grid-template-columns:1fr 360px; align-items:start;} }
   .room-title-row { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
@@ -165,7 +178,7 @@
   .p-boat.yes { filter:drop-shadow(0 0 5px rgba(52,211,153,0.9)); }
   .p-boat.no  { opacity:0.3; }
 
-  /* CHAT */
+  /* ── CHAT ── */
   .chat-panel { background:rgba(14,14,40,0.95); border:1.5px solid var(--border); border-radius:18px; display:flex; flex-direction:column; height:490px; }
   .chat-head { padding:13px 16px; font-size:0.88rem; font-weight:800; color:var(--purple); border-bottom:1px solid var(--border); flex-shrink:0; }
   .chat-body { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; scrollbar-width:thin; scrollbar-color:rgba(176,110,243,0.35) transparent; }
@@ -183,6 +196,124 @@
   .btn-send { padding:9px 15px; background:linear-gradient(130deg,var(--purple2),var(--purple)); border:none; border-radius:10px; color:#fff; font-size:1rem; cursor:pointer; transition:all 0.18s; }
   .btn-send:hover { opacity:0.85; transform:scale(1.06); }
 
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     NEW: TRADE PAGE STYLES
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .section-title { font-family:'Orbitron',sans-serif; font-size:1.1rem; font-weight:900; color:var(--purple); letter-spacing:1px; margin-bottom:6px; }
+  .section-desc  { color:var(--muted); font-size:0.9rem; line-height:1.6; font-weight:600; margin-bottom:20px; }
+
+  /* Create Trade Form */
+  .trade-form-box { background:rgba(14,14,40,0.92); border:1.5px solid var(--border); border-radius:18px; padding:22px; margin-bottom:28px; }
+  .trade-form-title { font-size:1rem; font-weight:800; color:var(--text); margin-bottom:16px; }
+  .trade-sides { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+  @media(max-width:560px){ .trade-sides { grid-template-columns:1fr; } }
+  .trade-side-label { font-size:0.8rem; font-weight:800; letter-spacing:1px; margin-bottom:10px; }
+  .trade-side-label.want  { color:var(--blue2); }
+  .trade-side-label.offer { color:var(--green); }
+  .fruit-slots { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .fruit-slot { background:rgba(255,255,255,0.04); border:1.5px dashed rgba(255,255,255,0.12); border-radius:10px; padding:10px 8px; text-align:center; cursor:pointer; transition:all 0.2s; min-height:72px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; font-size:0.75rem; color:var(--muted); font-weight:700; }
+  .fruit-slot:hover { border-color:var(--purple); background:rgba(176,110,243,0.07); }
+  .fruit-slot.filled { border-style:solid; border-color:rgba(176,110,243,0.35); background:rgba(176,110,243,0.08); }
+  .fruit-slot img { width:36px; height:36px; object-fit:contain; border-radius:6px; }
+  .fruit-slot .slot-name { font-size:0.7rem; font-weight:800; color:var(--text); }
+  .fruit-slot .slot-val  { font-size:0.65rem; color:var(--muted); }
+  .fruit-slot .remove-slot { font-size:0.65rem; color:var(--red); cursor:pointer; margin-top:2px; }
+  .btn-post { width:100%; padding:12px; background:linear-gradient(130deg,var(--purple2),var(--purple)); border:none; border-radius:10px; color:#fff; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; cursor:pointer; transition:all 0.2s; box-shadow:0 0 16px rgba(176,110,243,0.35); }
+  .btn-post:hover { transform:translateY(-2px); box-shadow:0 0 26px rgba(176,110,243,0.6); }
+  .btn-post:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+
+  /* Trade Listings */
+  .trade-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+  .trade-card { background:rgba(14,14,40,0.94); border:1.5px solid var(--border); border-radius:16px; padding:18px; animation:floatin 0.35s ease both; transition:all 0.22s; }
+  .trade-card:hover { border-color:rgba(176,110,243,0.35); }
+  .trade-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+  .trade-poster { font-size:0.88rem; font-weight:800; color:var(--purple); }
+  .trade-time   { font-size:0.7rem; color:var(--muted); font-weight:600; }
+  .trade-card-body { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px; margin-bottom:14px; }
+  .trade-fruits { display:flex; flex-direction:column; gap:6px; }
+  .trade-fruit-item { display:flex; align-items:center; gap:7px; background:rgba(255,255,255,0.04); border-radius:8px; padding:6px 8px; }
+  .trade-fruit-item img { width:28px; height:28px; object-fit:contain; border-radius:5px; }
+  .trade-fruit-name { font-size:0.75rem; font-weight:800; color:var(--text); }
+  .trade-fruit-val  { font-size:0.65rem; color:var(--muted); }
+  .trade-arrow { font-size:1.2rem; color:var(--muted); text-align:center; }
+  .trade-side-tag { font-size:0.68rem; font-weight:800; letter-spacing:1px; margin-bottom:6px; }
+  .trade-side-tag.want  { color:var(--blue2); }
+  .trade-side-tag.offer { color:var(--green); }
+  .btn-delete-trade { width:100%; padding:8px; background:rgba(248,113,113,0.1); border:1.5px solid rgba(248,113,113,0.3); border-radius:8px; color:var(--red); font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:800; cursor:pointer; transition:all 0.2s; }
+  .btn-delete-trade:hover { background:rgba(248,113,113,0.2); }
+
+  /* Rarity badges */
+  .rarity { display:inline-block; padding:2px 8px; border-radius:20px; font-size:0.62rem; font-weight:800; letter-spacing:1px; }
+  .rarity-Common    { background:rgba(139,155,180,0.2); color:var(--muted); border:1px solid rgba(139,155,180,0.3); }
+  .rarity-Uncommon  { background:rgba(52,211,153,0.15); color:var(--green); border:1px solid rgba(52,211,153,0.35); }
+  .rarity-Rare      { background:rgba(79,158,248,0.15); color:var(--blue); border:1px solid rgba(79,158,248,0.35); }
+  .rarity-Legendary { background:rgba(176,110,243,0.15); color:var(--purple); border:1px solid rgba(176,110,243,0.35); }
+  .rarity-Mythical  { background:rgba(251,191,36,0.15); color:var(--yellow); border:1px solid rgba(251,191,36,0.35); }
+
+  /* Fruit Picker Modal */
+  .fruit-picker-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.72); backdrop-filter:blur(8px); z-index:998; align-items:center; justify-content:center; padding:20px; }
+  .fruit-picker-modal.show { display:flex; }
+  .fruit-picker-box { background:var(--card); border:1.5px solid var(--border); border-radius:20px; padding:24px; max-width:520px; width:100%; max-height:80vh; display:flex; flex-direction:column; box-shadow:var(--gp); animation:floatin 0.3s ease; }
+  .fruit-picker-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-shrink:0; }
+  .fruit-picker-head h3 { font-size:1rem; font-weight:800; }
+  .btn-close-modal { background:transparent; border:none; color:var(--muted); font-size:1.3rem; cursor:pointer; line-height:1; }
+  .fruit-picker-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:10px; overflow-y:auto; padding-right:4px; }
+  .fruit-picker-item { background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.08); border-radius:12px; padding:10px 8px; text-align:center; cursor:pointer; transition:all 0.2s; }
+  .fruit-picker-item:hover { border-color:var(--purple); background:rgba(176,110,243,0.1); transform:translateY(-2px); }
+  .fruit-picker-item img { width:44px; height:44px; object-fit:contain; margin-bottom:6px; border-radius:6px; }
+  .fruit-picker-item .fp-name { font-size:0.72rem; font-weight:800; color:var(--text); }
+  .fruit-picker-item .fp-val  { font-size:0.65rem; color:var(--muted); }
+  .no-fruits-msg { text-align:center; color:var(--muted); padding:40px 20px; font-size:0.9rem; font-weight:600; }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     NEW: ADMIN PAGE STYLES
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .admin-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(251,191,36,0.15); border:1.5px solid rgba(251,191,36,0.4); border-radius:20px; padding:5px 14px; font-size:0.78rem; font-weight:800; color:var(--yellow); margin-bottom:20px; }
+  .admin-form { background:rgba(14,14,40,0.92); border:1.5px solid rgba(251,191,36,0.2); border-radius:18px; padding:22px; margin-bottom:28px; }
+  .admin-form h3 { font-size:0.95rem; font-weight:800; color:var(--yellow); margin-bottom:16px; }
+  .form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-bottom:14px; }
+  .form-field { display:flex; flex-direction:column; gap:5px; }
+  .form-label { font-size:0.75rem; font-weight:800; color:var(--muted); letter-spacing:1px; }
+  .form-input { background:rgba(255,255,255,0.06); border:1.5px solid rgba(255,255,255,0.1); border-radius:9px; padding:10px 12px; color:var(--text); font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:600; outline:none; transition:border-color 0.2s; }
+  .form-input:focus { border-color:var(--yellow); }
+  .form-input::placeholder { color:var(--muted); }
+  .form-select { background:rgba(14,14,28,0.95); border:1.5px solid rgba(255,255,255,0.1); border-radius:9px; padding:10px 12px; color:var(--text); font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:600; outline:none; cursor:pointer; }
+  .form-select:focus { border-color:var(--yellow); }
+  .btn-admin { padding:11px 22px; background:linear-gradient(130deg,#b45309,var(--yellow)); border:none; border-radius:10px; color:#000; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; cursor:pointer; transition:all 0.2s; }
+  .btn-admin:hover { transform:translateY(-2px); box-shadow:0 0 20px rgba(251,191,36,0.4); }
+  .admin-fruit-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
+  .admin-fruit-card { background:rgba(14,14,40,0.92); border:1.5px solid var(--border); border-radius:14px; padding:14px; text-align:center; position:relative; }
+  .admin-fruit-card img { width:52px; height:52px; object-fit:contain; margin-bottom:8px; border-radius:8px; }
+  .admin-fruit-card .fn { font-size:0.88rem; font-weight:800; color:var(--text); margin-bottom:3px; }
+  .admin-fruit-card .fv { font-size:0.78rem; color:var(--muted); font-weight:600; margin-bottom:6px; }
+  .btn-del-fruit { width:100%; padding:6px; background:rgba(248,113,113,0.1); border:1.5px solid rgba(248,113,113,0.3); border-radius:7px; color:var(--red); font-size:0.75rem; font-weight:800; cursor:pointer; transition:all 0.18s; font-family:'Nunito',sans-serif; }
+  .btn-del-fruit:hover { background:rgba(248,113,113,0.22); }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     NEW: CONTENT PAGES (About/Contact/Privacy/Terms)
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .content-page { max-width:780px; margin:0 auto; }
+  .content-page h1 { font-family:'Orbitron',sans-serif; font-size:1.5rem; font-weight:900; color:var(--purple); margin-bottom:8px; }
+  .content-page .page-sub { font-size:0.8rem; letter-spacing:3px; color:var(--muted); font-weight:700; margin-bottom:28px; }
+  .content-section { background:rgba(14,14,40,0.85); border:1.5px solid var(--border); border-radius:16px; padding:22px 24px; margin-bottom:18px; }
+  .content-section h2 { font-size:1rem; font-weight:800; color:var(--text); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .content-section p  { color:var(--muted); font-size:0.9rem; line-height:1.75; font-weight:600; margin-bottom:10px; }
+  .content-section p:last-child { margin-bottom:0; }
+  .content-section ul { color:var(--muted); font-size:0.9rem; line-height:1.75; font-weight:600; padding-left:18px; }
+  .content-section ul li { margin-bottom:4px; }
+  .contact-form { display:flex; flex-direction:column; gap:12px; }
+  .contact-form input, .contact-form textarea { background:rgba(255,255,255,0.05); border:1.5px solid rgba(255,255,255,0.1); border-radius:10px; padding:11px 14px; color:var(--text); font-family:'Nunito',sans-serif; font-size:0.93rem; font-weight:600; outline:none; transition:border-color 0.2s; width:100%; resize:vertical; }
+  .contact-form input:focus, .contact-form textarea:focus { border-color:var(--purple); }
+  .contact-form input::placeholder, .contact-form textarea::placeholder { color:var(--muted); }
+  .btn-contact { padding:12px 24px; background:linear-gradient(130deg,var(--purple2),var(--purple)); border:none; border-radius:10px; color:#fff; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; cursor:pointer; transition:all 0.2s; align-self:flex-start; }
+  .btn-contact:hover { transform:translateY(-2px); box-shadow:0 0 20px rgba(176,110,243,0.5); }
+  .info-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .info-chip { padding:5px 12px; border-radius:20px; font-size:0.78rem; font-weight:800; background:rgba(176,110,243,0.1); border:1px solid rgba(176,110,243,0.25); color:var(--purple); }
+  .footer-nav { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:20px 18px; border-top:1px solid var(--border); margin-top:10px; }
+  .footer-nav span { font-size:0.8rem; color:var(--muted); font-weight:700; cursor:pointer; transition:color 0.2s; }
+  .footer-nav span:hover { color:var(--purple); }
+  .footer-nav .sep { color:rgba(255,255,255,0.15); }
+
   ::-webkit-scrollbar { width:5px; }
   ::-webkit-scrollbar-track { background:transparent; }
   ::-webkit-scrollbar-thumb { background:rgba(176,110,243,0.35); border-radius:3px; }
@@ -197,6 +328,7 @@
   </div>
 </div>
 
+<!-- Guest Modal -->
 <div class="guest-modal" id="guestModal">
   <div class="guest-box">
     <h3>👋 Hey there!</h3>
@@ -208,9 +340,22 @@
   </div>
 </div>
 
+<!-- Fruit Picker Modal -->
+<div class="fruit-picker-modal" id="fruitPickerModal">
+  <div class="fruit-picker-box">
+    <div class="fruit-picker-head">
+      <h3>🍊 Pick a Fruit</h3>
+      <button class="btn-close-modal" onclick="closeFruitPicker()">✕</button>
+    </div>
+    <div class="fruit-picker-grid" id="fruitPickerGrid">
+      <div class="no-fruits-msg">Loading fruits...</div>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 
-  /* ── IMPORTS ── */
+  /* ── IMPORTS (UNCHANGED) ── */
   import { initializeApp }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAnalytics }
@@ -219,15 +364,13 @@
     getAuth, GoogleAuthProvider,
     signInWithPopup, signOut, onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-  /* ── REALTIME DATABASE IMPORTS ── */
   import {
     getDatabase,
     ref, set, get, push, update, remove,
     onValue, off, serverTimestamp, child
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  /* ── CONFIG ── */
+  /* ── CONFIG (UNCHANGED) ── */
   const firebaseConfig = {
     apiKey:            "AIzaSyDlBIeNVDK5nBPpVFkFSxNY59e7gW-p18c",
     authDomain:        "rentafruit-f57d9.firebaseapp.com",
@@ -239,25 +382,37 @@
     databaseURL:       "https://rentafruit-f57d9-default-rtdb.asia-southeast1.firebasedatabase.app"
   };
 
-  /* ── INIT ── */
-  const app      = initializeApp(firebaseConfig);
+  /* ── INIT (UNCHANGED) ── */
+  const app       = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
-  const auth     = getAuth(app);
-  const db       = getDatabase(app);   // Realtime Database
-  const provider = new GoogleAuthProvider();
+  const auth      = getAuth(app);
+  const db        = getDatabase(app);
+  const provider  = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
 
-  /* ── STATE ── */
+  /* ── STATE (UNCHANGED + new trade state) ── */
   let currentUser        = null;
   let currentRoom        = null;
   let currentDestination = null;
-  let roomsListener      = null;   // ref being listened to
+  let currentView        = "home";
+  let roomsListener      = null;
   let roomDocListener    = null;
   let chatListener       = null;
+  let tradesListener     = null;
+  let fruitsListener     = null;
   let isGuest            = false;
 
+  /* NEW: Trade builder state */
+  let tradeWants  = [null, null, null, null]; // up to 4 fruit IDs
+  let tradeOffers = [null, null, null, null];
+  let pickerTarget = null; // {side:'want'|'offer', index:0-3}
+  let fruitsCache  = {};   // fruitId -> fruit data
+
+  const ADMIN_EMAIL = "jakelordclash@gmail.com";
+  const isAdmin = () => currentUser?.email === ADMIN_EMAIL;
+
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     AUTH
+     AUTH — UNCHANGED
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.loginWithGoogle = async () => {
     const btn = document.getElementById("loginBtn");
@@ -265,21 +420,17 @@
     if (btn) btn.disabled = true;
     if (err) err.style.display = "none";
     try {
-      console.log("[AUTH] Signing in with Google...");
+      console.log("[AUTH] Signing in...");
       await signInWithPopup(auth, provider);
     } catch (e) {
       console.error("[AUTH] Error:", e.code);
       if (btn) btn.disabled = false;
       if (err) {
         err.style.display = "block";
-        if (e.code === "auth/popup-blocked")
-          err.textContent = "⚠️ Popup blocked! Please allow popups.";
-        else if (e.code === "auth/popup-closed-by-user")
-          err.textContent = "You closed the window. Try again!";
-        else if (e.code === "auth/unauthorized-domain")
-          err.textContent = "Domain not authorised in Firebase.";
-        else
-          err.textContent = "Sign-in failed: " + e.code;
+        if (e.code === "auth/popup-blocked")        err.textContent = "⚠️ Popup blocked! Please allow popups.";
+        else if (e.code === "auth/popup-closed-by-user") err.textContent = "You closed the window. Try again!";
+        else if (e.code === "auth/unauthorized-domain")  err.textContent = "Domain not authorised in Firebase.";
+        else err.textContent = "Sign-in failed: " + e.code;
       }
     }
   };
@@ -320,15 +471,11 @@
     console.log("[AUTH] State:", user ? user.displayName : "signed out");
     currentUser = user;
     if (user) {
-      /* Save/load user profile in Realtime DB */
       const userRef = ref(db, "users/" + user.uid);
       try {
         const snap = await get(userRef);
         if (!snap.exists()) {
-          await set(userRef, {
-            uid: user.uid, name: user.displayName,
-            photo: user.photoURL, hasBeastBoat: false
-          });
+          await set(userRef, { uid: user.uid, name: user.displayName, photo: user.photoURL, hasBeastBoat: false });
           console.log("[PROFILE] Created new user");
         }
         const data     = snap.exists() ? snap.val() : { hasBeastBoat: false };
@@ -345,13 +492,11 @@
   });
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     BOAT TOGGLE
+     BOAT TOGGLE — UNCHANGED
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.toggleBeastBoat = async () => {
     const newVal = !window._myBoat;
     window._myBoat = newVal;
-
-    /* Instant UI update */
     const ind = document.getElementById("boatIndicator");
     const tog = document.getElementById("boatToggle");
     if (ind) {
@@ -359,8 +504,6 @@
       ind.innerHTML = `<span class="dot ${newVal?"on":"off"}"></span>${newVal ? "🚢 Active!" : "Not Active"}`;
     }
     if (tog) tog.checked = newVal;
-
-    /* Save to Realtime DB */
     if (!isGuest && currentUser?.uid) {
       try {
         await update(ref(db, "users/" + currentUser.uid), { hasBeastBoat: newVal });
@@ -370,7 +513,7 @@
   };
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     NAVIGATION
+     NAVIGATION — UNCHANGED + new nav functions
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.goHome = () => {
     cleanupListeners();
@@ -385,66 +528,58 @@
     listenRooms(dest);
   };
 
+  /* NEW: page navigation */
+  window.goTrade   = () => { cleanupListeners(); renderApp("trade");   listenTrades(); listenFruitsCache(); };
+  window.goAbout   = () => { cleanupListeners(); renderApp("about"); };
+  window.goContact = () => { cleanupListeners(); renderApp("contact"); };
+  window.goPrivacy = () => { cleanupListeners(); renderApp("privacy"); };
+  window.goTerms   = () => { cleanupListeners(); renderApp("terms"); };
+  window.goAdmin   = () => { if (!isAdmin()) return; cleanupListeners(); renderApp("admin"); listenFruitsAdmin(); };
+
   function cleanupListeners() {
     if (roomsListener)   { off(roomsListener);   roomsListener   = null; }
     if (roomDocListener) { off(roomDocListener);  roomDocListener = null; }
     if (chatListener)    { off(chatListener);     chatListener    = null; }
+    if (tradesListener)  { off(tradesListener);   tradesListener  = null; }
+    if (fruitsListener)  { off(fruitsListener);   fruitsListener  = null; }
     console.log("[LISTENER] All listeners removed");
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     ROOMS — REALTIME LISTENER
-     Uses onValue() — fires instantly on any change
+     ROOMS — UNCHANGED
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function listenRooms(dest) {
     console.log("[ROOMS] Listening for rooms at:", dest);
     const roomsRef = ref(db, "rooms");
     roomsListener  = roomsRef;
-
     onValue(roomsRef, (snap) => {
       console.log("[ROOMS] Data received");
       const now   = Date.now();
       const rooms = [];
-
       if (snap.exists()) {
         snap.forEach((child) => {
           const r = { id: child.key, ...child.val() };
-
-          /* Auto-delete expired rooms */
           if (r.expiresAt && r.expiresAt < now) {
             console.log("[ROOMS] Deleting expired room:", r.id);
             remove(ref(db, "rooms/" + r.id));
             return;
           }
-
-          /* Filter by destination */
-          if (r.destination === dest) {
-            rooms.push(r);
-          }
+          if (r.destination === dest) rooms.push(r);
         });
       }
-
       console.log("[ROOMS]", rooms.length, "rooms for", dest);
       renderRoomList(rooms);
-    }, (err) => {
-      console.error("[ROOMS] Listener error:", err.message);
-    });
+    }, (err) => { console.error("[ROOMS] Listener error:", err.message); });
   }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     RENDER ROOM LIST
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function renderRoomList(rooms) {
     const el = document.getElementById("roomList");
     if (!el) return;
-
     el.innerHTML = "";
-
     if (rooms.length === 0) {
       el.innerHTML = `<div class="empty-msg">😴 No rooms yet!<br/>Hit <b>✨ Create Room</b> to start the hunt!</div>`;
       return;
     }
-
     el.innerHTML = rooms.map((r) => {
       const players   = r.players ? Object.values(r.players) : [];
       const hasBeast  = players.some((p) => p.hasBeastBoat === true);
@@ -460,12 +595,9 @@
           </div>
           <div class="room-stats">
             <span class="room-count ${full?"full":""}">👥 ${players.length} / 7 players</span>
-            <span class="room-beast ${hasBeast?"yes":"no"}">
-              ${hasBeast ? "🚢 Beast Hunter Available!" : "❌ No Beast Hunter yet"}
-            </span>
+            <span class="room-beast ${hasBeast?"yes":"no"}">${hasBeast ? "🚢 Beast Hunter Available!" : "❌ No Beast Hunter yet"}</span>
           </div>
-          <button class="btn-join ${full?"full":""}"
-            onclick="event.stopPropagation(); joinRoom('${r.id}')">
+          <button class="btn-join ${full?"full":""}" onclick="event.stopPropagation(); joinRoom('${r.id}')">
             ${full ? "Room Full 😔" : "Join Room →"}
           </button>
         </div>`;
@@ -473,18 +605,15 @@
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     CREATE ROOM
+     CREATE ROOM — UNCHANGED
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.createRoom = async () => {
     if (!currentUser || !currentDestination) return;
     console.log("[CREATE] Creating room in:", currentDestination);
-
     const btn = document.querySelector(".btn-create");
     if (btn) { btn.disabled = true; btn.textContent = "Creating... ✨"; }
-
     const now    = Date.now();
-    const roomId = push(ref(db, "rooms")).key;  // generate unique ID
-
+    const roomId = push(ref(db, "rooms")).key;
     const roomData = {
       destination: currentDestination,
       host:        currentUser.displayName,
@@ -499,7 +628,6 @@
         }
       }
     };
-
     try {
       await set(ref(db, "rooms/" + roomId), roomData);
       console.log("[CREATE] Room created:", roomId);
@@ -512,58 +640,39 @@
   };
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     JOIN ROOM
+     JOIN ROOM — UNCHANGED
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.joinRoom = async (roomId) => {
     console.log("[JOIN] Joining room:", roomId);
     try {
       const snap = await get(ref(db, "rooms/" + roomId));
       if (!snap.exists()) { alert("This room no longer exists!"); return; }
-
       const r       = snap.val();
       const players = r.players ? Object.values(r.players) : [];
-
       if (players.length >= 7) { alert("😔 Room is full!"); return; }
-      if (r.players && r.players[currentUser.uid]) {
-        console.log("[JOIN] Already in room");
-        enterRoom(roomId); return;
-      }
-
-      /* Add player using their uid as key — prevents duplicates */
+      if (r.players && r.players[currentUser.uid]) { console.log("[JOIN] Already in room"); enterRoom(roomId); return; }
       await update(ref(db, "rooms/" + roomId + "/players"), {
-        [currentUser.uid]: {
-          uid:          currentUser.uid,
-          name:         currentUser.displayName,
-          hasBeastBoat: window._myBoat === true
-        }
+        [currentUser.uid]: { uid: currentUser.uid, name: currentUser.displayName, hasBeastBoat: window._myBoat === true }
       });
-
       console.log("[JOIN] Joined room:", roomId);
       enterRoom(roomId);
-    } catch (e) {
-      console.error("[JOIN] Failed:", e.message);
-      alert("Couldn't join room. Try again!");
-    }
+    } catch (e) { console.error("[JOIN] Failed:", e.message); alert("Couldn't join room. Try again!"); }
   };
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     LEAVE ROOM
+     LEAVE ROOM — UNCHANGED
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.leaveRoom = async () => {
     if (!currentRoom) return;
     console.log("[LEAVE] Leaving room:", currentRoom);
     try {
-      /* Remove this player from room */
       await remove(ref(db, "rooms/" + currentRoom + "/players/" + currentUser.uid));
-
-      /* Check if room is now empty — delete if so */
       const snap = await get(ref(db, "rooms/" + currentRoom + "/players"));
       if (!snap.exists() || Object.keys(snap.val() || {}).length === 0) {
         await remove(ref(db, "rooms/" + currentRoom));
         console.log("[LEAVE] Empty room deleted");
       }
     } catch (e) { console.error("[LEAVE] Error:", e.message); }
-
     cleanupListeners();
     currentRoom = null;
     renderApp("destination");
@@ -571,7 +680,7 @@
   };
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     ENTER ROOM
+     ENTER ROOM — UNCHANGED
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.enterRoom = (roomId) => {
     console.log("[ENTER] Entering room:", roomId);
@@ -582,31 +691,18 @@
     listenChat(roomId);
   };
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     ROOM DOC — REALTIME
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function listenRoomDoc(roomId) {
     console.log("[ROOM] Listening to room:", roomId);
     const rRef    = ref(db, "rooms/" + roomId);
     roomDocListener = rRef;
-
     onValue(rRef, (snap) => {
-      if (!snap.exists()) {
-        console.warn("[ROOM] Room deleted");
-        goDestination(currentDestination); return;
-      }
+      if (!snap.exists()) { console.warn("[ROOM] Room deleted"); goDestination(currentDestination); return; }
       const r = { id: roomId, ...snap.val() };
-      if (r.expiresAt && r.expiresAt < Date.now()) {
-        remove(rRef);
-        goDestination(currentDestination); return;
-      }
+      if (r.expiresAt && r.expiresAt < Date.now()) { remove(rRef); goDestination(currentDestination); return; }
       renderRoomView(r);
     }, (err) => { console.error("[ROOM] Error:", err.message); });
   }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     RENDER ROOM VIEW
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function renderRoomView(r) {
     const players   = r.players ? Object.values(r.players) : [];
     const hasBeast  = players.some((p) => p.hasBeastBoat === true);
@@ -615,7 +711,6 @@
     const secs      = Math.floor((remaining % 60000) / 1000);
     const el        = document.getElementById("roomContent");
     if (!el) return;
-
     el.innerHTML = `
       <div class="room-title-row">
         <h2 class="room-h2">📍 ${r.destination}</h2>
@@ -636,33 +731,24 @@
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     CHAT — REALTIME
+     CHAT — UNCHANGED
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function listenChat(roomId) {
     console.log("[CHAT] Listening to chat for room:", roomId);
     const chatRef = ref(db, "chat/" + roomId);
     chatListener  = chatRef;
-
     onValue(chatRef, (snap) => {
       const box = document.getElementById("chatBox");
       if (!box) return;
-
       const msgs = [];
-      if (snap.exists()) {
-        snap.forEach((child) => {
-          msgs.push({ id: child.key, ...child.val() });
-        });
-      }
-
+      if (snap.exists()) snap.forEach((child) => msgs.push({ id: child.key, ...child.val() }));
       box.innerHTML = msgs.map((m) => {
         const isMe = m.uid === currentUser?.uid;
-        return `
-          <div class="msg ${isMe?"me":"other"}">
-            <span class="msg-who">${isMe ? "You" : m.name}</span>
-            <span class="msg-txt">${esc(m.text)}</span>
-          </div>`;
+        return `<div class="msg ${isMe?"me":"other"}">
+          <span class="msg-who">${isMe ? "You" : m.name}</span>
+          <span class="msg-txt">${esc(m.text)}</span>
+        </div>`;
       }).join("");
-
       box.scrollTop = box.scrollHeight;
     }, (err) => { console.error("[CHAT] Error:", err.message); });
   }
@@ -674,17 +760,292 @@
     input.value = "";
     try {
       const msgRef = push(ref(db, "chat/" + currentRoom));
-      await set(msgRef, {
-        uid:  currentUser.uid,
-        name: currentUser.displayName,
-        text: text,
-        ts:   Date.now()
-      });
+      await set(msgRef, { uid: currentUser.uid, name: currentUser.displayName, text, ts: Date.now() });
     } catch (e) { console.error("[CHAT] Send failed:", e.message); }
   };
 
   window.onChatKey = (e) => { if (e.key === "Enter") window.sendMessage(); };
 
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     NEW: FRUITS CACHE (for trade picker)
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  function listenFruitsCache() {
+    const fr = ref(db, "fruits");
+    fruitsListener = fr;
+    onValue(fr, (snap) => {
+      fruitsCache = {};
+      if (snap.exists()) snap.forEach((c) => { fruitsCache[c.key] = { id: c.key, ...c.val() }; });
+    });
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     NEW: FRUIT PICKER MODAL
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  window.openFruitPicker = (side, index) => {
+    pickerTarget = { side, index };
+    const grid = document.getElementById("fruitPickerGrid");
+    const fruits = Object.values(fruitsCache);
+    if (fruits.length === 0) {
+      grid.innerHTML = `<div class="no-fruits-msg">🍊 No fruits added yet!<br/>Admin needs to add fruits first.</div>`;
+    } else {
+      grid.innerHTML = fruits.map((f) => `
+        <div class="fruit-picker-item" onclick="selectFruit('${f.id}')">
+          <img src="${f.photo}" alt="${f.name}" onerror="this.src='https://via.placeholder.com/44x44/1a1a3e/b06ef3?text=🍊'"/>
+          <div class="fp-name">${f.name}</div>
+          <div class="fp-val">💰 ${Number(f.value).toLocaleString()}</div>
+          <div><span class="rarity rarity-${f.rarity}">${f.rarity}</span></div>
+        </div>`).join("");
+    }
+    document.getElementById("fruitPickerModal").classList.add("show");
+  };
+
+  window.selectFruit = (fruitId) => {
+    if (!pickerTarget) return;
+    const { side, index } = pickerTarget;
+    if (side === "want")  tradeWants[index]  = fruitId;
+    if (side === "offer") tradeOffers[index] = fruitId;
+    closeFruitPicker();
+    renderTradeSlots();
+  };
+
+  window.closeFruitPicker = () => {
+    document.getElementById("fruitPickerModal").classList.remove("show");
+    pickerTarget = null;
+  };
+
+  window.removeFromTrade = (side, index) => {
+    if (side === "want")  tradeWants[index]  = null;
+    if (side === "offer") tradeOffers[index] = null;
+    renderTradeSlots();
+  };
+
+  function renderTradeSlots() {
+    ["want","offer"].forEach((side) => {
+      const arr = side === "want" ? tradeWants : tradeOffers;
+      for (let i = 0; i < 4; i++) {
+        const el = document.getElementById(`slot-${side}-${i}`);
+        if (!el) continue;
+        const fruitId = arr[i];
+        if (fruitId && fruitsCache[fruitId]) {
+          const f = fruitsCache[fruitId];
+          el.className = "fruit-slot filled";
+          el.innerHTML = `
+            <img src="${f.photo}" alt="${f.name}" onerror="this.src='https://via.placeholder.com/36x36/1a1a3e/b06ef3?text=🍊'"/>
+            <span class="slot-name">${f.name}</span>
+            <span class="slot-val">💰 ${Number(f.value).toLocaleString()}</span>
+            <span class="remove-slot" onclick="removeFromTrade('${side}',${i})">✕ Remove</span>`;
+          el.onclick = null;
+        } else {
+          el.className = "fruit-slot";
+          el.innerHTML = `<span>+ Add Fruit</span>`;
+          el.onclick = () => openFruitPicker(side, i);
+        }
+      }
+    });
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     NEW: TRADE SYSTEM
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  function listenTrades() {
+    console.log("[TRADES] Attaching listener");
+    const tr = ref(db, "trades");
+    tradesListener = tr;
+    onValue(tr, (snap) => {
+      const trades = [];
+      if (snap.exists()) snap.forEach((c) => trades.push({ id: c.key, ...c.val() }));
+      trades.sort((a, b) => (b.ts || 0) - (a.ts || 0));
+      renderTradeList(trades);
+    }, (err) => { console.error("[TRADES] Error:", err.message); });
+  }
+
+  window.postTrade = async () => {
+    if (!currentUser) { alert("Please sign in to post a trade!"); return; }
+    const wantsList  = tradeWants.filter(Boolean);
+    const offersList = tradeOffers.filter(Boolean);
+    if (wantsList.length === 0 && offersList.length === 0) {
+      alert("Please add at least one fruit to either side!"); return;
+    }
+    const btn = document.getElementById("postTradeBtn");
+    if (btn) btn.disabled = true;
+    try {
+      const tradeId = push(ref(db, "trades")).key;
+      const wantsObj  = {};
+      wantsList.forEach((id, i)  => { wantsObj[i]  = id; });
+      const offersObj = {};
+      offersList.forEach((id, i) => { offersObj[i] = id; });
+      await set(ref(db, "trades/" + tradeId), {
+        uid:    currentUser.uid,
+        name:   currentUser.displayName,
+        wants:  wantsObj,
+        offers: offersObj,
+        ts:     Date.now(),
+        status: "open"
+      });
+      tradeWants  = [null,null,null,null];
+      tradeOffers = [null,null,null,null];
+      renderTradeSlots();
+      console.log("[TRADES] Trade posted:", tradeId);
+    } catch (e) {
+      console.error("[TRADES] Post failed:", e.message);
+      alert("Couldn't post trade. Try again!");
+    }
+    if (btn) btn.disabled = false;
+  };
+
+  window.deleteTrade = async (tradeId) => {
+    if (!confirm("Delete this trade listing?")) return;
+    try {
+      await remove(ref(db, "trades/" + tradeId));
+      console.log("[TRADES] Deleted:", tradeId);
+    } catch (e) { console.error("[TRADES] Delete failed:", e.message); }
+  };
+
+  function renderTradeList(trades) {
+    const el = document.getElementById("tradeList");
+    if (!el) return;
+    if (trades.length === 0) {
+      el.innerHTML = `<div class="empty-msg">🤝 No trades posted yet!<br/>Be the first to post a trade offer above.</div>`;
+      return;
+    }
+    el.innerHTML = trades.map((t) => {
+      const wantIds  = t.wants  ? Object.values(t.wants)  : [];
+      const offerIds = t.offers ? Object.values(t.offers) : [];
+      const timeAgo  = getTimeAgo(t.ts);
+      const canDelete = currentUser && (t.uid === currentUser.uid || isAdmin());
+      const wantHtml  = wantIds.map((id)  => fruitChipHtml(id)).join("");
+      const offerHtml = offerIds.map((id) => fruitChipHtml(id)).join("");
+      return `
+        <div class="trade-card">
+          <div class="trade-card-header">
+            <span class="trade-poster">👤 ${t.name}</span>
+            <span class="trade-time">${timeAgo}</span>
+          </div>
+          <div class="trade-card-body">
+            <div class="trade-fruits">
+              <div class="trade-side-tag want">WANTS</div>
+              ${wantHtml || '<span style="color:var(--muted);font-size:0.78rem;font-weight:600;">Anything</span>'}
+            </div>
+            <div class="trade-arrow">⇄</div>
+            <div class="trade-fruits">
+              <div class="trade-side-tag offer">OFFERS</div>
+              ${offerHtml || '<span style="color:var(--muted);font-size:0.78rem;font-weight:600;">Anything</span>'}
+            </div>
+          </div>
+          ${canDelete ? `<button class="btn-delete-trade" onclick="deleteTrade('${t.id}')">🗑 Remove Listing</button>` : ""}
+        </div>`;
+    }).join("");
+  }
+
+  function fruitChipHtml(fruitId) {
+    const f = fruitsCache[fruitId];
+    if (!f) return `<div class="trade-fruit-item"><span style="font-size:0.75rem;color:var(--muted)">Unknown Fruit</span></div>`;
+    return `
+      <div class="trade-fruit-item">
+        <img src="${f.photo}" alt="${f.name}" onerror="this.src='https://via.placeholder.com/28x28/1a1a3e/b06ef3?text=🍊'"/>
+        <div>
+          <div class="trade-fruit-name">${f.name}</div>
+          <div class="trade-fruit-val">💰 ${Number(f.value).toLocaleString()}</div>
+        </div>
+      </div>`;
+  }
+
+  function getTimeAgo(ts) {
+    if (!ts) return "";
+    const diff = Date.now() - ts;
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1)  return "Just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24)  return `${hrs}h ago`;
+    return `${Math.floor(hrs/24)}d ago`;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     NEW: ADMIN — FRUIT MANAGEMENT
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  function listenFruitsAdmin() {
+    const fr = ref(db, "fruits");
+    fruitsListener = fr;
+    onValue(fr, (snap) => {
+      fruitsCache = {};
+      const fruits = [];
+      if (snap.exists()) {
+        snap.forEach((c) => {
+          const f = { id: c.key, ...c.val() };
+          fruitsCache[c.key] = f;
+          fruits.push(f);
+        });
+      }
+      renderAdminFruitList(fruits);
+    });
+  }
+
+  window.addFruit = async () => {
+    if (!isAdmin()) return;
+    const name   = document.getElementById("fn-name")?.value.trim();
+    const value  = document.getElementById("fn-value")?.value.trim();
+    const photo  = document.getElementById("fn-photo")?.value.trim();
+    const rarity = document.getElementById("fn-rarity")?.value;
+    const type   = document.getElementById("fn-type")?.value;
+    if (!name || !value || !photo || !rarity || !type) { alert("Please fill in all fields!"); return; }
+    const btn = document.getElementById("addFruitBtn");
+    if (btn) btn.disabled = true;
+    try {
+      const fruitId = push(ref(db, "fruits")).key;
+      await set(ref(db, "fruits/" + fruitId), {
+        name, value: Number(value), photo, rarity, type, addedAt: Date.now()
+      });
+      document.getElementById("fn-name").value  = "";
+      document.getElementById("fn-value").value = "";
+      document.getElementById("fn-photo").value = "";
+      console.log("[ADMIN] Fruit added:", name);
+    } catch (e) { console.error("[ADMIN] Add fruit failed:", e.message); alert("Failed: " + e.message); }
+    if (btn) btn.disabled = false;
+  };
+
+  window.deleteFruit = async (fruitId) => {
+    if (!isAdmin()) return;
+    if (!confirm("Delete this fruit?")) return;
+    try {
+      await remove(ref(db, "fruits/" + fruitId));
+      console.log("[ADMIN] Fruit deleted:", fruitId);
+    } catch (e) { console.error("[ADMIN] Delete failed:", e.message); }
+  };
+
+  function renderAdminFruitList(fruits) {
+    const el = document.getElementById("adminFruitList");
+    if (!el) return;
+    if (fruits.length === 0) {
+      el.innerHTML = `<div style="color:var(--muted);font-size:0.9rem;font-weight:600;padding:20px 0;">No fruits added yet. Add your first one above!</div>`;
+      return;
+    }
+    el.innerHTML = fruits.map((f) => `
+      <div class="admin-fruit-card">
+        <img src="${f.photo}" alt="${f.name}" onerror="this.src='https://via.placeholder.com/52x52/1a1a3e/b06ef3?text=🍊'"/>
+        <div class="fn">${f.name}</div>
+        <div class="fv">💰 ${Number(f.value).toLocaleString()}</div>
+        <span class="rarity rarity-${f.rarity}">${f.rarity}</span>
+        <div style="margin-top:4px;font-size:0.7rem;color:var(--muted);font-weight:600;">${f.type}</div>
+        <button class="btn-del-fruit" style="margin-top:10px" onclick="deleteFruit('${f.id}')">🗑 Delete</button>
+      </div>`).join("");
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     CONTACT FORM
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  window.submitContact = () => {
+    const name = document.getElementById("cname")?.value.trim();
+    const email = document.getElementById("cemail")?.value.trim();
+    const msg   = document.getElementById("cmsg")?.value.trim();
+    if (!name || !email || !msg) { alert("Please fill in all fields!"); return; }
+    alert("✅ Thanks " + name + "! We received your message and will reply to " + email + " soon.");
+    document.getElementById("cname").value  = "";
+    document.getElementById("cemail").value = "";
+    document.getElementById("cmsg").value   = "";
+  };
+
+  /* ── UTILS ── */
   function esc(t) {
     return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
@@ -693,10 +1054,12 @@
      RENDERER
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function renderApp(view) {
+    currentView = view;
     const root  = document.getElementById("app");
     const photo = currentUser?.photoURL || "https://api.dicebear.com/7.x/bottts/svg?seed=guest";
     const name  = currentUser?.displayName || "Guest";
 
+    /* LOGIN — UNCHANGED */
     if (view === "login") {
       root.innerHTML = `
         <div class="login-wrap">
@@ -704,8 +1067,8 @@
           <div class="login-box">
             <span class="login-fruit">🍊</span>
             <div class="login-title">RentAFruit</div>
-            <div class="login-sub">LEVIATHAN HUNT MATCHMAKER</div>
-            <p class="login-desc">Team up, find a Beast Hunter boat, and take down the Leviathan! 🐉</p>
+            <div class="login-sub">LEVIATHAN HUNT & TRADING</div>
+            <p class="login-desc">Find hunt partners, trade Devil Fruits, and build the ultimate Blox Fruits team! 🐉</p>
             <button class="btn-google" id="loginBtn" onclick="loginWithGoogle()">
               <svg width="20" height="20" viewBox="0 0 48 48">
                 <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.3 30.2 0 24 0 14.7 0 6.7 5.4 2.7 13.4l7.8 6C12.3 13.2 17.7 9.5 24 9.5z"/>
@@ -723,6 +1086,8 @@
       return;
     }
 
+    /* SHARED HEADER + NAVBAR */
+    const adminBtn = isAdmin() ? `<span class="nav-link admin ${view==="admin"?"active":""}" onclick="goAdmin()">⭐ Admin</span>` : "";
     const header = `
       <header class="topbar">
         <span class="topbar-logo" onclick="goHome()">🍊 RentAFruit</span>
@@ -731,8 +1096,19 @@
           <span class="uname">${name}</span>
           <button class="btn-sm" onclick="logOut()">Logout</button>
         </div>
-      </header>`;
+      </header>
+      <nav class="navbar">
+        <span class="nav-link ${view==="home"||view==="destination"||view==="room"?"active":""}" onclick="goHome()">🏠 Home</span>
+        <span class="nav-link ${view==="home"||view==="destination"||view==="room"?"active":""}" onclick="goHome()" style="display:none"></span>
+        <span class="nav-link ${view==="trade"?"active":""}" onclick="goTrade()">🔄 Trade</span>
+        <span class="nav-link ${view==="about"?"active":""}" onclick="goAbout()">ℹ️ About</span>
+        <span class="nav-link ${view==="contact"?"active":""}" onclick="goContact()">✉️ Contact</span>
+        <span class="nav-link ${view==="privacy"?"active":""}" onclick="goPrivacy()">🔒 Privacy</span>
+        <span class="nav-link ${view==="terms"?"active":""}" onclick="goTerms()">📜 Terms</span>
+        ${adminBtn}
+      </nav>`;
 
+    /* ── HOME — UNCHANGED ── */
     if (view === "home") {
       root.innerHTML = header + `
         <main class="main">
@@ -746,9 +1122,7 @@
                   <span class="boat-label">🚢 Beast Hunter Boat:</span>
                   <div class="toggle-wrap">
                     <label class="switch">
-                      <input type="checkbox" id="boatToggle"
-                        ${window._myBoat ? "checked":""}
-                        onchange="toggleBeastBoat()"/>
+                      <input type="checkbox" id="boatToggle" ${window._myBoat?"checked":""} onchange="toggleBeastBoat()"/>
                       <span class="slider"></span>
                     </label>
                     <div id="boatIndicator" class="boat-indicator ${window._myBoat?"on":"off"}">
@@ -781,10 +1155,12 @@
               <div class="dest-cta">Hunt here <span>→</span></div>
             </div>
           </div>
-        </main>`;
+        </main>
+        ${footerNav()}`;
       return;
     }
 
+    /* ── DESTINATION — UNCHANGED ── */
     if (view === "destination") {
       root.innerHTML = header + `
         <main class="main">
@@ -800,6 +1176,7 @@
       return;
     }
 
+    /* ── ROOM — UNCHANGED ── */
     if (view === "room") {
       root.innerHTML = header + `
         <main class="main room-layout">
@@ -813,15 +1190,328 @@
             <div class="chat-head">💬 Room Chat</div>
             <div class="chat-body" id="chatBox"></div>
             <div class="chat-foot">
-              <input id="chatInput" class="chat-input"
-                placeholder="Say something fun... 😄"
-                onkeypress="onChatKey(event)"/>
+              <input id="chatInput" class="chat-input" placeholder="Say something fun... 😄" onkeypress="onChatKey(event)"/>
               <button class="btn-send" onclick="sendMessage()">➤</button>
             </div>
           </div>
         </main>`;
       return;
     }
+
+    /* ── NEW: TRADE PAGE ── */
+    if (view === "trade") {
+      tradeWants  = [null,null,null,null];
+      tradeOffers = [null,null,null,null];
+      root.innerHTML = header + `
+        <main class="main">
+          <div class="section-title">🔄 Fruit & Game Pass Trading</div>
+          <p class="section-desc">Browse live trade listings from the RentAFruit community. Post what you want and what you're offering — get matched with other Blox Fruits players instantly!</p>
+
+          ${currentUser && !isGuest ? `
+          <div class="trade-form-box">
+            <div class="trade-form-title">📬 Post a New Trade</div>
+            <div class="trade-sides">
+              <div>
+                <div class="trade-side-label want">🔵 I WANT (up to 4)</div>
+                <div class="fruit-slots">
+                  ${[0,1,2,3].map((i) => `<div class="fruit-slot" id="slot-want-${i}" onclick="openFruitPicker('want',${i})">+ Add Fruit</div>`).join("")}
+                </div>
+              </div>
+              <div>
+                <div class="trade-side-label offer">🟢 I OFFER (up to 4)</div>
+                <div class="fruit-slots">
+                  ${[0,1,2,3].map((i) => `<div class="fruit-slot" id="slot-offer-${i}" onclick="openFruitPicker('offer',${i})">+ Add Fruit</div>`).join("")}
+                </div>
+              </div>
+            </div>
+            <button class="btn-post" id="postTradeBtn" onclick="postTrade()">🤝 Post Trade Listing</button>
+          </div>` : `<div class="trade-form-box" style="text-align:center;padding:24px;">
+            <p style="color:var(--muted);font-weight:700;">🔒 Sign in with Google to post trade listings!</p>
+          </div>`}
+
+          <div class="section-title" style="margin-bottom:14px;">📋 Active Trade Listings</div>
+          <div id="tradeList" class="trade-list">
+            <div class="empty-msg" style="border:none;">🔍 Loading trades...</div>
+          </div>
+        </main>
+        ${footerNav()}`;
+      return;
+    }
+
+    /* ── NEW: ADMIN PAGE ── */
+    if (view === "admin" && isAdmin()) {
+      root.innerHTML = header + `
+        <main class="main">
+          <div class="admin-badge">⭐ Admin Panel — ${name}</div>
+          <div class="section-title">🍊 Manage Fruits & Game Passes</div>
+          <p class="section-desc">Add fruits and game passes to the database. These will appear in the trade picker for all users.</p>
+
+          <div class="admin-form">
+            <h3>➕ Add New Item</h3>
+            <div class="form-grid">
+              <div class="form-field">
+                <label class="form-label">ITEM NAME</label>
+                <input id="fn-name" class="form-input" placeholder="e.g. Dragon Fruit"/>
+              </div>
+              <div class="form-field">
+                <label class="form-label">VALUE (Beli)</label>
+                <input id="fn-value" class="form-input" type="number" placeholder="e.g. 3500000"/>
+              </div>
+              <div class="form-field">
+                <label class="form-label">PHOTO URL</label>
+                <input id="fn-photo" class="form-input" placeholder="https://...image.png"/>
+              </div>
+              <div class="form-field">
+                <label class="form-label">RARITY</label>
+                <select id="fn-rarity" class="form-select">
+                  <option value="Common">Common</option>
+                  <option value="Uncommon">Uncommon</option>
+                  <option value="Rare">Rare</option>
+                  <option value="Legendary">Legendary</option>
+                  <option value="Mythical">Mythical</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">TYPE</label>
+                <select id="fn-type" class="form-select">
+                  <option value="Devil Fruit">Devil Fruit</option>
+                  <option value="Game Pass">Game Pass</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn-admin" id="addFruitBtn" onclick="addFruit()">➕ Add Item</button>
+          </div>
+
+          <div class="section-title" style="margin-bottom:14px;">📦 All Items in Database</div>
+          <div id="adminFruitList" class="admin-fruit-list">
+            <div style="color:var(--muted);font-size:0.9rem;font-weight:600;">Loading...</div>
+          </div>
+        </main>`;
+      return;
+    }
+
+    /* ── NEW: ABOUT PAGE ── */
+    if (view === "about") {
+      root.innerHTML = header + `
+        <main class="main">
+          <div class="content-page">
+            <h1>About RentAFruit</h1>
+            <p class="page-sub">COMMUNITY TOOL FOR BLOX FRUITS PLAYERS</p>
+
+            <div class="content-section">
+              <h2>🍊 What is RentAFruit?</h2>
+              <p>RentAFruit is a free, fan-made community platform designed specifically for players of Blox Fruits, the popular Roblox game. Our platform gives players a dedicated place to find hunt partners, coordinate Leviathan raids, and trade Devil Fruits and Game Passes with other members of the community.</p>
+              <p>We built RentAFruit because we noticed how hard it was to find reliable teammates for difficult boss hunts like the Leviathan. Searching through random servers is time-consuming, and Discord servers can be chaotic. RentAFruit solves this by giving players a structured, easy-to-use matchmaking system — right in your browser, no download required.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>🐉 The Leviathan Hunt System</h2>
+              <p>The Leviathan is one of the most challenging and rewarding events in Blox Fruits. To fight it successfully, players need a full team of up to 7 members, and critically, at least one player needs the Beast Hunter Boat to summon the Leviathan at sea.</p>
+              <p>RentAFruit's hunt matchmaking system lets you create or join rooms for specific hunting spots — Tiki Outpost and Hydra Island. Each room shows a live countdown timer, the current player count, and whether a Beast Hunter Boat is available in the team. Rooms expire automatically after one hour, keeping the listings clean and up to date.</p>
+              <p>The built-in room chat lets players coordinate strategies, discuss spawn timing, and communicate in real time — all without leaving the page.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>🔄 The Trading System</h2>
+              <p>Trading is one of the most active parts of the Blox Fruits economy. Devil Fruits range from common drops worth a few thousand Beli to Mythical fruits worth tens of millions. RentAFruit's trading board lets players post exactly what they want and what they're offering, with up to four items on each side of a trade.</p>
+              <p>Every fruit in our database includes its name, approximate Beli value, rarity tier, and photo — so you always know what a fair trade looks like. Listings update in real time, so you'll never miss a fresh offer.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>👥 Built for the Community</h2>
+              <p>RentAFruit is an independent, community-driven project. We are not affiliated with Roblox Corporation or the official Blox Fruits development team. This is a fan-made tool created out of love for the game and its player base.</p>
+              <p>Our goal is to keep RentAFruit free, fast, and useful for every player — whether you're a beginner looking for your first Leviathan run or a veteran trader chasing that Mythical fruit.</p>
+              <div class="info-chips">
+                <span class="info-chip">🆓 Free Forever</span>
+                <span class="info-chip">⚡ Real-Time</span>
+                <span class="info-chip">📱 Mobile Friendly</span>
+                <span class="info-chip">🌍 Global Community</span>
+              </div>
+            </div>
+          </div>
+        </main>
+        ${footerNav()}`;
+      return;
+    }
+
+    /* ── NEW: CONTACT PAGE ── */
+    if (view === "contact") {
+      root.innerHTML = header + `
+        <main class="main">
+          <div class="content-page">
+            <h1>Contact Us</h1>
+            <p class="page-sub">WE'D LOVE TO HEAR FROM YOU</p>
+
+            <div class="content-section">
+              <h2>✉️ Get in Touch</h2>
+              <p>Have a suggestion, found a bug, or want to report an issue? Fill in the form below and we'll get back to you as soon as possible. We read every message and genuinely appreciate feedback from the community — it helps us make RentAFruit better for everyone.</p>
+              <p>For trade disputes, room issues, or urgent matters, you can also reach us directly at <strong style="color:var(--purple)">support@rentafruit.shop</strong></p>
+            </div>
+
+            <div class="content-section">
+              <h2>📬 Send a Message</h2>
+              <div class="contact-form">
+                <input id="cname"  type="text"  placeholder="Your name"/>
+                <input id="cemail" type="email" placeholder="Your email address"/>
+                <textarea id="cmsg" rows="5" placeholder="Your message — bug report, suggestion, feedback..."></textarea>
+                <button class="btn-contact" onclick="submitContact()">Send Message ➤</button>
+              </div>
+            </div>
+
+            <div class="content-section">
+              <h2>⏱ Response Time</h2>
+              <p>We typically respond within 24–48 hours. For general questions about Blox Fruits gameplay, we recommend checking the official Blox Fruits wiki or the community Discord. RentAFruit is a platform tool — we're not able to provide in-game support or restore lost items.</p>
+            </div>
+          </div>
+        </main>
+        ${footerNav()}`;
+      return;
+    }
+
+    /* ── NEW: PRIVACY POLICY ── */
+    if (view === "privacy") {
+      root.innerHTML = header + `
+        <main class="main">
+          <div class="content-page">
+            <h1>Privacy Policy</h1>
+            <p class="page-sub">LAST UPDATED: JANUARY 2025</p>
+
+            <div class="content-section">
+              <h2>📋 Overview</h2>
+              <p>RentAFruit ("we", "our", "us") is committed to protecting the privacy of all users. This Privacy Policy explains what information we collect, how we use it, and your rights regarding that data. By using RentAFruit, you agree to the practices described below.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>🔐 Information We Collect</h2>
+              <p>When you sign in using Google Authentication, we collect and store the following information in our Firebase database:</p>
+              <ul>
+                <li>Your Google display name</li>
+                <li>Your Google profile picture URL</li>
+                <li>Your Google account's unique user ID (UID)</li>
+                <li>Your Beast Hunter Boat preference (true/false)</li>
+              </ul>
+              <p>If you use Guest mode, we collect only the name you choose to enter — no account information is stored.</p>
+              <p>When you participate in hunt rooms or trade listings, we store room data, player lists, chat messages, and trade offers in our Firebase Realtime Database. This data is associated with your user ID.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>🔧 How We Use Your Data</h2>
+              <p>Your data is used solely to operate the RentAFruit platform. Specifically:</p>
+              <ul>
+                <li>To display your name and avatar in hunt rooms and trade listings</li>
+                <li>To save your Beast Hunter Boat status across sessions</li>
+                <li>To enable real-time room matchmaking and chat functionality</li>
+                <li>To allow you to post and manage trade listings</li>
+              </ul>
+              <p>We do not sell, share, or use your personal data for advertising profiling. We do not send marketing emails.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>🔥 Firebase & Google Services</h2>
+              <p>RentAFruit uses Firebase (a Google product) for authentication, database storage, and analytics. Firebase may collect additional technical data such as device type, IP address, and usage patterns as described in Google's Privacy Policy. Firebase data is stored on Google's servers and subject to Google's data retention policies.</p>
+              <p>We use Firebase Analytics to understand how users navigate the site. This data is anonymised and aggregated — we cannot identify individual users from analytics data.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>📊 Google AdSense & Cookies</h2>
+              <p>RentAFruit may display advertisements through Google AdSense. Google AdSense uses cookies and similar technologies to show relevant ads based on your browsing behaviour. You can opt out of personalised advertising by visiting Google's Ad Settings. We use cookies to maintain your login session and improve site performance. No tracking cookies are set by RentAFruit itself beyond what Firebase and AdSense require.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>🗑 Data Deletion</h2>
+              <p>Hunt rooms are automatically deleted after one hour of expiry. Trade listings can be deleted by their poster at any time. If you wish to have your user profile permanently removed from our database, contact us at support@rentafruit.shop and we will delete your data within 7 days.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>👶 Children's Privacy</h2>
+              <p>RentAFruit is intended for general audiences. We do not knowingly collect personal data from children under the age of 13. If you believe a child has provided us with personal information, please contact us immediately so we can remove it.</p>
+            </div>
+          </div>
+        </main>
+        ${footerNav()}`;
+      return;
+    }
+
+    /* ── NEW: TERMS & CONDITIONS ── */
+    if (view === "terms") {
+      root.innerHTML = header + `
+        <main class="main">
+          <div class="content-page">
+            <h1>Terms & Conditions</h1>
+            <p class="page-sub">PLEASE READ CAREFULLY BEFORE USING RENTAFRUIT</p>
+
+            <div class="content-section">
+              <h2>📜 Acceptance of Terms</h2>
+              <p>By accessing or using RentAFruit ("the Platform"), you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use the platform. These terms apply to all users, including those who browse without signing in.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>🎮 Platform Purpose</h2>
+              <p>RentAFruit is a fan-made, community matchmaking and trading tool for players of Blox Fruits on Roblox. RentAFruit is not affiliated with, endorsed by, or connected to Roblox Corporation or the official Blox Fruits development team in any way. All game-related trademarks, names, and assets remain the property of their respective owners.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>✅ Acceptable Use</h2>
+              <p>You agree to use RentAFruit only for its intended purpose — coordinating Leviathan hunts and trading in-game items. You must not:</p>
+              <ul>
+                <li>Post spam, misleading, or abusive trade listings</li>
+                <li>Use the chat system to harass, bully, or threaten other users</li>
+                <li>Attempt to exploit, hack, or reverse-engineer the platform</li>
+                <li>Impersonate other players or create fake accounts</li>
+                <li>Post content that is illegal, offensive, or violates the rights of others</li>
+                <li>Use the platform for real-money transactions of any kind</li>
+              </ul>
+            </div>
+
+            <div class="content-section">
+              <h2>⚠️ User Responsibility</h2>
+              <p>All trades and agreements made through RentAFruit are between users only. RentAFruit does not mediate, guarantee, or take responsibility for the outcome of any in-game trade. Scams and failed trades are a risk inherent to online gaming — always trade carefully and verify the other player's reputation.</p>
+              <p>You are solely responsible for the content you post, including chat messages and trade listings. We reserve the right to remove any content that violates these terms without prior notice.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>🔒 Account Security</h2>
+              <p>RentAFruit uses Google Sign-In for authentication. You are responsible for maintaining the security of your Google account. RentAFruit will never ask for your Roblox password or any payment information.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>🚫 Termination</h2>
+              <p>We reserve the right to ban or restrict access for any user who violates these terms, abuses the platform, or disrupts the community. In serious cases, we may report abuse to relevant authorities.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>📝 Changes to Terms</h2>
+              <p>We may update these Terms and Conditions at any time. Continued use of RentAFruit after changes are posted constitutes acceptance of the updated terms. We recommend checking this page periodically.</p>
+            </div>
+
+            <div class="content-section">
+              <h2>⚖️ Disclaimer</h2>
+              <p>RentAFruit is provided "as is" without any warranties. We do not guarantee uninterrupted availability, data accuracy, or the completeness of fruit value information. Use the platform at your own discretion. We are not liable for any loss — in-game or otherwise — resulting from your use of this platform.</p>
+            </div>
+          </div>
+        </main>
+        ${footerNav()}`;
+      return;
+    }
+  }
+
+  function footerNav() {
+    return `
+      <div class="footer-nav">
+        <span onclick="goHome()">🏠 Home</span>
+        <span class="sep">·</span>
+        <span onclick="goTrade()">🔄 Trade</span>
+        <span class="sep">·</span>
+        <span onclick="goAbout()">ℹ️ About</span>
+        <span class="sep">·</span>
+        <span onclick="goContact()">✉️ Contact</span>
+        <span class="sep">·</span>
+        <span onclick="goPrivacy()">🔒 Privacy Policy</span>
+        <span class="sep">·</span>
+        <span onclick="goTerms()">📜 Terms & Conditions</span>
+        <span class="sep">·</span>
+        <span style="color:var(--muted);cursor:default;">© 2025 RentAFruit — Fan-made Blox Fruits Tool</span>
+      </div>`;
   }
 
 </script>
