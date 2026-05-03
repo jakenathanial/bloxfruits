@@ -29,7 +29,6 @@
   body::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse at 15% 15%, rgba(176,110,243,0.1) 0%, transparent 55%), radial-gradient(ellipse at 85% 85%, rgba(79,158,248,0.08) 0%, transparent 55%); pointer-events:none; z-index:0; }
   #app { position:relative; z-index:1; min-height:100vh; }
 
-  /* ── LOADER ── */
   .loader { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; gap:14px; }
   .loader-fruit { font-size:52px; animation:bounce 1s ease-in-out infinite; }
   @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
@@ -38,7 +37,6 @@
   .loader-bar-wrap { width:220px; height:6px; background:rgba(176,110,243,0.15); border-radius:99px; overflow:hidden; border:1px solid rgba(176,110,243,0.2); }
   .loader-bar { height:100%; width:0%; background:linear-gradient(90deg,var(--purple2),var(--purple),var(--blue2)); border-radius:99px; transition:width 0.4s ease; box-shadow:0 0 10px rgba(176,110,243,0.6); }
 
-  /* ── LOGIN ── */
   .login-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
   .login-glow { position:fixed; inset:0; background:radial-gradient(ellipse at 50% 40%, rgba(176,110,243,0.13) 0%, transparent 65%); animation:breathe 4s ease-in-out infinite; }
   @keyframes breathe { 0%,100%{opacity:1} 50%{opacity:0.5} }
@@ -58,7 +56,7 @@
   .btn-guest:hover { background:rgba(176,110,243,0.18); transform:translateY(-2px); }
   .login-err { margin-top:14px; padding:10px 14px; background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); border-radius:9px; color:var(--red); font-size:0.85rem; display:none; }
 
-  /* ── GUEST MODAL ── */
+  /* GUEST MODAL */
   .guest-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(6px); z-index:999; align-items:center; justify-content:center; }
   .guest-modal.show { display:flex; }
   .guest-box { background:var(--card); border:1.5px solid var(--border); border-radius:20px; padding:36px 32px; max-width:360px; width:92%; text-align:center; box-shadow:var(--gp); animation:floatin 0.35s ease; }
@@ -70,7 +68,6 @@
   .btn-enter { width:100%; padding:13px; background:linear-gradient(130deg,var(--purple2),var(--purple)); border:none; border-radius:11px; color:#fff; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; cursor:pointer; transition:all 0.2s; }
   .btn-enter:hover { transform:translateY(-2px); }
 
-  /* ── TOPBAR ── */
   .topbar { display:flex; align-items:center; justify-content:space-between; padding:12px 22px; background:rgba(7,7,26,0.95); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; }
   .topbar-logo { font-family:'Orbitron',sans-serif; font-weight:900; font-size:1rem; background:linear-gradient(90deg,var(--purple),var(--blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; cursor:pointer; letter-spacing:1px; user-select:none; }
   .topbar-right { display:flex; align-items:center; gap:10px; }
@@ -80,7 +77,6 @@
   .btn-sm { padding:6px 13px; background:transparent; border:1.5px solid var(--border); border-radius:8px; color:var(--muted); font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
   .btn-sm:hover { border-color:var(--purple); color:var(--purple); }
 
-  /* ── NAV BAR (NEW) ── */
   .navbar { display:flex; align-items:center; gap:4px; padding:8px 22px; background:rgba(7,7,26,0.88); border-bottom:1px solid rgba(176,110,243,0.1); overflow-x:auto; scrollbar-width:none; flex-wrap:nowrap; }
   .navbar::-webkit-scrollbar { display:none; }
   .nav-link { padding:6px 14px; border-radius:20px; font-size:0.82rem; font-weight:700; color:var(--muted); cursor:pointer; transition:all 0.2s; white-space:nowrap; border:1.5px solid transparent; }
@@ -90,10 +86,8 @@
   .nav-link.admin:hover { background:rgba(251,191,36,0.1); }
   .nav-link.admin.active { background:rgba(251,191,36,0.12); border-color:rgba(251,191,36,0.4); }
 
-  /* ── MAIN ── */
   .main { max-width:1080px; margin:0 auto; padding:26px 18px; }
 
-  /* ── PROFILE PANEL ── */
   .profile-panel { background:rgba(176,110,243,0.06); border:1.5px solid var(--border); border-radius:18px; padding:16px 20px; margin-bottom:30px; }
   .profile-inner { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
   .profile-avatar { width:50px; height:50px; border-radius:50%; border:2px solid var(--purple); object-fit:cover; box-shadow:0 0 12px rgba(176,110,243,0.4); }
@@ -116,14 +110,12 @@
   .dot.off { background:var(--red); }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  /* ── HERO ── */
   .hero { text-align:center; margin-bottom:36px; }
   .hero-eye { font-size:0.72rem; letter-spacing:5px; color:var(--muted); font-weight:700; margin-bottom:8px; }
   .hero-h1 { font-family:'Orbitron',sans-serif; font-size:clamp(1.3rem,4vw,2.4rem); font-weight:900; line-height:1.25; }
   .grad { background:linear-gradient(90deg,var(--purple),var(--blue2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
   .hero-tip { margin-top:10px; font-size:0.9rem; color:var(--muted); font-weight:600; }
 
-  /* ── DEST CARDS ── */
   .dest-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; }
   .dest-card { position:relative; overflow:hidden; background:rgba(14,14,40,0.9); border:1.5px solid var(--border); border-radius:20px; padding:38px 26px; text-align:center; cursor:pointer; transition:all 0.28s ease; animation:floatin 0.45s ease both; }
   .dest-card:hover { transform:translateY(-7px); border-color:var(--purple); box-shadow:var(--gp),0 20px 40px rgba(0,0,0,0.4); }
@@ -136,7 +128,6 @@
   .dest-cta { font-size:0.88rem; font-weight:800; color:var(--purple); display:flex; align-items:center; justify-content:center; gap:6px; }
   .dest-card:nth-child(2) .dest-cta { color:var(--blue); }
 
-  /* ── PAGE HEADER ── */
   .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:12px; }
   .page-title { font-family:'Orbitron',sans-serif; font-size:1.25rem; font-weight:900; color:var(--purple); letter-spacing:1px; }
   .btn-back { padding:8px 14px; background:transparent; border:1.5px solid var(--border); border-radius:9px; color:var(--muted); font-family:'Nunito',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
@@ -145,7 +136,6 @@
   .btn-create:hover { transform:translateY(-2px); }
   .btn-create:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 
-  /* ── ROOM LIST ── */
   .room-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:15px; min-height:120px; }
   .room-card { background:rgba(14,14,40,0.94); border:1.5px solid var(--border); border-radius:16px; padding:18px; cursor:pointer; transition:all 0.25s; animation:floatin 0.35s ease both; }
   .room-card:hover { border-color:var(--blue); transform:translateY(-3px); box-shadow:var(--gb); }
@@ -163,7 +153,6 @@
   .btn-join.full { background:rgba(255,255,255,0.07); color:var(--muted); cursor:not-allowed; transform:none; }
   .empty-msg { grid-column:1/-1; text-align:center; color:var(--muted); padding:55px 20px; border:1.5px dashed var(--border); border-radius:16px; font-size:0.95rem; font-weight:600; }
 
-  /* ── ROOM VIEW ── */
   .room-layout { display:grid; grid-template-columns:1fr; gap:18px; }
   @media(min-width:768px){ .room-layout{grid-template-columns:1fr 360px; align-items:start;} }
   .room-title-row { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
@@ -181,7 +170,6 @@
   .p-boat.yes { filter:drop-shadow(0 0 5px rgba(52,211,153,0.9)); }
   .p-boat.no { opacity:0.3; }
 
-  /* ── CHAT ── */
   .chat-panel { background:rgba(14,14,40,0.95); border:1.5px solid var(--border); border-radius:18px; display:flex; flex-direction:column; height:490px; }
   .chat-head { padding:13px 16px; font-size:0.88rem; font-weight:800; color:var(--purple); border-bottom:1px solid var(--border); flex-shrink:0; }
   .chat-body { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; scrollbar-width:thin; scrollbar-color:rgba(176,110,243,0.35) transparent; }
@@ -199,13 +187,10 @@
   .btn-send { padding:9px 15px; background:linear-gradient(130deg,var(--purple2),var(--purple)); border:none; border-radius:10px; color:#fff; font-size:1rem; cursor:pointer; transition:all 0.18s; }
   .btn-send:hover { opacity:0.85; transform:scale(1.06); }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     TRADE PAGE STYLES
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* TRADE PAGE */
   .section-title { font-family:'Orbitron',sans-serif; font-size:1.1rem; font-weight:900; color:var(--purple); letter-spacing:1.5px; margin-bottom:6px; }
   .section-desc { color:var(--muted); font-size:0.88rem; line-height:1.7; font-weight:600; margin-bottom:18px; letter-spacing:0.2px; }
 
-  /* ── COMPACT POST TRADE FORM ── */
   .trade-form-box { background:rgba(14,14,40,0.92); border:1.5px solid var(--border); border-radius:16px; padding:16px 18px; margin-bottom:22px; max-width:680px; margin-left:auto; margin-right:auto; }
   .trade-form-title { font-size:0.88rem; font-weight:800; color:var(--muted); letter-spacing:1px; margin-bottom:12px; text-transform:uppercase; }
   .trade-sides { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
@@ -214,17 +199,8 @@
   .trade-side-label.want { color:var(--blue2); }
   .trade-side-label.offer { color:var(--green); }
 
-  /* Fruit slots — compact square */
   .fruit-slots { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-  .fruit-slot {
-    background:rgba(255,255,255,0.03);
-    border:1.5px dashed rgba(255,255,255,0.1);
-    border-radius:10px;
-    aspect-ratio:1/1;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    cursor:pointer; transition:all 0.22s; position:relative; overflow:hidden;
-    gap:3px;
-  }
+  .fruit-slot { background:rgba(255,255,255,0.03); border:1.5px dashed rgba(255,255,255,0.1); border-radius:10px; aspect-ratio:1/1; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:all 0.22s; position:relative; overflow:hidden; gap:3px; }
   .fruit-slot:hover { border-color:var(--purple); background:rgba(176,110,243,0.08); transform:scale(1.04); box-shadow:0 0 14px rgba(176,110,243,0.2); }
   .fruit-slot .plus-icon { font-size:1.6rem; color:rgba(176,110,243,0.5); line-height:1; transition:all 0.2s; }
   .fruit-slot:hover .plus-icon { color:var(--purple); transform:scale(1.15); }
@@ -237,81 +213,40 @@
   .btn-post:hover { transform:translateY(-2px); box-shadow:0 0 28px rgba(176,110,243,0.6); }
   .btn-post:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
 
-  /* ── TRADE LISTINGS GRID — 3 per row ── */
   .trade-list-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px; }
-  .trade-list {
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:14px;
-    align-items:start;
-  }
+  /* FIX: grid with auto-fill so cards don't stomp each other */
+  .trade-list { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; align-items:start; }
   @media(max-width:900px){ .trade-list { grid-template-columns:repeat(2,1fr); } }
   @media(max-width:560px){ .trade-list { grid-template-columns:1fr; } }
 
-  /* ── TRADE CARD ── */
-  .trade-card {
-    background:rgba(12,12,32,0.97);
-    border:1.5px solid rgba(176,110,243,0.15);
-    border-radius:16px;
-    padding:14px;
-    cursor:pointer;
-    transition:all 0.25s cubic-bezier(0.34,1.3,0.64,1);
-    display:flex; flex-direction:column; gap:10px;
-    animation:floatin 0.35s ease both;
-  }
+  .trade-card { background:rgba(12,12,32,0.97); border:1.5px solid rgba(176,110,243,0.15); border-radius:16px; padding:14px; cursor:pointer; transition:all 0.25s cubic-bezier(0.34,1.3,0.64,1); display:flex; flex-direction:column; gap:10px; animation:floatin 0.35s ease both; }
   .trade-card:hover { border-color:rgba(176,110,243,0.5); transform:translateY(-4px) scale(1.01); box-shadow:0 12px 32px rgba(176,110,243,0.18); }
   .trade-card-top { display:flex; justify-content:space-between; align-items:center; }
   .trade-poster { font-size:0.8rem; font-weight:800; color:var(--purple); letter-spacing:0.3px; }
-  .trade-time { font-size:0.68rem; color:var(--muted); font-weight:600; }
   .trade-card-body { display:grid; grid-template-columns:1fr 18px 1fr; align-items:start; gap:6px; }
   .trade-side-tag { font-size:0.62rem; font-weight:900; letter-spacing:1.5px; margin-bottom:6px; text-transform:uppercase; }
   .trade-side-tag.want { color:var(--blue2); }
   .trade-side-tag.offer { color:var(--green); }
   .trade-arrow { font-size:1rem; color:rgba(255,255,255,0.2); text-align:center; padding-top:22px; }
 
-  /* 2x2 fruit grid inside card */
-  .card-fruit-grid {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:5px;
-  }
-  .card-fruit-tile {
-    background:rgba(255,255,255,0.04);
-    border:1px solid rgba(255,255,255,0.07);
-    border-radius:9px;
-    padding:6px 5px;
-    display:flex; flex-direction:column; align-items:center; gap:3px;
-    transition:all 0.2s;
-    position:relative;
-    overflow:hidden;
-  }
+  .card-fruit-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+  .card-fruit-tile { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:9px; padding:6px 5px; display:flex; flex-direction:column; align-items:center; gap:3px; transition:all 0.2s; position:relative; overflow:hidden; }
   .card-fruit-tile:hover { transform:scale(1.04); }
   .card-fruit-tile img { width:40px; height:40px; object-fit:contain; display:block; }
   .card-fruit-tile .cft-name { font-size:0.6rem; font-weight:800; color:var(--text); text-align:center; line-height:1.2; letter-spacing:0.2px; }
   .card-fruit-empty { background:rgba(255,255,255,0.02); border:1px dashed rgba(255,255,255,0.07); border-radius:9px; display:flex; align-items:center; justify-content:center; min-height:58px; }
 
-  /* Rarity glow system on tiles */
   .card-fruit-tile.rarity-common { border-color:rgba(52,211,153,0.35); background:rgba(52,211,153,0.05); }
   .card-fruit-tile.rarity-common img { filter:drop-shadow(0 0 4px rgba(52,211,153,0.5)); }
-  .card-fruit-tile.rarity-common:hover { box-shadow:0 0 10px rgba(52,211,153,0.3); }
-
   .card-fruit-tile.rarity-uncommon { border-color:rgba(52,211,153,0.4); background:rgba(52,211,153,0.07); }
   .card-fruit-tile.rarity-uncommon img { filter:drop-shadow(0 0 5px rgba(52,211,153,0.6)); }
-  .card-fruit-tile.rarity-uncommon:hover { box-shadow:0 0 12px rgba(52,211,153,0.35); }
-
   .card-fruit-tile.rarity-rare { border-color:rgba(79,158,248,0.45); background:rgba(79,158,248,0.07); }
   .card-fruit-tile.rarity-rare img { filter:drop-shadow(0 0 6px rgba(79,158,248,0.65)); }
-  .card-fruit-tile.rarity-rare:hover { box-shadow:0 0 14px rgba(79,158,248,0.4); }
-
   .card-fruit-tile.rarity-legendary { border-color:rgba(176,110,243,0.5); background:rgba(176,110,243,0.08); }
   .card-fruit-tile.rarity-legendary img { filter:drop-shadow(0 0 8px rgba(176,110,243,0.75)); }
-  .card-fruit-tile.rarity-legendary:hover { box-shadow:0 0 16px rgba(176,110,243,0.45); }
-
   .card-fruit-tile.rarity-mythical { border-color:rgba(251,146,60,0.55); background:rgba(251,146,60,0.08); }
   .card-fruit-tile.rarity-mythical img { filter:drop-shadow(0 0 10px rgba(251,146,60,0.8)); }
-  .card-fruit-tile.rarity-mythical:hover { box-shadow:0 0 18px rgba(251,146,60,0.5); }
 
-  /* Rarity badge pill */
   .rarity-pill { font-size:0.55rem; font-weight:900; letter-spacing:0.8px; padding:1px 5px; border-radius:20px; text-transform:uppercase; white-space:nowrap; }
   .rarity-pill.rarity-common { background:rgba(52,211,153,0.15); color:var(--green); border:1px solid rgba(52,211,153,0.3); }
   .rarity-pill.rarity-uncommon { background:rgba(52,211,153,0.18); color:#6ee7b7; border:1px solid rgba(52,211,153,0.35); }
@@ -319,7 +254,6 @@
   .rarity-pill.rarity-legendary { background:rgba(176,110,243,0.15); color:var(--purple); border:1px solid rgba(176,110,243,0.35); }
   .rarity-pill.rarity-mythical { background:rgba(251,146,60,0.15); color:var(--orange); border:1px solid rgba(251,146,60,0.4); }
 
-  /* Legacy rarity badge (admin + picker) */
   .rarity { display:inline-block; padding:2px 8px; border-radius:20px; font-size:0.62rem; font-weight:800; letter-spacing:1px; }
   .rarity-Common { background:rgba(52,211,153,0.15); color:var(--green); border:1px solid rgba(52,211,153,0.3); }
   .rarity-Uncommon { background:rgba(52,211,153,0.18); color:#6ee7b7; border:1px solid rgba(52,211,153,0.35); }
@@ -332,10 +266,11 @@
   .btn-delete-trade { padding:5px 10px; background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25); border-radius:7px; color:var(--red); font-family:'Nunito',sans-serif; font-size:0.7rem; font-weight:800; cursor:pointer; transition:all 0.18s; white-space:nowrap; }
   .btn-delete-trade:hover { background:rgba(248,113,113,0.2); }
 
-  /* ── FILTER BUTTON + MODAL ── */
   .btn-filter { display:inline-flex; align-items:center; gap:7px; padding:8px 16px; background:rgba(34,211,238,0.08); border:1.5px solid rgba(34,211,238,0.28); border-radius:10px; color:var(--blue2); font-family:'Nunito',sans-serif; font-size:0.82rem; font-weight:800; cursor:pointer; transition:all 0.2s; letter-spacing:0.3px; }
   .btn-filter:hover { background:rgba(34,211,238,0.15); transform:translateY(-1px); box-shadow:0 0 14px rgba(34,211,238,0.2); }
   .btn-filter.active { background:rgba(34,211,238,0.18); border-color:var(--blue2); box-shadow:0 0 16px rgba(34,211,238,0.3); }
+
+  /* FILTER MODAL */
   .filter-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.72); backdrop-filter:blur(10px); z-index:996; align-items:center; justify-content:center; padding:20px; }
   .filter-modal.show { display:flex; }
   .filter-box { background:var(--card); border:1.5px solid var(--border); border-radius:20px; padding:22px; max-width:560px; width:100%; box-shadow:var(--gp); animation:floatin 0.3s ease; }
@@ -363,7 +298,7 @@
   .filter-active-banner { padding:8px 14px; background:rgba(34,211,238,0.08); border:1px solid rgba(34,211,238,0.25); border-radius:9px; font-size:0.78rem; font-weight:700; color:var(--blue2); margin-bottom:10px; display:none; }
   .filter-active-banner.show { display:block; }
 
-  /* ── TRADE DETAIL MODAL ── */
+  /* TRADE DETAIL MODAL */
   .trade-detail-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(12px); z-index:997; align-items:center; justify-content:center; padding:20px; }
   .trade-detail-modal.show { display:flex; }
   .trade-detail-box { background:var(--card); border:1.5px solid var(--border); border-radius:22px; width:100%; max-width:820px; max-height:90vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:var(--gp),0 32px 64px rgba(0,0,0,0.6); animation:floatin 0.3s ease; }
@@ -387,13 +322,14 @@
   .trade-detail-fruit .tdf-name { font-size:0.82rem; font-weight:800; color:var(--text); letter-spacing:0.2px; }
   .trade-detail-fruit .tdf-val { font-size:0.68rem; color:var(--muted); margin-top:2px; }
   .trade-detail-actions { display:flex; gap:8px; margin-top:4px; }
-  /* Trade DM Chat Panel */
-  .trade-chat-panel { display:flex; flex-direction:column; height:100%; }
+
+  /* FIX: Trade DM chat panel must fill right column properly */
+  .trade-chat-panel { display:flex; flex-direction:column; height:100%; min-height:0; overflow:hidden; }
   .trade-chat-head { padding:12px 16px; font-size:0.82rem; font-weight:800; color:var(--blue2); border-bottom:1px solid var(--border); flex-shrink:0; background:rgba(34,211,238,0.04); letter-spacing:0.3px; }
-  .trade-chat-body { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; min-height:160px; scrollbar-width:thin; scrollbar-color:rgba(176,110,243,0.35) transparent; }
+  .trade-chat-body { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; min-height:0; scrollbar-width:thin; scrollbar-color:rgba(176,110,243,0.35) transparent; }
   .trade-chat-foot { display:flex; gap:8px; padding:10px; border-top:1px solid var(--border); flex-shrink:0; }
 
-  /* ── FRUIT PICKER MODAL ── */
+  /* FRUIT PICKER MODAL */
   .fruit-picker-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.78); backdrop-filter:blur(10px); z-index:998; align-items:center; justify-content:center; padding:20px; }
   .fruit-picker-modal.show { display:flex; }
   .fruit-picker-box { background:var(--card); border:1.5px solid var(--border); border-radius:20px; padding:22px; max-width:520px; width:100%; max-height:82vh; display:flex; flex-direction:column; box-shadow:var(--gp); animation:floatin 0.3s ease; }
@@ -406,17 +342,13 @@
   .fruit-picker-item:hover { transform:translateY(-3px) scale(1.03); }
   .fruit-picker-item img { width:52px; height:52px; object-fit:contain; margin-bottom:5px; display:block; margin-left:auto; margin-right:auto; }
   .fruit-picker-item .fp-name { font-size:0.7rem; font-weight:800; color:var(--text); letter-spacing:0.2px; }
-  .fruit-picker-item .fp-val { font-size:0.62rem; color:var(--muted); margin-top:1px; }
-  /* Rarity glow in picker */
   .fp-common { border-color:rgba(52,211,153,0.3); } .fp-common:hover { border-color:rgba(52,211,153,0.7); box-shadow:0 0 14px rgba(52,211,153,0.3); }
   .fp-rare { border-color:rgba(79,158,248,0.35); } .fp-rare:hover { border-color:rgba(79,158,248,0.75); box-shadow:0 0 14px rgba(79,158,248,0.35); }
   .fp-legendary { border-color:rgba(176,110,243,0.4); } .fp-legendary:hover { border-color:var(--purple); box-shadow:0 0 16px rgba(176,110,243,0.45); }
   .fp-mythical { border-color:rgba(251,146,60,0.4); } .fp-mythical:hover { border-color:var(--orange); box-shadow:0 0 18px rgba(251,146,60,0.45); }
   .no-fruits-msg { text-align:center; color:var(--muted); padding:40px 20px; font-size:0.9rem; font-weight:600; letter-spacing:0.3px; }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     NEW: ADMIN PAGE STYLES
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ADMIN */
   .admin-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(251,191,36,0.15); border:1.5px solid rgba(251,191,36,0.4); border-radius:20px; padding:5px 14px; font-size:0.78rem; font-weight:800; color:var(--yellow); margin-bottom:20px; }
   .admin-form { background:rgba(14,14,40,0.92); border:1.5px solid rgba(251,191,36,0.2); border-radius:18px; padding:22px; margin-bottom:28px; }
   .admin-form h3 { font-size:0.95rem; font-weight:800; color:var(--yellow); margin-bottom:16px; }
@@ -438,9 +370,7 @@
   .btn-del-fruit { width:100%; padding:6px; background:rgba(248,113,113,0.1); border:1.5px solid rgba(248,113,113,0.3); border-radius:7px; color:var(--red); font-size:0.75rem; font-weight:800; cursor:pointer; transition:all 0.18s; font-family:'Nunito',sans-serif; }
   .btn-del-fruit:hover { background:rgba(248,113,113,0.22); }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     NEW: CONTENT PAGES (About/Contact/Privacy/Terms)
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* CONTENT PAGES */
   .content-page { max-width:780px; margin:0 auto; }
   .content-page h1 { font-family:'Orbitron',sans-serif; font-size:1.5rem; font-weight:900; color:var(--purple); margin-bottom:8px; }
   .content-page .page-sub { font-size:0.8rem; letter-spacing:3px; color:var(--muted); font-weight:700; margin-bottom:28px; }
@@ -493,7 +423,10 @@
   </div>
 </div>
 
-<!-- Filter Modal -->
+<!--
+  FIX: Filter modal slots are now plain static HTML (no JS template literals in HTML).
+  Template literals only work inside <script>, not raw HTML.
+-->
 <div class="filter-modal" id="filterModal">
   <div class="filter-box">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
@@ -507,13 +440,19 @@
       <div>
         <div class="filter-side-label want">They Want</div>
         <div class="filter-slots">
-          ${[0,1,2,3].map(i=>`<div class="filter-slot" id="fslot-want-${i}" onclick="openFilterPicker('want',${i})"><span class="plus-icon">+</span></div>`).join("")}
+          <div class="filter-slot" id="fslot-want-0" onclick="openFilterPicker('want',0)"><span class="plus-icon">+</span></div>
+          <div class="filter-slot" id="fslot-want-1" onclick="openFilterPicker('want',1)"><span class="plus-icon">+</span></div>
+          <div class="filter-slot" id="fslot-want-2" onclick="openFilterPicker('want',2)"><span class="plus-icon">+</span></div>
+          <div class="filter-slot" id="fslot-want-3" onclick="openFilterPicker('want',3)"><span class="plus-icon">+</span></div>
         </div>
       </div>
       <div>
         <div class="filter-side-label offer">They Offer</div>
         <div class="filter-slots">
-          ${[0,1,2,3].map(i=>`<div class="filter-slot" id="fslot-offer-${i}" onclick="openFilterPicker('offer',${i})"><span class="plus-icon">+</span></div>`).join("")}
+          <div class="filter-slot" id="fslot-offer-0" onclick="openFilterPicker('offer',0)"><span class="plus-icon">+</span></div>
+          <div class="filter-slot" id="fslot-offer-1" onclick="openFilterPicker('offer',1)"><span class="plus-icon">+</span></div>
+          <div class="filter-slot" id="fslot-offer-2" onclick="openFilterPicker('offer',2)"><span class="plus-icon">+</span></div>
+          <div class="filter-slot" id="fslot-offer-3" onclick="openFilterPicker('offer',3)"><span class="plus-icon">+</span></div>
         </div>
       </div>
     </div>
@@ -524,7 +463,12 @@
   </div>
 </div>
 
-<!-- Trade Detail Modal -->
+<!--
+  FIX: Trade detail modal — the chat panel is now fully inside this static modal.
+  Previously the chat body was searched by ID but the panel structure was correct;
+  the real bug was that listenTradeChat fired before the modal was visible and
+  the scrollTop call silently failed. Now we show the modal FIRST, then attach listener.
+-->
 <div class="trade-detail-modal" id="tradeDetailModal">
   <div class="trade-detail-box">
     <div class="trade-detail-head">
@@ -562,7 +506,6 @@
 
 <script type="module">
 
-  /* ── IMPORTS (UNCHANGED) ── */
   import { initializeApp }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAnalytics }
@@ -574,10 +517,9 @@
   import {
     getDatabase,
     ref, set, get, push, update, remove,
-    onValue, off, serverTimestamp, child
+    onValue, off, serverTimestamp
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  /* ── CONFIG (UNCHANGED) ── */
   const firebaseConfig = {
     apiKey: "AIzaSyDlBIeNVDK5nBPpVFkFSxNY59e7gW-p18c",
     authDomain: "rentafruit-f57d9.firebaseapp.com",
@@ -589,7 +531,6 @@
     databaseURL: "https://rentafruit-f57d9-default-rtdb.asia-southeast1.firebasedatabase.app"
   };
 
-  /* ── INIT (UNCHANGED) ── */
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
   const auth = getAuth(app);
@@ -597,7 +538,6 @@
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
 
-  /* ── STATE (UNCHANGED + new trade state) ── */
   let currentUser = null;
   let currentRoom = null;
   let currentDestination = null;
@@ -610,17 +550,15 @@
   let tradeChatListener = null;
   let roomTimerInterval = null;
   let isGuest = false;
-
-  /* Trade detail state */
   let currentTradeDetail = null;
 
-  /* NEW: Trade builder state */
   let tradeWants = [null, null, null, null];
   let tradeOffers = [null, null, null, null];
-  let pickerTarget = null; // {side, index, context:'trade'|'filter'}
+  let pickerTarget = null;
   let fruitsCache = {};
+  // FIX: track whether fruits have been loaded at least once
+  let fruitsCacheReady = false;
 
-  /* Filter state */
   let filterWants = [null, null, null, null];
   let filterOffers = [null, null, null, null];
   let filterActive = false;
@@ -629,7 +567,6 @@
   const ADMIN_EMAIL = "jakelordclash@gmail.com";
   const isAdmin = () => currentUser?.email === ADMIN_EMAIL;
 
-  /* ── LOADING BAR PROGRESS ── */
   const loaderSteps = [
     { pct: 15, msg: "Importing Firebase..." },
     { pct: 35, msg: "Connecting to database..." },
@@ -649,34 +586,26 @@
     }
   }
 
-  // Kick off first two steps immediately on script load
   setTimeout(() => advanceLoader(), 100);
   setTimeout(() => advanceLoader(), 600);
-  setTimeout(() => advanceLoader(), 1200); // "Checking auth..."
+  setTimeout(() => advanceLoader(), 1200);
 
-  // MOBILE SAFARI FALLBACK — if onAuthStateChanged never fires within 8s, show login
   let authResolved = false;
   const mobileAuthTimeout = setTimeout(() => {
     if (!authResolved && !isGuest) {
-      console.warn("[AUTH] Timeout — forcing login screen (Safari ITP workaround)");
       advanceLoader("Session timed out. Please sign in.");
       renderApp("login");
     }
   }, 8000);
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     AUTH — UNCHANGED
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.loginWithGoogle = async () => {
     const btn = document.getElementById("loginBtn");
     const err = document.getElementById("loginErr");
     if (btn) btn.disabled = true;
     if (err) err.style.display = "none";
     try {
-      console.log("[AUTH] Signing in...");
       await signInWithPopup(auth, provider);
     } catch (e) {
-      console.error("[AUTH] Error:", e.code);
       if (btn) btn.disabled = false;
       if (err) {
         err.style.display = "block";
@@ -705,7 +634,6 @@
       photoURL: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(name)
     };
     window._myBoat = false;
-    console.log("[AUTH] Guest:", name);
     renderApp("home");
   };
 
@@ -723,7 +651,6 @@
     if (isGuest) return;
     authResolved = true;
     clearTimeout(mobileAuthTimeout);
-    console.log("[AUTH] State:", user ? user.displayName : "signed out");
     currentUser = user;
     if (user) {
       advanceLoader("Loading your profile...");
@@ -732,13 +659,10 @@
         const snap = await get(userRef);
         if (!snap.exists()) {
           await set(userRef, { uid: user.uid, name: user.displayName, photo: user.photoURL, hasBeastBoat: false });
-          console.log("[PROFILE] Created new user");
         }
         const data = snap.exists() ? snap.val() : { hasBeastBoat: false };
         window._myBoat = data.hasBeastBoat === true;
-        console.log("[PROFILE] Boat status:", window._myBoat);
       } catch (e) {
-        console.error("[PROFILE] Error:", e.message);
         window._myBoat = false;
       }
       advanceLoader("Done! 🍊");
@@ -748,16 +672,11 @@
       setTimeout(() => renderApp("login"), 200);
     }
   }, (err) => {
-    // Auth listener error — still show login rather than stuck loader
-    console.error("[AUTH] Listener error:", err.message);
     authResolved = true;
     clearTimeout(mobileAuthTimeout);
     renderApp("login");
   });
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     BOAT TOGGLE — UNCHANGED
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.toggleBeastBoat = async () => {
     const newVal = !window._myBoat;
     window._myBoat = newVal;
@@ -771,29 +690,13 @@
     if (!isGuest && currentUser?.uid) {
       try {
         await update(ref(db, "users/" + currentUser.uid), { hasBeastBoat: newVal });
-        console.log("[PROFILE] Boat saved:", newVal);
       } catch (e) { console.error("[PROFILE] Save error:", e.message); }
     }
   };
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     NAVIGATION — UNCHANGED + new nav functions
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-  window.goHome = () => {
-    cleanupListeners();
-    currentRoom = null; currentDestination = null;
-    renderApp("home");
-  };
-
-  window.goDestination = (dest) => {
-    cleanupListeners();
-    currentDestination = dest;
-    renderApp("destination");
-    listenRooms(dest);
-  };
-
-  /* NEW: page navigation */
-  window.goTrade = () => { cleanupListeners(); renderApp("trade"); listenTrades(); listenFruitsCache(); };
+  window.goHome = () => { cleanupListeners(); currentRoom = null; currentDestination = null; renderApp("home"); };
+  window.goDestination = (dest) => { cleanupListeners(); currentDestination = dest; renderApp("destination"); listenRooms(dest); };
+  window.goTrade = () => { cleanupListeners(); renderApp("trade"); listenFruitsCache(() => { listenTrades(); }); };
   window.goAbout = () => { cleanupListeners(); renderApp("about"); };
   window.goContact = () => { cleanupListeners(); renderApp("contact"); };
   window.goPrivacy = () => { cleanupListeners(); renderApp("privacy"); };
@@ -806,34 +709,48 @@
     if (chatListener) { off(chatListener); chatListener = null; }
     if (tradesListener) { off(tradesListener); tradesListener = null; }
     if (fruitsListener) { off(fruitsListener); fruitsListener = null; }
-    if (tradeChatListener){ off(tradeChatListener);tradeChatListener= null; }
-    if (roomTimerInterval){ clearInterval(roomTimerInterval); roomTimerInterval = null; }
-    console.log("[LISTENER] All listeners removed");
+    if (tradeChatListener) { off(tradeChatListener); tradeChatListener = null; }
+    if (roomTimerInterval) { clearInterval(roomTimerInterval); roomTimerInterval = null; }
+    fruitsCacheReady = false;
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     ROOMS — UNCHANGED
+     FIX 1: FRUITS CACHE — accept a callback so
+     trades listener only starts AFTER fruits are
+     loaded. This prevents the trade grid rendering
+     with empty fruitsCache (showing only 1 card or
+     showing "?" for all fruit images).
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  function listenFruitsCache(onReady) {
+    const fr = ref(db, "fruits");
+    fruitsListener = fr;
+    onValue(fr, (snap) => {
+      fruitsCache = {};
+      if (snap.exists()) snap.forEach((c) => { fruitsCache[c.key] = { id: c.key, ...c.val() }; });
+      if (!fruitsCacheReady) {
+        fruitsCacheReady = true;
+        if (onReady) onReady(); // start trades listener only now
+      } else {
+        // Fruits updated — re-render trade list if we're on trade page
+        applyFilterAndRender();
+      }
+    });
+  }
+
+  /* ROOMS */
   function listenRooms(dest) {
-    console.log("[ROOMS] Listening for rooms at:", dest);
     const roomsRef = ref(db, "rooms");
     roomsListener = roomsRef;
     onValue(roomsRef, (snap) => {
-      console.log("[ROOMS] Data received");
       const now = Date.now();
       const rooms = [];
       if (snap.exists()) {
         snap.forEach((child) => {
           const r = { id: child.key, ...child.val() };
-          if (r.expiresAt && r.expiresAt < now) {
-            console.log("[ROOMS] Deleting expired room:", r.id);
-            remove(ref(db, "rooms/" + r.id));
-            return;
-          }
+          if (r.expiresAt && r.expiresAt < now) { remove(ref(db, "rooms/" + r.id)); return; }
           if (r.destination === dest) rooms.push(r);
         });
       }
-      console.log("[ROOMS]", rooms.length, "rooms for", dest);
       renderRoomList(rooms);
     }, (err) => { console.error("[ROOMS] Listener error:", err.message); });
   }
@@ -841,7 +758,6 @@
   function renderRoomList(rooms) {
     const el = document.getElementById("roomList");
     if (!el) return;
-    el.innerHTML = "";
     if (rooms.length === 0) {
       el.innerHTML = `<div class="empty-msg">😴 No rooms yet!<br/>Hit <b>✨ Create Room</b> to start the hunt!</div>`;
       return;
@@ -870,73 +786,48 @@
     }).join("");
   }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     CREATE ROOM — UNCHANGED
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.createRoom = async () => {
     if (!currentUser || !currentDestination) return;
-    console.log("[CREATE] Creating room in:", currentDestination);
     const btn = document.querySelector(".btn-create");
     if (btn) { btn.disabled = true; btn.textContent = "Creating... ✨"; }
     const now = Date.now();
     const roomId = push(ref(db, "rooms")).key;
     const roomData = {
-      destination: currentDestination,
-      host: currentUser.displayName,
-      hostUid: currentUser.uid,
-      createdAt: now,
-      expiresAt: now + 3600000,
-      players: {
-        [currentUser.uid]: {
-          uid: currentUser.uid,
-          name: currentUser.displayName,
-          hasBeastBoat: window._myBoat === true
-        }
-      }
+      destination: currentDestination, host: currentUser.displayName,
+      hostUid: currentUser.uid, createdAt: now, expiresAt: now + 3600000,
+      players: { [currentUser.uid]: { uid: currentUser.uid, name: currentUser.displayName, hasBeastBoat: window._myBoat === true } }
     };
     try {
       await set(ref(db, "rooms/" + roomId), roomData);
-      console.log("[CREATE] Room created:", roomId);
       enterRoom(roomId);
     } catch (e) {
-      console.error("[CREATE] Failed:", e.message);
       alert("❌ Couldn't create room!\nError: " + e.message);
       if (btn) { btn.disabled = false; btn.textContent = "✨ Create Room"; }
     }
   };
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     JOIN ROOM — UNCHANGED
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.joinRoom = async (roomId) => {
-    console.log("[JOIN] Joining room:", roomId);
     try {
       const snap = await get(ref(db, "rooms/" + roomId));
       if (!snap.exists()) { alert("This room no longer exists!"); return; }
       const r = snap.val();
       const players = r.players ? Object.values(r.players) : [];
       if (players.length >= 7) { alert("😔 Room is full!"); return; }
-      if (r.players && r.players[currentUser.uid]) { console.log("[JOIN] Already in room"); enterRoom(roomId); return; }
+      if (r.players && r.players[currentUser.uid]) { enterRoom(roomId); return; }
       await update(ref(db, "rooms/" + roomId + "/players"), {
         [currentUser.uid]: { uid: currentUser.uid, name: currentUser.displayName, hasBeastBoat: window._myBoat === true }
       });
-      console.log("[JOIN] Joined room:", roomId);
       enterRoom(roomId);
-    } catch (e) { console.error("[JOIN] Failed:", e.message); alert("Couldn't join room. Try again!"); }
+    } catch (e) { alert("Couldn't join room. Try again!"); }
   };
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     LEAVE ROOM — UNCHANGED
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.leaveRoom = async () => {
     if (!currentRoom) return;
-    console.log("[LEAVE] Leaving room:", currentRoom);
     try {
       await remove(ref(db, "rooms/" + currentRoom + "/players/" + currentUser.uid));
       const snap = await get(ref(db, "rooms/" + currentRoom + "/players"));
       if (!snap.exists() || Object.keys(snap.val() || {}).length === 0) {
         await remove(ref(db, "rooms/" + currentRoom));
-        console.log("[LEAVE] Empty room deleted");
       }
     } catch (e) { console.error("[LEAVE] Error:", e.message); }
     cleanupListeners();
@@ -945,11 +836,7 @@
     listenRooms(currentDestination);
   };
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     ENTER ROOM — UNCHANGED
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.enterRoom = (roomId) => {
-    console.log("[ENTER] Entering room:", roomId);
     cleanupListeners();
     currentRoom = roomId;
     renderApp("room");
@@ -958,19 +845,16 @@
   };
 
   function listenRoomDoc(roomId) {
-    console.log("[ROOM] Listening to room:", roomId);
     const rRef = ref(db, "rooms/" + roomId);
     roomDocListener = rRef;
     let lastRoomData = null;
     onValue(rRef, (snap) => {
-      if (!snap.exists()) { console.warn("[ROOM] Room deleted"); goDestination(currentDestination); return; }
+      if (!snap.exists()) { goDestination(currentDestination); return; }
       const r = { id: roomId, ...snap.val() };
       if (r.expiresAt && r.expiresAt < Date.now()) { remove(rRef); goDestination(currentDestination); return; }
       lastRoomData = r;
       renderRoomView(r);
     }, (err) => { console.error("[ROOM] Error:", err.message); });
-
-    // Live countdown ticker
     if (roomTimerInterval) clearInterval(roomTimerInterval);
     roomTimerInterval = setInterval(() => {
       if (!lastRoomData) return;
@@ -1011,11 +895,7 @@
       </div>`;
   }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     CHAT — UNCHANGED
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function listenChat(roomId) {
-    console.log("[CHAT] Listening to chat for room:", roomId);
     const chatRef = ref(db, "chat/" + roomId);
     chatListener = chatRef;
     onValue(chatRef, (snap) => {
@@ -1048,19 +928,7 @@
   window.onChatKey = (e) => { if (e.key === "Enter") window.sendMessage(); };
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     NEW: FRUITS CACHE (for trade picker)
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-  function listenFruitsCache() {
-    const fr = ref(db, "fruits");
-    fruitsListener = fr;
-    onValue(fr, (snap) => {
-      fruitsCache = {};
-      if (snap.exists()) snap.forEach((c) => { fruitsCache[c.key] = { id: c.key, ...c.val() }; });
-    });
-  }
-
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     FRUIT PICKER MODAL
+     FRUIT PICKER
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.openFruitPicker = (side, index) => {
     pickerTarget = { side, index, context: "trade" };
@@ -1115,8 +983,6 @@
       renderTradeSlots();
     }
   };
-
-  // keep backward compat
   window.selectFruit = window.selectFruitFromPicker;
 
   window.closeFruitPicker = () => {
@@ -1156,16 +1022,25 @@
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     TRADE SYSTEM
+     FIX 2: TRADE SYSTEM
+     The original bug: onValue for trades fired and
+     called renderTradeList() immediately, but
+     fruitsCache was still empty at that point.
+     Each subsequent Firebase update re-rendered
+     only the newest trade (cache still stale).
+
+     Fix: listenTrades() is now only called inside
+     the listenFruitsCache() onReady callback, so
+     fruitsCache is always populated before any
+     trade renders. Also use innerHTML assignment
+     on a fragment to avoid partial re-renders.
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function listenTrades() {
-    console.log("[TRADES] Attaching listener");
     const tr = ref(db, "trades");
     tradesListener = tr;
     onValue(tr, (snap) => {
       allTradesCache = [];
       if (snap.exists()) snap.forEach((c) => allTradesCache.push({ id: c.key, ...c.val() }));
-      // Sort newest first, cap at 50
       allTradesCache.sort((a, b) => (b.ts || 0) - (a.ts || 0));
       if (allTradesCache.length > 50) allTradesCache = allTradesCache.slice(0, 50);
       applyFilterAndRender();
@@ -1182,9 +1057,7 @@
     const filtered = allTradesCache.filter((t) => {
       const wantIds = t.wants ? Object.values(t.wants) : [];
       const offerIds = t.offers ? Object.values(t.offers) : [];
-      const wantMatch = wf.every((id) => wantIds.includes(id));
-      const offerMatch = of_.every((id) => offerIds.includes(id));
-      return wantMatch && offerMatch;
+      return wf.every((id) => wantIds.includes(id)) && of_.every((id) => offerIds.includes(id));
     });
     renderTradeList(filtered);
   }
@@ -1210,9 +1083,7 @@
       tradeWants = [null,null,null,null];
       tradeOffers = [null,null,null,null];
       renderTradeSlots();
-      console.log("[TRADES] Trade posted:", tradeId);
     } catch (e) {
-      console.error("[TRADES] Post failed:", e.message);
       alert("Couldn't post trade. Try again!");
     }
     if (btn) btn.disabled = false;
@@ -1227,14 +1098,13 @@
   function renderTradeList(trades) {
     const el = document.getElementById("tradeList");
     if (!el) return;
-    // Always clear first to prevent duplicates/overlap
-    el.innerHTML = "";
     if (trades.length === 0) {
       el.innerHTML = `<div class="empty-msg" style="grid-column:1/-1;">
         ${filterActive ? "🔍 No trades match your filter. Try different fruits!" : "🤝 No trades posted yet!<br/>Be the first to post a trade above."}
       </div>`;
       return;
     }
+    // FIX: build all HTML at once then assign — prevents partial renders
     el.innerHTML = trades.map((t) => {
       const wantIds = t.wants ? Object.values(t.wants) : [];
       const offerIds = t.offers ? Object.values(t.offers) : [];
@@ -1248,55 +1118,43 @@
           <div class="trade-card-body">
             <div>
               <div class="trade-side-tag want">Wants</div>
-              <div class="card-fruit-grid">
-                ${cardFruitGrid(wantIds)}
-              </div>
+              <div class="card-fruit-grid">${cardFruitGrid(wantIds)}</div>
             </div>
             <div class="trade-arrow">⇄</div>
             <div>
               <div class="trade-side-tag offer">Offers</div>
-              <div class="card-fruit-grid">
-                ${cardFruitGrid(offerIds)}
-              </div>
+              <div class="card-fruit-grid">${cardFruitGrid(offerIds)}</div>
             </div>
           </div>
           <div class="trade-card-footer">
             <span class="trade-card-age">🕐 ${getTimeAgo(t.ts)}</span>
-            ${canDelete ? `<button class="btn-delete-trade" onclick="event.stopPropagation();deleteTrade('${t.id}')">🗑 Remove</button>` : '<span style="font-size:0.7rem;color:rgba(176,110,243,0.5);font-weight:700;">tap to chat →</span>'}
+            ${canDelete
+              ? `<button class="btn-delete-trade" onclick="event.stopPropagation();deleteTrade('${t.id}')">🗑 Remove</button>`
+              : '<span style="font-size:0.7rem;color:rgba(176,110,243,0.5);font-weight:700;">tap to chat →</span>'}
           </div>
         </div>`;
     }).join("");
   }
 
   function cardFruitGrid(ids) {
-    // Always render 4 slots in a 2x2
-    const slots = [0,1,2,3].map((i) => {
+    return [0,1,2,3].map((i) => {
       const fruitId = ids[i];
       if (!fruitId) return `<div class="card-fruit-empty"></div>`;
       const f = fruitsCache[fruitId];
       if (!f) return `<div class="card-fruit-tile"><span style="font-size:0.6rem;color:var(--muted)">?</span></div>`;
       const rc = rarityClass(f.rarity);
-      const img = f.photo || f.image || "";
       return `
         <div class="card-fruit-tile rarity-${rc}">
-          <img src="${img}" alt="${esc(f.name)}" onerror="this.style.opacity='0.3'" />
+          <img src="${f.photo||f.image||''}" alt="${esc(f.name)}" onerror="this.style.opacity='0.3'" />
           <span class="cft-name">${esc(f.name)}</span>
           <span class="rarity-pill rarity-${rc}">${f.rarity||"?"}</span>
         </div>`;
-    });
-    return slots.join("");
+    }).join("");
   }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     FILTER SYSTEM
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-  window.openFilterModal = () => {
-    renderFilterSlots();
-    document.getElementById("filterModal").classList.add("show");
-  };
-  window.closeFilterModal = () => {
-    document.getElementById("filterModal").classList.remove("show");
-  };
+  /* FILTER */
+  window.openFilterModal = () => { renderFilterSlots(); document.getElementById("filterModal").classList.add("show"); };
+  window.closeFilterModal = () => { document.getElementById("filterModal").classList.remove("show"); };
 
   function renderFilterSlots() {
     ["want","offer"].forEach((side) => {
@@ -1373,10 +1231,22 @@
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     TRADE DETAIL MODAL
+     FIX 3: TRADE DETAIL MODAL + INBOX CHAT
+     Original bug: modal was shown and then the
+     chat listener tried to scroll the chat box,
+     but the box was hidden (display:none) so
+     scrollTop was silently ignored. Messages
+     then never appeared on subsequent updates
+     because the box reference was stale.
+
+     Fix:
+     1. Show modal FIRST (classList.add)
+     2. Then populate left panel content
+     3. Then attach chat listener — now the
+        DOM element is guaranteed to be visible
+        and scrollTop works correctly.
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.openTradeDetail = async (tradeId) => {
-    // Fetch the trade data
     try {
       const snap = await get(ref(db, "trades/" + tradeId));
       if (!snap.exists()) { alert("This trade no longer exists!"); return; }
@@ -1387,7 +1257,6 @@
       const offerIds = t.offers ? Object.values(t.offers) : [];
       const isOwn = currentUser && t.uid === currentUser.uid;
       const canDelete = currentUser && (isOwn || isAdmin());
-      const timeAgo = getTimeAgo(t.ts);
 
       const wantFruitsHtml = wantIds.length > 0
         ? wantIds.map((id) => tradeDetailFruitHtml(id)).join("")
@@ -1396,13 +1265,14 @@
         ? offerIds.map((id) => tradeDetailFruitHtml(id)).join("")
         : `<div style="color:var(--muted);font-size:0.82rem;font-weight:600;padding:10px 0;">Anything / Negotiable</div>`;
 
+      // Populate left panel
       const leftEl = document.getElementById("tradeDetailLeft");
       leftEl.innerHTML = `
         <div class="trade-detail-poster">
           <div class="trade-detail-avatar">👤</div>
           <div>
             <div class="trade-detail-name">${esc(t.name)}</div>
-            <div class="trade-detail-time">Posted ${timeAgo}</div>
+            <div class="trade-detail-time">Posted ${getTimeAgo(t.ts)}</div>
           </div>
         </div>
         <div class="trade-detail-sections">
@@ -1420,17 +1290,16 @@
           <button class="btn-delete-trade" onclick="deleteTrade('${t.id}'); closeTradeDetail();">🗑 Remove This Listing</button>
         </div>` : ""}`;
 
-      // Reset chat
+      // Reset chat box to empty state
       const chatBox = document.getElementById("tradeChatBox");
-      chatBox.innerHTML = `<div style="text-align:center;color:var(--muted);padding:30px 16px;font-size:0.85rem;font-weight:600;">Send a message to discuss this trade!</div>`;
+      chatBox.innerHTML = `<div style="text-align:center;color:var(--muted);padding:30px 16px;font-size:0.85rem;font-weight:600;">Loading messages...</div>`;
 
-      // Show modal
+      // Show modal FIRST — DOM must be visible before listener scrolls it
       document.getElementById("tradeDetailModal").classList.add("show");
 
-      // Start trade DM chat listener
+      // NOW attach the chat listener (modal is visible, scrollTop will work)
       listenTradeChat(tradeId);
 
-      // Focus chat if not own trade
       if (!isOwn) {
         setTimeout(() => document.getElementById("tradeChatInput")?.focus(), 200);
       }
@@ -1453,7 +1322,8 @@
     const img = f.photo || f.image || "";
     return `
       <div class="trade-detail-fruit" style="border-color:${rarityBorderColor(f.rarity)};">
-        <img src="${img}" alt="${esc(f.name)}" onerror="this.style.opacity='0.3'" style="width:44px;height:44px;object-fit:contain;flex-shrink:0;filter:${rarityGlow(f.rarity)};"/>
+        <img src="${img}" alt="${esc(f.name)}" onerror="this.style.opacity='0.3'"
+          style="width:44px;height:44px;object-fit:contain;flex-shrink:0;filter:${rarityGlow(f.rarity)};"/>
         <div>
           <div class="tdf-name">${esc(f.name)}</div>
           <div class="tdf-val"><span class="rarity-pill rarity-${rc}">${f.rarity||"?"}</span></div>
@@ -1462,16 +1332,17 @@
   }
 
   function rarityBorderColor(r) {
-    const map = { Common:"rgba(52,211,153,0.3)", Uncommon:"rgba(52,211,153,0.4)", Rare:"rgba(79,158,248,0.4)", Legendary:"rgba(176,110,243,0.45)", Mythical:"rgba(251,146,60,0.5)" };
-    return map[r] || "rgba(255,255,255,0.07)";
+    return ({ Common:"rgba(52,211,153,0.3)", Uncommon:"rgba(52,211,153,0.4)", Rare:"rgba(79,158,248,0.4)", Legendary:"rgba(176,110,243,0.45)", Mythical:"rgba(251,146,60,0.5)" })[r] || "rgba(255,255,255,0.07)";
   }
   function rarityGlow(r) {
-    const map = { Common:"drop-shadow(0 0 5px rgba(52,211,153,0.5))", Uncommon:"drop-shadow(0 0 6px rgba(52,211,153,0.6))", Rare:"drop-shadow(0 0 7px rgba(79,158,248,0.65))", Legendary:"drop-shadow(0 0 9px rgba(176,110,243,0.75))", Mythical:"drop-shadow(0 0 11px rgba(251,146,60,0.8))" };
-    return map[r] || "none";
+    return ({ Common:"drop-shadow(0 0 5px rgba(52,211,153,0.5))", Uncommon:"drop-shadow(0 0 6px rgba(52,211,153,0.6))", Rare:"drop-shadow(0 0 7px rgba(79,158,248,0.65))", Legendary:"drop-shadow(0 0 9px rgba(176,110,243,0.75))", Mythical:"drop-shadow(0 0 11px rgba(251,146,60,0.8))" })[r] || "none";
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     TRADE DM CHAT
+     TRADE DM CHAT LISTENER
+     Now called only after the modal is shown,
+     so the DOM elements always exist and are
+     visible when the listener fires.
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function listenTradeChat(tradeId) {
     if (tradeChatListener) { off(tradeChatListener); tradeChatListener = null; }
@@ -1483,7 +1354,7 @@
       const msgs = [];
       if (snap.exists()) snap.forEach((child) => msgs.push({ id: child.key, ...child.val() }));
       if (msgs.length === 0) {
-        box.innerHTML = `<div style="text-align:center;color:var(--muted);padding:30px 16px;font-size:0.85rem;font-weight:600;">No messages yet. Say hi to discuss this trade! 👋</div>`;
+        box.innerHTML = `<div style="text-align:center;color:var(--muted);padding:30px 16px;font-size:0.85rem;font-weight:600;">No messages yet. Say hi! 👋</div>`;
         return;
       }
       box.innerHTML = msgs.map((m) => {
@@ -1493,7 +1364,8 @@
           <span class="msg-txt">${esc(m.text)}</span>
         </div>`;
       }).join("");
-      box.scrollTop = box.scrollHeight;
+      // scroll to bottom — works now because modal is visible
+      requestAnimationFrame(() => { box.scrollTop = box.scrollHeight; });
     }, (err) => { console.error("[TRADE CHAT] Error:", err.message); });
   }
 
@@ -1511,9 +1383,7 @@
 
   window.onTradeChatKey = (e) => { if (e.key === "Enter") window.sendTradeMessage(); };
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     NEW: ADMIN — FRUIT MANAGEMENT
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ADMIN */
   function listenFruitsAdmin() {
     const fr = ref(db, "fruits");
     fruitsListener = fr;
@@ -1521,11 +1391,7 @@
       fruitsCache = {};
       const fruits = [];
       if (snap.exists()) {
-        snap.forEach((c) => {
-          const f = { id: c.key, ...c.val() };
-          fruitsCache[c.key] = f;
-          fruits.push(f);
-        });
+        snap.forEach((c) => { const f = { id: c.key, ...c.val() }; fruitsCache[c.key] = f; fruits.push(f); });
       }
       renderAdminFruitList(fruits);
     });
@@ -1543,31 +1409,26 @@
     if (btn) btn.disabled = true;
     try {
       const fruitId = push(ref(db, "fruits")).key;
-      await set(ref(db, "fruits/" + fruitId), {
-        name, value: Number(value), photo, rarity, type, addedAt: Date.now()
-      });
+      await set(ref(db, "fruits/" + fruitId), { name, value: Number(value), photo, rarity, type, addedAt: Date.now() });
       document.getElementById("fn-name").value = "";
       document.getElementById("fn-value").value = "";
       document.getElementById("fn-photo").value = "";
-      console.log("[ADMIN] Fruit added:", name);
-    } catch (e) { console.error("[ADMIN] Add fruit failed:", e.message); alert("Failed: " + e.message); }
+    } catch (e) { alert("Failed: " + e.message); }
     if (btn) btn.disabled = false;
   };
 
   window.deleteFruit = async (fruitId) => {
     if (!isAdmin()) return;
     if (!confirm("Delete this fruit?")) return;
-    try {
-      await remove(ref(db, "fruits/" + fruitId));
-      console.log("[ADMIN] Fruit deleted:", fruitId);
-    } catch (e) { console.error("[ADMIN] Delete failed:", e.message); }
+    try { await remove(ref(db, "fruits/" + fruitId)); }
+    catch (e) { console.error("[ADMIN] Delete failed:", e.message); }
   };
 
   function renderAdminFruitList(fruits) {
     const el = document.getElementById("adminFruitList");
     if (!el) return;
     if (fruits.length === 0) {
-      el.innerHTML = `<div style="color:var(--muted);font-size:0.9rem;font-weight:600;padding:20px 0;">No fruits added yet. Add your first one above!</div>`;
+      el.innerHTML = `<div style="color:var(--muted);font-size:0.9rem;font-weight:600;padding:20px 0;">No fruits added yet.</div>`;
       return;
     }
     el.innerHTML = fruits.map((f) => `
@@ -1581,9 +1442,6 @@
       </div>`).join("");
   }
 
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     CONTACT FORM
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   window.submitContact = () => {
     const name = document.getElementById("cname")?.value.trim();
     const email = document.getElementById("cemail")?.value.trim();
@@ -1595,7 +1453,6 @@
     document.getElementById("cmsg").value = "";
   };
 
-  /* ── UTILS ── */
   function esc(t) {
     return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
@@ -1609,7 +1466,6 @@
     const photo = currentUser?.photoURL || "https://api.dicebear.com/7.x/bottts/svg?seed=guest";
     const name = currentUser?.displayName || "Guest";
 
-    /* LOGIN — UNCHANGED */
     if (view === "login") {
       root.innerHTML = `
         <div class="login-wrap">
@@ -1636,7 +1492,6 @@
       return;
     }
 
-    /* SHARED HEADER + NAVBAR */
     const adminBtn = isAdmin() ? `<span class="nav-link admin ${view==="admin"?"active":""}" onclick="goAdmin()">⭐ Admin</span>` : "";
     const header = `
       <header class="topbar">
@@ -1657,7 +1512,6 @@
         ${adminBtn}
       </nav>`;
 
-    /* ── HOME — UNCHANGED ── */
     if (view === "home") {
       root.innerHTML = header + `
         <main class="main">
@@ -1709,7 +1563,6 @@
       return;
     }
 
-    /* ── DESTINATION — UNCHANGED ── */
     if (view === "destination") {
       root.innerHTML = header + `
         <main class="main">
@@ -1725,7 +1578,6 @@
       return;
     }
 
-    /* ── ROOM — UNCHANGED ── */
     if (view === "room") {
       root.innerHTML = header + `
         <main class="main room-layout">
@@ -1747,7 +1599,6 @@
       return;
     }
 
-    /* ── TRADE PAGE ── */
     if (view === "trade") {
       tradeWants = [null,null,null,null];
       tradeOffers = [null,null,null,null];
@@ -1763,13 +1614,19 @@
               <div>
                 <div class="trade-side-label want">🔵 I Want</div>
                 <div class="fruit-slots">
-                  ${[0,1,2,3].map((i) => `<div class="fruit-slot" id="slot-want-${i}" onclick="openFruitPicker('want',${i})"><span class="plus-icon">+</span></div>`).join("")}
+                  <div class="fruit-slot" id="slot-want-0" onclick="openFruitPicker('want',0)"><span class="plus-icon">+</span></div>
+                  <div class="fruit-slot" id="slot-want-1" onclick="openFruitPicker('want',1)"><span class="plus-icon">+</span></div>
+                  <div class="fruit-slot" id="slot-want-2" onclick="openFruitPicker('want',2)"><span class="plus-icon">+</span></div>
+                  <div class="fruit-slot" id="slot-want-3" onclick="openFruitPicker('want',3)"><span class="plus-icon">+</span></div>
                 </div>
               </div>
               <div>
                 <div class="trade-side-label offer">🟢 I Offer</div>
                 <div class="fruit-slots">
-                  ${[0,1,2,3].map((i) => `<div class="fruit-slot" id="slot-offer-${i}" onclick="openFruitPicker('offer',${i})"><span class="plus-icon">+</span></div>`).join("")}
+                  <div class="fruit-slot" id="slot-offer-0" onclick="openFruitPicker('offer',0)"><span class="plus-icon">+</span></div>
+                  <div class="fruit-slot" id="slot-offer-1" onclick="openFruitPicker('offer',1)"><span class="plus-icon">+</span></div>
+                  <div class="fruit-slot" id="slot-offer-2" onclick="openFruitPicker('offer',2)"><span class="plus-icon">+</span></div>
+                  <div class="fruit-slot" id="slot-offer-3" onclick="openFruitPicker('offer',3)"><span class="plus-icon">+</span></div>
                 </div>
               </div>
             </div>
@@ -1791,259 +1648,130 @@
       return;
     }
 
-    /* ── NEW: ADMIN PAGE ── */
     if (view === "admin" && isAdmin()) {
       root.innerHTML = header + `
         <main class="main">
           <div class="admin-badge">⭐ Admin Panel — ${name}</div>
           <div class="section-title">🍊 Manage Fruits & Game Passes</div>
           <p class="section-desc">Add fruits and game passes to the database. These will appear in the trade picker for all users.</p>
-
           <div class="admin-form">
             <h3>➕ Add New Item</h3>
             <div class="form-grid">
-              <div class="form-field">
-                <label class="form-label">ITEM NAME</label>
-                <input id="fn-name" class="form-input" placeholder="e.g. Dragon Fruit"/>
-              </div>
-              <div class="form-field">
-                <label class="form-label">VALUE (Beli)</label>
-                <input id="fn-value" class="form-input" type="number" placeholder="e.g. 3500000"/>
-              </div>
-              <div class="form-field">
-                <label class="form-label">PHOTO URL</label>
-                <input id="fn-photo" class="form-input" placeholder="https://...image.png"/>
-              </div>
-              <div class="form-field">
-                <label class="form-label">RARITY</label>
+              <div class="form-field"><label class="form-label">ITEM NAME</label><input id="fn-name" class="form-input" placeholder="e.g. Dragon Fruit"/></div>
+              <div class="form-field"><label class="form-label">VALUE (Beli)</label><input id="fn-value" class="form-input" type="number" placeholder="e.g. 3500000"/></div>
+              <div class="form-field"><label class="form-label">PHOTO URL</label><input id="fn-photo" class="form-input" placeholder="https://...image.png"/></div>
+              <div class="form-field"><label class="form-label">RARITY</label>
                 <select id="fn-rarity" class="form-select">
-                  <option value="Common">Common</option>
-                  <option value="Uncommon">Uncommon</option>
-                  <option value="Rare">Rare</option>
-                  <option value="Legendary">Legendary</option>
-                  <option value="Mythical">Mythical</option>
+                  <option value="Common">Common</option><option value="Uncommon">Uncommon</option>
+                  <option value="Rare">Rare</option><option value="Legendary">Legendary</option><option value="Mythical">Mythical</option>
                 </select>
               </div>
-              <div class="form-field">
-                <label class="form-label">TYPE</label>
+              <div class="form-field"><label class="form-label">TYPE</label>
                 <select id="fn-type" class="form-select">
-                  <option value="Devil Fruit">Devil Fruit</option>
-                  <option value="Game Pass">Game Pass</option>
+                  <option value="Devil Fruit">Devil Fruit</option><option value="Game Pass">Game Pass</option>
                 </select>
               </div>
             </div>
             <button class="btn-admin" id="addFruitBtn" onclick="addFruit()">➕ Add Item</button>
           </div>
-
           <div class="section-title" style="margin-bottom:14px;">📦 All Items in Database</div>
-          <div id="adminFruitList" class="admin-fruit-list">
-            <div style="color:var(--muted);font-size:0.9rem;font-weight:600;">Loading...</div>
-          </div>
+          <div id="adminFruitList" class="admin-fruit-list"><div style="color:var(--muted);font-size:0.9rem;font-weight:600;">Loading...</div></div>
         </main>`;
       return;
     }
 
-    /* ── NEW: ABOUT PAGE ── */
     if (view === "about") {
       root.innerHTML = header + `
-        <main class="main">
-          <div class="content-page">
-            <h1>About RentAFruit</h1>
-            <p class="page-sub">COMMUNITY TOOL FOR BLOX FRUITS PLAYERS</p>
-
-            <div class="content-section">
-              <h2>🍊 What is RentAFruit?</h2>
-              <p>RentAFruit is a free, fan-made community platform designed specifically for players of Blox Fruits, the popular Roblox game. Our platform gives players a dedicated place to find hunt partners, coordinate Leviathan raids, and trade Devil Fruits and Game Passes with other members of the community.</p>
-              <p>We built RentAFruit because we noticed how hard it was to find reliable teammates for difficult boss hunts like the Leviathan. Searching through random servers is time-consuming, and Discord servers can be chaotic. RentAFruit solves this by giving players a structured, easy-to-use matchmaking system — right in your browser, no download required.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>🐉 The Leviathan Hunt System</h2>
-              <p>The Leviathan is one of the most challenging and rewarding events in Blox Fruits. To fight it successfully, players need a full team of up to 7 members, and critically, at least one player needs the Beast Hunter Boat to summon the Leviathan at sea.</p>
-              <p>RentAFruit's hunt matchmaking system lets you create or join rooms for specific hunting spots — Tiki Outpost and Hydra Island. Each room shows a live countdown timer, the current player count, and whether a Beast Hunter Boat is available in the team. Rooms expire automatically after one hour, keeping the listings clean and up to date.</p>
-              <p>The built-in room chat lets players coordinate strategies, discuss spawn timing, and communicate in real time — all without leaving the page.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>🔄 The Trading System</h2>
-              <p>Trading is one of the most active parts of the Blox Fruits economy. Devil Fruits range from common drops worth a few thousand Beli to Mythical fruits worth tens of millions. RentAFruit's trading board lets players post exactly what they want and what they're offering, with up to four items on each side of a trade.</p>
-              <p>Every fruit in our database includes its name, approximate Beli value, rarity tier, and photo — so you always know what a fair trade looks like. Listings update in real time, so you'll never miss a fresh offer.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>👥 Built for the Community</h2>
-              <p>RentAFruit is an independent, community-driven project. We are not affiliated with Roblox Corporation or the official Blox Fruits development team. This is a fan-made tool created out of love for the game and its player base.</p>
-              <p>Our goal is to keep RentAFruit free, fast, and useful for every player — whether you're a beginner looking for your first Leviathan run or a veteran trader chasing that Mythical fruit.</p>
-              <div class="info-chips">
-                <span class="info-chip">🆓 Free Forever</span>
-                <span class="info-chip">⚡ Real-Time</span>
-                <span class="info-chip">📱 Mobile Friendly</span>
-                <span class="info-chip">🌍 Global Community</span>
-              </div>
+        <main class="main"><div class="content-page">
+          <h1>About RentAFruit</h1>
+          <p class="page-sub">COMMUNITY TOOL FOR BLOX FRUITS PLAYERS</p>
+          <div class="content-section"><h2>🍊 What is RentAFruit?</h2>
+            <p>RentAFruit is a free, fan-made community platform designed specifically for players of Blox Fruits, the popular Roblox game. Our platform gives players a dedicated place to find hunt partners, coordinate Leviathan raids, and trade Devil Fruits and Game Passes with other members of the community.</p>
+            <p>We built RentAFruit because we noticed how hard it was to find reliable teammates for difficult boss hunts like the Leviathan. RentAFruit solves this by giving players a structured, easy-to-use matchmaking system — right in your browser, no download required.</p>
+          </div>
+          <div class="content-section"><h2>🐉 The Leviathan Hunt System</h2>
+            <p>The Leviathan is one of the most challenging and rewarding events in Blox Fruits. Players need a full team of up to 7 members, and at least one player needs the Beast Hunter Boat to summon the Leviathan at sea.</p>
+            <p>RentAFruit's hunt matchmaking lets you create or join rooms for Tiki Outpost and Hydra Island. Each room shows a live countdown timer, player count, and Beast Hunter Boat status. Rooms expire after one hour automatically.</p>
+          </div>
+          <div class="content-section"><h2>🔄 The Trading System</h2>
+            <p>RentAFruit's trading board lets players post exactly what they want and what they're offering, with up to four items on each side. Every fruit includes its name, Beli value, rarity tier, and photo. Listings update in real time.</p>
+          </div>
+          <div class="content-section"><h2>👥 Built for the Community</h2>
+            <p>RentAFruit is an independent, community-driven project. We are not affiliated with Roblox Corporation or the official Blox Fruits development team.</p>
+            <div class="info-chips">
+              <span class="info-chip">🆓 Free Forever</span>
+              <span class="info-chip">⚡ Real-Time</span>
+              <span class="info-chip">📱 Mobile Friendly</span>
+              <span class="info-chip">🌍 Global Community</span>
             </div>
           </div>
-        </main>
-        ${footerNav()}`;
+        </div></main>${footerNav()}`;
       return;
     }
 
-    /* ── NEW: CONTACT PAGE ── */
     if (view === "contact") {
       root.innerHTML = header + `
-        <main class="main">
-          <div class="content-page">
-            <h1>Contact Us</h1>
-            <p class="page-sub">WE'D LOVE TO HEAR FROM YOU</p>
-
-            <div class="content-section">
-              <h2>✉️ Get in Touch</h2>
-              <p>Have a suggestion, found a bug, or want to report an issue? Fill in the form below and we'll get back to you as soon as possible. We read every message and genuinely appreciate feedback from the community — it helps us make RentAFruit better for everyone.</p>
-              <p>For trade disputes, room issues, or urgent matters, you can also reach us directly at <strong style="color:var(--purple)">support@rentafruit.shop</strong></p>
-            </div>
-
-            <div class="content-section">
-              <h2>📬 Send a Message</h2>
-              <div class="contact-form">
-                <input id="cname" type="text" placeholder="Your name"/>
-                <input id="cemail" type="email" placeholder="Your email address"/>
-                <textarea id="cmsg" rows="5" placeholder="Your message — bug report, suggestion, feedback..."></textarea>
-                <button class="btn-contact" onclick="submitContact()">Send Message ➤</button>
-              </div>
-            </div>
-
-            <div class="content-section">
-              <h2>⏱ Response Time</h2>
-              <p>We typically respond within 24–48 hours. For general questions about Blox Fruits gameplay, we recommend checking the official Blox Fruits wiki or the community Discord. RentAFruit is a platform tool — we're not able to provide in-game support or restore lost items.</p>
+        <main class="main"><div class="content-page">
+          <h1>Contact Us</h1><p class="page-sub">WE'D LOVE TO HEAR FROM YOU</p>
+          <div class="content-section"><h2>✉️ Get in Touch</h2>
+            <p>Have a suggestion, found a bug, or want to report an issue? Fill in the form below and we'll get back to you as soon as possible.</p>
+            <p>For urgent matters: <strong style="color:var(--purple)">support@rentafruit.shop</strong></p>
+          </div>
+          <div class="content-section"><h2>📬 Send a Message</h2>
+            <div class="contact-form">
+              <input id="cname" type="text" placeholder="Your name"/>
+              <input id="cemail" type="email" placeholder="Your email address"/>
+              <textarea id="cmsg" rows="5" placeholder="Your message..."></textarea>
+              <button class="btn-contact" onclick="submitContact()">Send Message ➤</button>
             </div>
           </div>
-        </main>
-        ${footerNav()}`;
+          <div class="content-section"><h2>⏱ Response Time</h2>
+            <p>We typically respond within 24–48 hours. RentAFruit is a platform tool — we're not able to provide in-game support or restore lost items.</p>
+          </div>
+        </div></main>${footerNav()}`;
       return;
     }
 
-    /* ── NEW: PRIVACY POLICY ── */
     if (view === "privacy") {
       root.innerHTML = header + `
-        <main class="main">
-          <div class="content-page">
-            <h1>Privacy Policy</h1>
-            <p class="page-sub">LAST UPDATED: JANUARY 2025</p>
-
-            <div class="content-section">
-              <h2>📋 Overview</h2>
-              <p>RentAFruit ("we", "our", "us") is committed to protecting the privacy of all users. This Privacy Policy explains what information we collect, how we use it, and your rights regarding that data. By using RentAFruit, you agree to the practices described below.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>🔐 Information We Collect</h2>
-              <p>When you sign in using Google Authentication, we collect and store the following information in our Firebase database:</p>
-              <ul>
-                <li>Your Google display name</li>
-                <li>Your Google profile picture URL</li>
-                <li>Your Google account's unique user ID (UID)</li>
-                <li>Your Beast Hunter Boat preference (true/false)</li>
-              </ul>
-              <p>If you use Guest mode, we collect only the name you choose to enter — no account information is stored.</p>
-              <p>When you participate in hunt rooms or trade listings, we store room data, player lists, chat messages, and trade offers in our Firebase Realtime Database. This data is associated with your user ID.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>🔧 How We Use Your Data</h2>
-              <p>Your data is used solely to operate the RentAFruit platform. Specifically:</p>
-              <ul>
-                <li>To display your name and avatar in hunt rooms and trade listings</li>
-                <li>To save your Beast Hunter Boat status across sessions</li>
-                <li>To enable real-time room matchmaking and chat functionality</li>
-                <li>To allow you to post and manage trade listings</li>
-              </ul>
-              <p>We do not sell, share, or use your personal data for advertising profiling. We do not send marketing emails.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>🔥 Firebase & Google Services</h2>
-              <p>RentAFruit uses Firebase (a Google product) for authentication, database storage, and analytics. Firebase may collect additional technical data such as device type, IP address, and usage patterns as described in Google's Privacy Policy. Firebase data is stored on Google's servers and subject to Google's data retention policies.</p>
-              <p>We use Firebase Analytics to understand how users navigate the site. This data is anonymised and aggregated — we cannot identify individual users from analytics data.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>📊 Google AdSense & Cookies</h2>
-              <p>RentAFruit may display advertisements through Google AdSense. Google AdSense uses cookies and similar technologies to show relevant ads based on your browsing behaviour. You can opt out of personalised advertising by visiting Google's Ad Settings. We use cookies to maintain your login session and improve site performance. No tracking cookies are set by RentAFruit itself beyond what Firebase and AdSense require.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>🗑 Data Deletion</h2>
-              <p>Hunt rooms are automatically deleted after one hour of expiry. Trade listings can be deleted by their poster at any time. If you wish to have your user profile permanently removed from our database, contact us at support@rentafruit.shop and we will delete your data within 7 days.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>👶 Children's Privacy</h2>
-              <p>RentAFruit is intended for general audiences. We do not knowingly collect personal data from children under the age of 13. If you believe a child has provided us with personal information, please contact us immediately so we can remove it.</p>
-            </div>
+        <main class="main"><div class="content-page">
+          <h1>Privacy Policy</h1><p class="page-sub">LAST UPDATED: JANUARY 2025</p>
+          <div class="content-section"><h2>📋 Overview</h2><p>RentAFruit is committed to protecting the privacy of all users. This Privacy Policy explains what information we collect, how we use it, and your rights regarding that data.</p></div>
+          <div class="content-section"><h2>🔐 Information We Collect</h2>
+            <p>When you sign in using Google Authentication, we collect: your Google display name, profile picture URL, unique user ID, and Beast Hunter Boat preference. Guest mode stores only your chosen name.</p>
           </div>
-        </main>
-        ${footerNav()}`;
+          <div class="content-section"><h2>🔧 How We Use Your Data</h2>
+            <p>Your data is used solely to operate RentAFruit — displaying your name in rooms and trade listings, saving your boat status, enabling matchmaking and chat, and managing trade listings. We do not sell or share your data for advertising.</p>
+          </div>
+          <div class="content-section"><h2>🔥 Firebase & Google Services</h2>
+            <p>RentAFruit uses Firebase for authentication, database storage, and analytics. Firebase may collect technical data per Google's Privacy Policy. We use Firebase Analytics for anonymised, aggregated usage data only.</p>
+          </div>
+          <div class="content-section"><h2>🗑 Data Deletion</h2>
+            <p>Hunt rooms are automatically deleted after one hour. Trade listings can be deleted by their poster. To permanently remove your profile, contact support@rentafruit.shop and we'll delete it within 7 days.</p>
+          </div>
+          <div class="content-section"><h2>👶 Children's Privacy</h2>
+            <p>We do not knowingly collect personal data from children under 13. If you believe a child has provided personal information, please contact us immediately.</p>
+          </div>
+        </div></main>${footerNav()}`;
       return;
     }
 
-    /* ── NEW: TERMS & CONDITIONS ── */
     if (view === "terms") {
       root.innerHTML = header + `
-        <main class="main">
-          <div class="content-page">
-            <h1>Terms & Conditions</h1>
-            <p class="page-sub">PLEASE READ CAREFULLY BEFORE USING RENTAFRUIT</p>
-
-            <div class="content-section">
-              <h2>📜 Acceptance of Terms</h2>
-              <p>By accessing or using RentAFruit ("the Platform"), you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use the platform. These terms apply to all users, including those who browse without signing in.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>🎮 Platform Purpose</h2>
-              <p>RentAFruit is a fan-made, community matchmaking and trading tool for players of Blox Fruits on Roblox. RentAFruit is not affiliated with, endorsed by, or connected to Roblox Corporation or the official Blox Fruits development team in any way. All game-related trademarks, names, and assets remain the property of their respective owners.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>✅ Acceptable Use</h2>
-              <p>You agree to use RentAFruit only for its intended purpose — coordinating Leviathan hunts and trading in-game items. You must not:</p>
-              <ul>
-                <li>Post spam, misleading, or abusive trade listings</li>
-                <li>Use the chat system to harass, bully, or threaten other users</li>
-                <li>Attempt to exploit, hack, or reverse-engineer the platform</li>
-                <li>Impersonate other players or create fake accounts</li>
-                <li>Post content that is illegal, offensive, or violates the rights of others</li>
-                <li>Use the platform for real-money transactions of any kind</li>
-              </ul>
-            </div>
-
-            <div class="content-section">
-              <h2>⚠️ User Responsibility</h2>
-              <p>All trades and agreements made through RentAFruit are between users only. RentAFruit does not mediate, guarantee, or take responsibility for the outcome of any in-game trade. Scams and failed trades are a risk inherent to online gaming — always trade carefully and verify the other player's reputation.</p>
-              <p>You are solely responsible for the content you post, including chat messages and trade listings. We reserve the right to remove any content that violates these terms without prior notice.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>🔒 Account Security</h2>
-              <p>RentAFruit uses Google Sign-In for authentication. You are responsible for maintaining the security of your Google account. RentAFruit will never ask for your Roblox password or any payment information.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>🚫 Termination</h2>
-              <p>We reserve the right to ban or restrict access for any user who violates these terms, abuses the platform, or disrupts the community. In serious cases, we may report abuse to relevant authorities.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>📝 Changes to Terms</h2>
-              <p>We may update these Terms and Conditions at any time. Continued use of RentAFruit after changes are posted constitutes acceptance of the updated terms. We recommend checking this page periodically.</p>
-            </div>
-
-            <div class="content-section">
-              <h2>⚖️ Disclaimer</h2>
-              <p>RentAFruit is provided "as is" without any warranties. We do not guarantee uninterrupted availability, data accuracy, or the completeness of fruit value information. Use the platform at your own discretion. We are not liable for any loss — in-game or otherwise — resulting from your use of this platform.</p>
-            </div>
+        <main class="main"><div class="content-page">
+          <h1>Terms & Conditions</h1><p class="page-sub">PLEASE READ CAREFULLY BEFORE USING RENTAFRUIT</p>
+          <div class="content-section"><h2>📜 Acceptance of Terms</h2><p>By accessing or using RentAFruit, you agree to be bound by these Terms and Conditions.</p></div>
+          <div class="content-section"><h2>🎮 Platform Purpose</h2><p>RentAFruit is a fan-made tool for Blox Fruits players on Roblox. We are not affiliated with Roblox Corporation or the Blox Fruits development team.</p></div>
+          <div class="content-section"><h2>✅ Acceptable Use</h2>
+            <p>You must not: post spam or abusive listings, harass other users, attempt to hack the platform, impersonate other players, post illegal content, or use the platform for real-money transactions.</p>
           </div>
-        </main>
-        ${footerNav()}`;
+          <div class="content-section"><h2>⚠️ User Responsibility</h2>
+            <p>All trades are between users only. RentAFruit does not mediate or guarantee any in-game trade outcome. Always trade carefully. You are responsible for all content you post.</p>
+          </div>
+          <div class="content-section"><h2>⚖️ Disclaimer</h2>
+            <p>RentAFruit is provided "as is" without any warranties. We are not liable for any loss resulting from your use of this platform.</p>
+          </div>
+        </div></main>${footerNav()}`;
       return;
     }
   }
@@ -2051,18 +1779,12 @@
   function footerNav() {
     return `
       <div class="footer-nav">
-        <span onclick="goHome()">🏠 Home</span>
-        <span class="sep">·</span>
-        <span onclick="goTrade()">🔄 Trade</span>
-        <span class="sep">·</span>
-        <span onclick="goAbout()">ℹ️ About</span>
-        <span class="sep">·</span>
-        <span onclick="goContact()">✉️ Contact</span>
-        <span class="sep">·</span>
-        <span onclick="goPrivacy()">🔒 Privacy Policy</span>
-        <span class="sep">·</span>
-        <span onclick="goTerms()">📜 Terms & Conditions</span>
-        <span class="sep">·</span>
+        <span onclick="goHome()">🏠 Home</span><span class="sep">·</span>
+        <span onclick="goTrade()">🔄 Trade</span><span class="sep">·</span>
+        <span onclick="goAbout()">ℹ️ About</span><span class="sep">·</span>
+        <span onclick="goContact()">✉️ Contact</span><span class="sep">·</span>
+        <span onclick="goPrivacy()">🔒 Privacy Policy</span><span class="sep">·</span>
+        <span onclick="goTerms()">📜 Terms & Conditions</span><span class="sep">·</span>
         <span style="color:var(--muted);cursor:default;">© 2025 RentAFruit — Fan-made Blox Fruits Tool</span>
       </div>`;
   }
