@@ -73,7 +73,6 @@
   .nav-link.admin{color:var(--yellow);}
   .nav-link.admin:hover{background:rgba(251,191,36,0.1);}
   .nav-link.admin.active{background:rgba(251,191,36,0.12);border-color:rgba(251,191,36,0.4);}
-  /* Unread badge on inbox nav */
   .nav-unread{position:absolute;top:1px;right:2px;background:var(--red);color:#fff;border-radius:99px;font-size:0.58rem;font-weight:900;padding:1px 5px;min-width:16px;text-align:center;line-height:1.6;display:none;}
   .nav-unread.show{display:block;}
 
@@ -212,18 +211,20 @@
 
   .trade-list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
 
-  /* ─── FIX: trade card grid — NO transform animation to prevent overlap ─── */
+  /* ─── FIX 1: Trade card grid — strict containment, opacity-only animation ─── */
   .trade-list{
     display:grid;
-    /* 3 per row on wide, 2 on medium, 1 on mobile */
     grid-template-columns:repeat(3,minmax(0,1fr));
     gap:14px;
-    align-items:start;   /* critical: cards don't stretch to match tallest */
+    /* align-items:start is critical — prevents tall cards stretching short ones */
+    align-items:start;
+    /* isolate stacking context so nothing bleeds across cells */
+    isolation:isolate;
   }
   @media(max-width:900px){.trade-list{grid-template-columns:repeat(2,minmax(0,1fr));}}
   @media(max-width:560px){.trade-list{grid-template-columns:minmax(0,1fr);}}
 
-  /* ─── FIX: use opacity-only fade — NO transform — prevents visual overlap ─── */
+  /* opacity-only fade — NO transform — cards never leave their grid cell */
   @keyframes fadein{from{opacity:0}to{opacity:1}}
 
   .trade-card{
@@ -232,16 +233,24 @@
     border-radius:16px;
     padding:14px;
     cursor:pointer;
-    /* opacity fade only — no transform — cards stay in their grid cell */
     animation:fadein 0.3s ease both;
     display:flex;
     flex-direction:column;
     gap:10px;
-    /* position:relative ensures stacking context stays within grid cell */
+    /* position:relative creates an isolated stacking context per cell */
     position:relative;
+    /* overflow:hidden ensures nothing (box-shadow glow etc.) bleeds outside */
+    overflow:visible;
     transition:border-color 0.25s, box-shadow 0.25s;
+    /* NO transform on idle — transform in hover only, NOT in animation */
+    will-change:border-color, box-shadow;
   }
-  .trade-card:hover{border-color:rgba(176,110,243,0.5);box-shadow:0 6px 24px rgba(176,110,243,0.18);}
+  /* Hover uses transform but it's brief and intentional — not during load */
+  .trade-card:hover{
+    border-color:rgba(176,110,243,0.5);
+    box-shadow:0 6px 24px rgba(176,110,243,0.18);
+    transform:translateY(-2px);
+  }
 
   .trade-card-top{display:flex;justify-content:space-between;align-items:center;}
   .trade-poster{font-size:0.8rem;font-weight:800;color:var(--purple);letter-spacing:0.3px;}
@@ -308,7 +317,7 @@
   .btn-clear-filter{padding:11px 16px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--muted);font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
   .btn-clear-filter:hover{border-color:var(--red);color:var(--red);}
 
-  /* TRADE DETAIL MODAL (info only — no public chat) */
+  /* TRADE DETAIL MODAL */
   .trade-detail-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(12px);z-index:997;align-items:center;justify-content:center;padding:20px;}
   .trade-detail-modal.show{display:flex;}
   .trade-detail-box{background:var(--card);border:1.5px solid var(--border);border-radius:22px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:var(--gp),0 32px 64px rgba(0,0,0,0.6);animation:floatin 0.3s ease;}
@@ -354,12 +363,12 @@
   .no-fruits-msg{text-align:center;color:var(--muted);padding:40px 20px;font-size:0.9rem;font-weight:600;}
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     INBOX PAGE — private DMs
+     INBOX PAGE
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   .inbox-layout{
     display:grid;
     grid-template-columns:280px 1fr;
-    height:calc(100vh - 112px);  /* below topbar+navbar */
+    height:calc(100vh - 112px);
     background:rgba(14,14,40,0.88);
     border:1.5px solid var(--border);
     border-radius:18px;
@@ -370,7 +379,6 @@
     .inbox-sidebar{border-right:none;border-bottom:1px solid var(--border);}
     .inbox-conv{min-height:50vh;}
   }
-  /* Sidebar */
   .inbox-sidebar{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
   .inbox-sidebar-head{padding:14px 16px;font-size:0.85rem;font-weight:800;color:var(--purple);border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;}
   .inbox-filter-tag{font-size:0.68rem;color:var(--muted);font-weight:600;}
@@ -384,7 +392,6 @@
   .inbox-conv-preview{font-size:0.72rem;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
   .inbox-unread-badge{background:var(--red);color:#fff;border-radius:99px;font-size:0.62rem;font-weight:900;padding:2px 7px;min-width:20px;text-align:center;flex-shrink:0;}
   .inbox-empty{padding:40px 16px;text-align:center;color:var(--muted);font-size:0.88rem;font-weight:600;line-height:1.7;}
-  /* Conversation area */
   .inbox-conv{display:flex;flex-direction:column;height:100%;}
   .inbox-conv-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--muted);text-align:center;padding:24px;}
   .inbox-conv-head{padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0;}
@@ -498,7 +505,7 @@
   </div>
 </div>
 
-<!-- Trade Detail Modal (info only — chat moved to Inbox) -->
+<!-- Trade Detail Modal -->
 <div class="trade-detail-modal" id="tradeDetailModal">
   <div class="trade-detail-box">
     <div class="trade-detail-head">
@@ -560,11 +567,10 @@
   let pickerTarget=null,fruitsCache={},fruitsCacheReady=false;
   let filterWants=[null,null,null,null],filterOffers=[null,null,null,null],filterActive=false;
   let allTradesCache=[];
-  let activeConvId=null;         // currently open conversation
-  let inboxFilterTradeId=null;   // if viewing inquiries for a specific trade
+  let activeConvId=null;
+  let inboxFilterTradeId=null;
   let globalUnread=0;
 
-  /* Dual admin support */
   const ADMIN_EMAILS=["jakelordclash@gmail.com","calvinthomasvinosh@gmail.com"];
   const isAdmin=()=>ADMIN_EMAILS.includes(currentUser?.email);
 
@@ -668,7 +674,7 @@
   window.goAdmin=()=>{if(!isAdmin())return;cleanupListeners();renderApp("admin");listenFruitsAdmin();};
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     INBOX BADGE — global unread count
+     INBOX BADGE
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function startInboxBadgeListener(){
     if(!currentUser||isGuest)return;
@@ -689,7 +695,9 @@
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     INBOX PAGE LISTENER
+     INBOX — FIX: sidebar and conv area
+     are independent; sidebar never nukes
+     the conversation currently open.
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function startInboxListener(){
     const r=ref(db,"inboxMeta/"+currentUser.uid);
@@ -697,15 +705,19 @@
     onValue(r,(snap)=>{
       let convs=[];
       if(snap.exists())snap.forEach(c=>convs.push({id:c.key,...c.val()}));
-      // Sort by last message time
       convs.sort((a,b)=>(b.lastTs||0)-(a.lastTs||0));
-      // Filter by trade if coming from "View Inquiries"
       if(inboxFilterTradeId)convs=convs.filter(c=>c.tradeId===inboxFilterTradeId);
+
+      // ── FIX: only update the sidebar, never touch inboxConvArea ──
       renderConvSidebar(convs);
-      // Auto-open a conversation if specified
+
+      // Auto-open a specific conv on first load (e.g. coming from trade detail)
       if(activeConvId){
         const found=convs.find(c=>c.id===activeConvId);
-        if(found)openConv(found);
+        // Only open if the conv area is still showing the placeholder
+        if(found&&document.getElementById("inboxConvArea")?.querySelector(".inbox-conv-placeholder")){
+          openConv(found);
+        }
       }
     });
   }
@@ -719,7 +731,7 @@
     el.innerHTML=convs.map(c=>{
       const isActive=activeConvId===c.id;
       const unread=c.unread||0;
-      return`<div class="inbox-conv-item ${isActive?"active":""}" onclick="selectConv('${c.id}')">
+      return`<div class="inbox-conv-item${isActive?" active":""}" onclick="window.selectConv('${c.id}')">
         <div class="inbox-conv-avatar">👤</div>
         <div class="inbox-conv-info">
           <div class="inbox-conv-name">${esc(c.otherName||"Trader")}</div>
@@ -730,19 +742,19 @@
     }).join("");
   }
 
-  /* convId = tradeId + "_" + buyerUid */
   window.selectConv=async(convId)=>{
     activeConvId=convId;
-    // Mark as read immediately
     await markRead(convId);
-    // Get meta
+
+    // Update sidebar active highlight without re-rendering it fully
+    document.querySelectorAll(".inbox-conv-item").forEach(el=>{
+      const onclick=el.getAttribute("onclick")||"";
+      el.classList.toggle("active",onclick.includes(`'${convId}'`));
+    });
+
     const snap=await get(ref(db,"inboxMeta/"+currentUser.uid+"/"+convId));
     if(!snap.exists())return;
     openConv({id:convId,...snap.val()});
-    // Update sidebar active state
-    document.querySelectorAll(".inbox-conv-item").forEach(el=>{
-      el.classList.toggle("active",el.getAttribute("onclick")==="selectConv('"+convId+"')");
-    });
   };
 
   async function markRead(convId){
@@ -750,8 +762,15 @@
     try{await update(ref(db,"inboxMeta/"+currentUser.uid+"/"+convId),{unread:0});}catch(e){}
   }
 
+  /* ── FIX: openConv builds the right-panel HTML, then attaches a
+     persistent onValue listener for messages.  It detaches any
+     previous message listener first so there's never a duplicate. ── */
   function openConv(meta){
     const area=document.getElementById("inboxConvArea");if(!area)return;
+
+    // Detach previous message listener before replacing DOM
+    if(convMsgsListener){off(convMsgsListener);convMsgsListener=null;}
+
     area.innerHTML=`
       <div class="inbox-conv-head">
         <div class="inbox-conv-head-name">👤 ${esc(meta.otherName||"Trader")}</div>
@@ -759,22 +778,30 @@
       </div>
       <div class="inbox-messages" id="inboxMsgs"></div>
       <div class="inbox-input-row">
-        <input id="inboxInput" class="chat-input" placeholder="Type a message..." onkeypress="onInboxKey(event)"/>
-        <button class="btn-send" onclick="sendInboxMsg()">➤</button>
+        <input id="inboxInput" class="chat-input" placeholder="Type a message..." onkeypress="window.onInboxKey(event)"/>
+        <button class="btn-send" onclick="window.sendInboxMsg()">➤</button>
       </div>`;
-    // Attach live message listener
-    if(convMsgsListener){off(convMsgsListener);convMsgsListener=null;}
+
+    // ── FIX: store the ref object itself (not the result of onValue)
+    // so we can call off() on it correctly later ──
     const msgsRef=ref(db,"conversations/"+meta.id+"/messages");
     convMsgsListener=msgsRef;
+
     onValue(msgsRef,(snap)=>{
       const box=document.getElementById("inboxMsgs");if(!box)return;
       const msgs=[];
       if(snap.exists())snap.forEach(c=>msgs.push({id:c.key,...c.val()}));
       msgs.sort((a,b)=>(a.ts||0)-(b.ts||0));
+
       if(!msgs.length){
         box.innerHTML=`<div style="text-align:center;color:var(--muted);padding:30px;font-size:0.85rem;font-weight:600;">No messages yet — say hi! 👋</div>`;
         return;
       }
+
+      // ── FIX: preserve scroll position; only scroll to bottom if
+      // the user was already near the bottom (auto-scroll new msgs) ──
+      const wasAtBottom=box.scrollHeight-box.scrollTop-box.clientHeight<60;
+
       box.innerHTML=msgs.map(m=>{
         const me=m.uid===currentUser?.uid;
         return`<div class="msg ${me?"me":"other"}">
@@ -782,10 +809,13 @@
           <span class="msg-txt">${esc(m.text)}</span>
         </div>`;
       }).join("");
-      requestAnimationFrame(()=>{box.scrollTop=box.scrollHeight;});
-      // Auto-clear unread when user is actively viewing
+
+      if(wasAtBottom||msgs.length<=1){
+        requestAnimationFrame(()=>{box.scrollTop=box.scrollHeight;});
+      }
       markRead(meta.id);
     });
+
     setTimeout(()=>document.getElementById("inboxInput")?.focus(),100);
   }
 
@@ -796,12 +826,11 @@
     inp.value="";
     const now=Date.now();
     try{
-      // Save message
       const mr=push(ref(db,"conversations/"+activeConvId+"/messages"));
       await set(mr,{uid:currentUser.uid,name:currentUser.displayName,text,ts:now});
-      // Update my meta
+      // Update my own meta (lastMsg, lastTs only — don't touch my own unread)
       await update(ref(db,"inboxMeta/"+currentUser.uid+"/"+activeConvId),{lastMsg:text,lastTs:now});
-      // Update other party's meta with unread increment
+      // Update other party's meta — increment their unread counter
       const myMetaSnap=await get(ref(db,"inboxMeta/"+currentUser.uid+"/"+activeConvId));
       if(myMetaSnap.exists()){
         const otherUid=myMetaSnap.val().otherUid;
@@ -817,11 +846,10 @@
 
   window.onInboxKey=(e)=>{if(e.key==="Enter")window.sendInboxMsg();};
 
-  /* Start conversation: called when user clicks "Message Trader" */
+  /* Start conversation from trade detail */
   window.startConversation=async(tradeId,posterUid,posterName)=>{
     if(!currentUser||isGuest){alert("Please sign in to message traders!");return;}
     if(currentUser.uid===posterUid){
-      // Own trade — go to inquiries
       closeTradeDetail();
       goInbox(tradeId);
       return;
@@ -829,13 +857,11 @@
     const convId=tradeId+"_"+currentUser.uid;
     const now=Date.now();
     try{
-      // Create meta for buyer if not exists
       const myMetaRef=ref(db,"inboxMeta/"+currentUser.uid+"/"+convId);
       const mySnap=await get(myMetaRef);
       if(!mySnap.exists()){
         await set(myMetaRef,{convId,tradeId,otherUid:posterUid,otherName:posterName,myRole:"buyer",lastMsg:"",lastTs:now,unread:0});
       }
-      // Create meta for poster if not exists
       const posterMetaRef=ref(db,"inboxMeta/"+posterUid+"/"+convId);
       const posterSnap=await get(posterMetaRef);
       if(!posterSnap.exists()){
@@ -847,7 +873,7 @@
   };
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     ROOMS (unchanged)
+     ROOMS
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function listenRooms(dest){
     const r=ref(db,"rooms");roomsListener=r;
@@ -962,7 +988,7 @@
   window.onChatKey=(e)=>{if(e.key==="Enter")window.sendMessage();};
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     FRUITS CACHE (with onReady callback)
+     FRUITS CACHE
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   function listenFruitsCache(onReady){
     const r=ref(db,"fruits");fruitsListener=r;
@@ -974,7 +1000,6 @@
     });
   }
 
-  /* ── FRUIT PICKER ── */
   window.openFruitPicker=(side,index)=>{pickerTarget={side,index,ctx:"trade"};buildPickerGrid();document.getElementById("fruitPickerModal").classList.add("show");};
   window.openFilterPicker=(side,index)=>{pickerTarget={side,index,ctx:"filter"};buildPickerGrid();document.getElementById("fruitPickerModal").classList.add("show");};
 
@@ -1068,7 +1093,6 @@
       el.innerHTML=`<div class="empty-msg" style="grid-column:1/-1;">${filterActive?"🔍 No trades match your filter.":"🤝 No trades posted yet!"}</div>`;
       return;
     }
-    /* Build ALL HTML at once then assign — prevents partial renders / overlap */
     el.innerHTML=trades.map(t=>{
       const wi=t.wants?Object.values(t.wants):[],oi=t.offers?Object.values(t.offers):[];
       const isOwn=currentUser&&t.uid===currentUser.uid;
@@ -1104,7 +1128,6 @@
     }).join("");
   }
 
-  /* Trade detail modal — no public chat */
   window.openTradeDetail=async(tradeId)=>{
     try{
       const snap=await get(ref(db,"trades/"+tradeId));
@@ -1386,7 +1409,7 @@
       return;
     }
 
-    /* ── INBOX PAGE ── */
+    /* ── INBOX ── */
     if(view==="inbox"){
       root.innerHTML=header+`<main class="main" style="padding-top:16px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
