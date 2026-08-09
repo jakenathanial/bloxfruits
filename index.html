@@ -1,1374 +1,1190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>RentAFruit — Leviathan Hunt & Trading</title>
-<meta name="description" content="RentAFruit is a free community matchmaking tool for Blox Fruits players."/>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dealer's Dock — Blox Fruits Trade Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#07071a;--card:#0e0e28;--purple:#b06ef3;--purple2:#7c3aed;
-  --blue:#4f9ef8;--blue2:#22d3ee;--green:#34d399;--red:#f87171;
-  --yellow:#fbbf24;--orange:#fb923c;--text:#eef2ff;--muted:#8b9bb4;
-  --border:rgba(176,110,243,0.18);--gp:0 0 24px rgba(176,110,243,0.45);
-  --gb:0 0 24px rgba(79,158,248,0.45);
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 15%,rgba(176,110,243,0.1) 0%,transparent 55%),radial-gradient(ellipse at 85% 85%,rgba(79,158,248,0.08) 0%,transparent 55%);pointer-events:none;z-index:0;}
-#app{position:relative;z-index:1;min-height:100vh;}
+  :root{
+    --bg-deep:#0B0618;
+    --bg-deep-2:#150B2A;
+    --bg-surface:#1C1033;
+    --bg-surface-2:#271745;
+    --border:#3D2465;
+    --border-soft:#2A1848;
+    --text-primary:#F3EEFB;
+    --text-secondary:#B29BD4;
+    --text-faint:#6F5A93;
+    --brass:#B06EF3;
+    --brass-dim:#9457E0;
+    --brass-glow:rgba(176,110,243,0.28);
+    --danger:#F45B69;
+    --common:#9CA3AF;
+    --uncommon:#4ADE80;
+    --rare:#38BDF8;
+    --legendary:#FB923C;
+    --mythical:#F43F5E;
+    --radius:10px;
+    --radius-lg:16px;
+    --font-display:'Bebas Neue', sans-serif;
+    --font-body:'Space Grotesk', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(176,110,243,0.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(139,92,246,0.08), transparent 55%),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep-2) 100%);
+    background-attachment:fixed;
+    color:var(--text-primary);
+    font-family:var(--font-body);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+  input,textarea{font-family:inherit;}
+  :focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
 
-.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:14px;}
-.loader-fruit{font-size:52px;animation:bounce 1s ease-in-out infinite;}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-.loader-text{font-size:1rem;font-weight:700;color:var(--purple);letter-spacing:2px;}
-.loader-sub{font-size:0.75rem;font-weight:600;color:var(--muted);}
-.loader-bar-wrap{width:220px;height:6px;background:rgba(176,110,243,0.15);border-radius:99px;overflow:hidden;}
-.loader-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--purple2),var(--purple),var(--blue2));border-radius:99px;transition:width 0.4s ease;}
+  /* ---------- layout shell ---------- */
+  #app{max-width:1180px;margin:0 auto;padding:0 20px 80px;}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;padding:22px 0 18px;flex-wrap:wrap;
+    border-bottom:1px solid var(--border-soft);margin-bottom:28px;
+  }
+  .brand{display:flex;align-items:baseline;gap:10px;cursor:pointer;}
+  .brand-mark{
+    font-family:var(--font-display);font-size:30px;letter-spacing:0.5px;
+    color:var(--text-primary);line-height:1;
+  }
+  .brand-mark span{color:var(--brass);}
+  .brand-sub{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);
+    letter-spacing:1.5px;text-transform:uppercase;}
+  .topbar-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .live-pill{
+    display:flex;align-items:center;gap:8px;font-family:var(--font-mono);
+    font-size:12px;color:var(--text-secondary);letter-spacing:0.3px;
+  }
+  .radar-dot{position:relative;width:8px;height:8px;border-radius:50%;background:#37E27A;flex:none;}
+  .radar-dot::after{
+    content:'';position:absolute;inset:-6px;border-radius:50%;
+    border:1.5px solid #37E27A;opacity:0;animation:ping 2.2s ease-out infinite;
+  }
+  @keyframes ping{0%{opacity:0.65;transform:scale(0.4);}80%{opacity:0;transform:scale(2.2);}100%{opacity:0;}}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border-radius:8px;border:1px solid transparent;font-weight:600;font-size:14px;
+    padding:11px 18px;transition:transform .14s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
+    white-space:nowrap;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-brass{background:var(--brass);color:#1C1204;}
+  .btn-brass:hover{background:#C68CFF;transform:translateY(-2px);box-shadow:0 8px 22px -8px var(--brass-glow);}
+  .btn-ghost{background:transparent;color:var(--text-primary);border-color:var(--border);}
+  .btn-ghost:hover{border-color:var(--brass-dim);color:var(--brass);transform:translateY(-2px);box-shadow:0 6px 18px -10px var(--brass-glow);}
+  .btn-danger{background:transparent;color:var(--danger);border-color:rgba(244,91,105,0.4);}
+  .btn-danger:hover{background:rgba(244,91,105,0.1);transform:translateY(-2px);}
+  .btn-sm{padding:8px 13px;font-size:12.5px;border-radius:7px;}
+  .btn:disabled{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none;}
 
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
-.login-glow{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(176,110,243,0.13) 0%,transparent 65%);animation:breathe 4s ease-in-out infinite;}
-@keyframes breathe{0%,100%{opacity:1}50%{opacity:0.5}}
-.login-box{position:relative;background:rgba(14,14,40,0.97);border:1.5px solid var(--border);border-radius:24px;padding:48px 40px;max-width:430px;width:100%;text-align:center;box-shadow:var(--gp),0 32px 64px rgba(0,0,0,0.55);}
-.login-fruit{font-size:68px;display:block;filter:drop-shadow(0 0 20px rgba(176,110,243,0.9));margin-bottom:10px;}
-.login-title{font-family:'Orbitron',sans-serif;font-size:1.8rem;font-weight:900;background:linear-gradient(130deg,var(--purple),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.login-sub{font-size:0.7rem;letter-spacing:4px;color:var(--muted);font-weight:700;margin-top:4px;}
-.login-desc{margin:18px 0 26px;color:var(--muted);font-size:1rem;line-height:1.6;}
-.divider{display:flex;align-items:center;gap:10px;margin:18px 0;}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
-.divider span{font-size:0.78rem;color:var(--muted);font-weight:700;}
-.btn-google{display:flex;align-items:center;gap:10px;justify-content:center;width:100%;padding:14px 20px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.13);border-radius:12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.22s;}
-.btn-google:hover{background:rgba(255,255,255,0.11);transform:translateY(-2px);}
-.btn-google:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.btn-guest{display:flex;align-items:center;gap:10px;justify-content:center;width:100%;padding:13px 20px;margin-top:10px;background:rgba(176,110,243,0.1);border:1.5px solid rgba(176,110,243,0.3);border-radius:12px;color:var(--purple);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.22s;}
-.btn-guest:hover{background:rgba(176,110,243,0.18);transform:translateY(-2px);}
-.login-err{margin-top:14px;padding:10px 14px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:9px;color:var(--red);font-size:0.85rem;display:none;}
+  /* ---------- notifications ---------- */
+  .notif-wrap{position:relative;}
+  .notif-badge{position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;font-size:9px;
+    font-family:var(--font-mono);font-weight:700;min-width:15px;height:15px;border-radius:8px;display:none;
+    align-items:center;justify-content:center;padding:0 3px;}
+  .notif-panel{display:none;position:absolute;top:calc(100% + 10px);right:0;width:310px;max-height:380px;
+    overflow-y:auto;background:var(--bg-surface);border:1px solid var(--border);border-radius:12px;
+    box-shadow:0 20px 48px -16px rgba(0,0,0,0.65);z-index:60;padding:8px;}
+  .notif-panel.open{display:block;}
+  .notif-item{padding:11px 12px;border-radius:8px;cursor:pointer;transition:background .12s ease;margin-bottom:3px;}
+  .notif-item:hover{background:var(--bg-surface-2);}
+  .notif-item.unread{background:rgba(176,110,243,0.10);}
+  .notif-msg{font-size:12.5px;color:var(--text-primary);line-height:1.45;}
+  .notif-empty{padding:24px;text-align:center;color:var(--text-faint);font-size:12.5px;}
 
-.overlay-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:900;align-items:center;justify-content:center;padding:20px;}
-.overlay-modal.show{display:flex;}
-.modal-box{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:30px;width:100%;max-width:400px;box-shadow:var(--gp);}
-.modal-box h3{font-size:1.2rem;font-weight:800;margin-bottom:8px;}
-.modal-box p{color:var(--muted);font-size:0.9rem;margin-bottom:18px;line-height:1.6;}
-.name-input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:600;outline:none;transition:border-color 0.2s;margin-bottom:12px;}
-.name-input:focus{border-color:var(--purple);}
-.name-input::placeholder{color:var(--muted);}
-.btn-primary{width:100%;padding:12px;background:linear-gradient(130deg,var(--purple2),var(--purple));border:none;border-radius:10px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
-.btn-primary:hover{transform:translateY(-2px);}
-.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.btn-x{background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;line-height:1;}
-.btn-x:hover{color:var(--text);}
+  .user-chip{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-secondary);}
+  .user-chip-name{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 22px;background:rgba(7,7,26,0.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
-.topbar-logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1rem;background:linear-gradient(90deg,var(--purple),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;letter-spacing:1px;user-select:none;}
-.topbar-right{display:flex;align-items:center;gap:10px;}
-.t-avatar{width:34px;height:34px;border-radius:50%;border:2px solid var(--purple);object-fit:cover;}
-.uname{font-size:0.88rem;font-weight:700;color:var(--muted);display:none;}
-@media(min-width:480px){.uname{display:block;}}
-.btn-sm{padding:6px 13px;background:transparent;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
-.btn-sm:hover{border-color:var(--purple);color:var(--purple);}
+  /* ---------- feed toolbar ---------- */
+  .feed-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:18px;flex-wrap:wrap;}
+  .feed-title{font-family:var(--font-display);font-size:34px;letter-spacing:0.3px;line-height:1;}
+  .feed-count{font-family:var(--font-mono);color:var(--text-faint);font-size:12.5px;margin-top:4px;}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+  .chip{
+    font-family:var(--font-mono);font-size:11.5px;letter-spacing:0.4px;text-transform:uppercase;
+    padding:6px 12px;border-radius:999px;border:1px solid var(--border);color:var(--text-secondary);
+    background:transparent;transition:all .14s ease;
+  }
+  .chip:hover{border-color:var(--brass-dim);color:var(--text-primary);transform:translateY(-1px);}
+  .chip.active{background:var(--brass);color:#1C1204;border-color:var(--brass);}
+  .search-input{
+    flex:1;min-width:180px;background:var(--bg-surface);border:1px solid var(--border);
+    color:var(--text-primary);padding:9px 13px;border-radius:8px;font-size:13.5px;
+  }
+  .search-input::placeholder{color:var(--text-faint);}
 
-.navbar{display:flex;align-items:center;gap:4px;padding:8px 22px;background:rgba(7,7,26,0.9);border-bottom:1px solid rgba(176,110,243,0.1);overflow-x:auto;scrollbar-width:none;}
-.navbar::-webkit-scrollbar{display:none;}
-.nav-btn{padding:6px 14px;border-radius:20px;font-size:0.82rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all 0.2s;white-space:nowrap;border:1.5px solid transparent;}
-.nav-btn:hover{color:var(--text);background:rgba(176,110,243,0.1);}
-.nav-btn.active{color:var(--purple);background:rgba(176,110,243,0.12);border-color:rgba(176,110,243,0.3);}
-.nav-btn.is-admin{color:var(--yellow);}
-.nav-btn.is-admin.active{background:rgba(251,191,36,0.12);border-color:rgba(251,191,36,0.4);}
+  /* ---------- trade card grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(300px,1fr));gap:16px;}
+  .empty-state{
+    text-align:center;padding:70px 20px;color:var(--text-faint);border:1px dashed var(--border);
+    border-radius:var(--radius-lg);font-size:14px;
+  }
+  .empty-state strong{display:block;color:var(--text-secondary);font-family:var(--font-display);
+    font-size:20px;letter-spacing:0.3px;margin-bottom:6px;font-weight:400;}
 
-.main{max-width:1080px;margin:0 auto;padding:24px 18px;}
+  .card{
+    position:relative;background:var(--bg-surface);border:1px solid var(--border);
+    border-radius:var(--radius-lg);padding:18px 18px 16px;cursor:pointer;
+    transition:border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+    display:flex;flex-direction:column;gap:12px;overflow:hidden;
+  }
+  .card:hover{border-color:var(--brass-dim);transform:translateY(-4px);
+    box-shadow:0 14px 32px -14px rgba(0,0,0,0.6), 0 0 26px var(--brass-glow);}
+  .stamp{
+    position:absolute;top:14px;right:-30px;transform:rotate(38deg);
+    font-family:var(--font-mono);font-size:10px;letter-spacing:2px;font-weight:600;
+    padding:3px 34px;border:1.5px solid;
+  }
+  .stamp.open{color:var(--uncommon);border-color:var(--uncommon);}
+  .stamp.closed{color:var(--text-faint);border-color:var(--text-faint);}
+  .card-row-label{font-family:var(--font-mono);font-size:10px;letter-spacing:1.6px;color:var(--text-faint);text-transform:uppercase;}
+  .slots{display:flex;gap:7px;flex-wrap:wrap;}
+  .slot{
+    display:flex;align-items:center;gap:6px;background:var(--bg-surface-2);
+    border:1px solid var(--border);border-radius:7px;padding:6px 9px;font-size:12.5px;font-weight:600;
+  }
+  .slot-dot{width:7px;height:7px;border-radius:2px;flex:none;}
+  .slot-empty{color:var(--text-faint);font-size:12px;font-style:italic;font-weight:400;}
+  .swap-divider{display:flex;align-items:center;gap:10px;color:var(--text-faint);font-family:var(--font-mono);font-size:11px;}
+  .swap-divider::before,.swap-divider::after{content:'';flex:1;height:1px;background:var(--border-soft);}
+  .card-note{font-size:12.5px;color:var(--text-secondary);font-style:italic;}
+  .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:2px;padding-top:12px;border-top:1px solid var(--border-soft);}
+  .poster{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;}
+  .avatar{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--brass),var(--mythical));flex:none;
+    display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:#1C1204;font-weight:700;}
+  .timeago{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);}
 
-.profile-panel{background:rgba(176,110,243,0.06);border:1.5px solid var(--border);border-radius:18px;padding:16px 20px;margin-bottom:28px;}
-.profile-inner{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-.pr-avatar{width:50px;height:50px;border-radius:50%;border:2px solid var(--purple);object-fit:cover;box-shadow:0 0 12px rgba(176,110,243,0.4);}
-.pr-name{font-size:1rem;font-weight:800;color:var(--purple);}
-.pr-badge{font-size:0.75rem;color:var(--muted);font-weight:600;margin-top:2px;}
-.boat-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;}
-.boat-label{font-size:0.9rem;font-weight:700;color:var(--text);}
-.switch{position:relative;display:inline-block;width:52px;height:28px;}
-.switch input{opacity:0;width:0;height:0;}
-.slider{position:absolute;cursor:pointer;inset:0;background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.15);border-radius:28px;transition:0.3s;}
-.slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:var(--muted);border-radius:50%;transition:0.3s;}
-input:checked+.slider{background:rgba(52,211,153,0.25);border-color:var(--green);}
-input:checked+.slider::before{transform:translateX(24px);background:var(--green);box-shadow:0 0 10px var(--green);}
-.boat-ind{display:flex;align-items:center;gap:6px;font-size:0.88rem;font-weight:800;padding:5px 12px;border-radius:20px;transition:all 0.3s;}
-.boat-ind.on{background:rgba(52,211,153,0.15);color:var(--green);border:1.5px solid rgba(52,211,153,0.35);}
-.boat-ind.off{background:rgba(248,113,113,0.12);color:var(--red);border:1.5px solid rgba(248,113,113,0.3);}
-.dot{width:8px;height:8px;border-radius:50%;}
-.dot.on{background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 1.5s ease-in-out infinite;}
-.dot.off{background:var(--red);}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+  /* ---------- forms / pages ---------- */
+  .page{max-width:720px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text-secondary);font-size:13px;
+    font-family:var(--font-mono);margin-bottom:20px;background:none;border:none;padding:0;}
+  .back-link:hover{color:var(--brass);}
+  .panel{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px;}
+  .page-title{font-family:var(--font-display);font-size:32px;margin:0 0 4px;letter-spacing:0.3px;}
+  .page-sub{color:var(--text-faint);font-size:13.5px;margin:0 0 26px;}
+  .field{margin-bottom:22px;}
+  .field-label{display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:1.4px;
+    text-transform:uppercase;color:var(--text-secondary);margin-bottom:9px;}
+  .field-hint{font-size:12px;color:var(--text-faint);margin-top:7px;line-height:1.6;}
+  .text-input{
+    width:100%;background:var(--bg-deep);border:1px solid var(--border);color:var(--text-primary);
+    padding:11px 13px;border-radius:8px;font-size:14px;transition:border-color .15s ease;
+  }
+  .text-input:focus{border-color:var(--brass-dim);}
+  textarea.text-input{resize:vertical;min-height:64px;}
 
-.hero{text-align:center;margin-bottom:32px;}
-.hero-eye{font-size:0.72rem;letter-spacing:5px;color:var(--muted);font-weight:700;margin-bottom:8px;}
-.hero-h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.3rem,4vw,2.4rem);font-weight:900;line-height:1.25;}
-.grad{background:linear-gradient(90deg,var(--purple),var(--blue2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero-tip{margin-top:10px;font-size:0.9rem;color:var(--muted);font-weight:600;}
+  .picker{border:1px solid var(--border);border-radius:10px;background:var(--bg-deep);padding:12px;}
+  .picker-top{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  .picker-rarity-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+  .picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:6px;max-height:200px;overflow-y:auto;padding-right:2px;}
+  .fruit-tile{
+    display:flex;align-items:center;gap:6px;padding:7px 9px;border-radius:7px;
+    border:1px solid var(--border);background:var(--bg-surface);font-size:12.5px;font-weight:600;
+    color:var(--text-secondary);text-align:left;transition:all .12s ease;
+  }
+  .fruit-tile:hover{border-color:var(--brass-dim);color:var(--text-primary);transform:translateY(-1px);box-shadow:0 0 0 1px var(--brass-glow);}
+  .fruit-tile.selected{border-color:var(--brass);background:var(--brass-glow);color:var(--text-primary);}
+  .fruit-tile.disabled{opacity:0.3;pointer-events:none;}
+  .fruit-dot{width:7px;height:7px;border-radius:2px;flex:none;}
+  .picker-selected{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;min-height:34px;}
+  .selected-chip{
+    display:flex;align-items:center;gap:7px;background:var(--bg-surface-2);border:1px solid var(--brass-dim);
+    border-radius:7px;padding:6px 6px 6px 10px;font-size:12.5px;font-weight:600;
+  }
+  .chip-remove{background:none;border:none;color:var(--text-faint);font-size:14px;line-height:1;padding:2px 4px;}
+  .chip-remove:hover{color:var(--danger);}
+  .picker-count{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);}
 
-.dest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;}
-.dest-card{position:relative;overflow:hidden;background:rgba(14,14,40,0.9);border:1.5px solid var(--border);border-radius:20px;padding:38px 26px;text-align:center;cursor:pointer;transition:all 0.28s ease;}
-.dest-card:hover{transform:translateY(-7px);border-color:var(--purple);box-shadow:var(--gp),0 20px 40px rgba(0,0,0,0.4);}
-.dest-card:nth-child(2):hover{border-color:var(--blue);box-shadow:var(--gb),0 20px 40px rgba(0,0,0,0.4);}
-.dest-glow{position:absolute;top:-50px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(176,110,243,0.12),transparent 70%);pointer-events:none;}
-.dest-glow.b{background:radial-gradient(circle,rgba(79,158,248,0.12),transparent 70%);}
-.dest-icon{font-size:58px;display:block;margin-bottom:14px;filter:drop-shadow(0 0 14px rgba(176,110,243,0.7));}
-.dest-name{font-size:1.2rem;font-weight:900;margin-bottom:6px;}
-.dest-desc{font-size:0.85rem;color:var(--muted);margin-bottom:16px;font-weight:600;}
-.dest-cta{font-size:0.88rem;font-weight:800;color:var(--purple);display:flex;align-items:center;justify-content:center;gap:6px;}
-.dest-card:nth-child(2) .dest-cta{color:var(--blue);}
+  .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;}
+  .error-msg{color:var(--danger);font-size:13px;margin-top:10px;}
 
-.pg-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
-.pg-title{font-family:'Orbitron',sans-serif;font-size:1.25rem;font-weight:900;color:var(--purple);letter-spacing:1px;}
-.btn-back{padding:8px 14px;background:transparent;border:1.5px solid var(--border);border-radius:9px;color:var(--muted);font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
-.btn-back:hover{border-color:var(--purple);color:var(--purple);}
-.btn-create{padding:10px 20px;background:linear-gradient(130deg,var(--purple2),var(--purple));border:none;border-radius:10px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:800;cursor:pointer;transition:all 0.25s;box-shadow:0 0 18px rgba(176,110,243,0.4);}
-.btn-create:hover{transform:translateY(-2px);}
-.btn-create:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+  /* ---------- trade detail ---------- */
+  .detail-hero{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px;position:relative;overflow:hidden;margin-bottom:26px;}
+  .detail-poster{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+  .detail-poster-name{font-family:var(--font-display);font-size:22px;letter-spacing:0.3px;}
+  .detail-slots-block{margin-bottom:16px;}
+  .detail-slots{display:flex;gap:10px;flex-wrap:wrap;}
+  .big-slot{
+    display:flex;align-items:center;gap:8px;background:var(--bg-surface-2);border:1px solid var(--border);
+    border-radius:9px;padding:10px 14px;font-size:14px;font-weight:600;
+  }
+  .big-slot .fruit-dot{width:9px;height:9px;}
+  .rarity-tag{font-family:var(--font-mono);font-size:9.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;}
 
-.room-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:15px;min-height:120px;}
-.room-card{background:rgba(14,14,40,0.94);border:1.5px solid var(--border);border-radius:16px;padding:18px;cursor:pointer;transition:border-color 0.25s,box-shadow 0.25s,transform 0.25s;}
-.room-card:hover{border-color:var(--blue);transform:translateY(-3px);box-shadow:var(--gb);}
-.room-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.room-host{font-size:0.95rem;font-weight:800;}
-.timer-pill{font-size:0.7rem;font-weight:800;color:var(--blue2);background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.3);padding:3px 9px;border-radius:20px;}
-.room-stats{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
-.room-count{font-size:0.85rem;color:var(--muted);font-weight:600;}
-.room-count.full{color:var(--red);font-weight:800;}
-.room-beast{font-size:0.82rem;font-weight:800;}
-.room-beast.yes{color:var(--green);}
-.room-beast.no{color:var(--red);}
-.btn-join{width:100%;padding:9px;background:linear-gradient(90deg,var(--blue2),var(--blue));border:none;border-radius:9px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;transition:all 0.18s;}
-.btn-join:hover{opacity:0.85;transform:translateY(-1px);}
-.btn-join.full{background:rgba(255,255,255,0.07);color:var(--muted);cursor:not-allowed;transform:none;}
-.empty-msg{grid-column:1/-1;text-align:center;color:var(--muted);padding:50px 20px;border:1.5px dashed var(--border);border-radius:16px;font-size:0.95rem;font-weight:600;}
+  .thread{margin-top:6px;}
+  .thread-title{font-family:var(--font-display);font-size:22px;margin:0 0 14px;letter-spacing:0.3px;}
+  .offer-item{background:var(--bg-surface);border:1px solid var(--border-soft);border-radius:12px;padding:16px 18px;margin-bottom:12px;transition:opacity .15s ease;}
+  .offer-item.accepted{border-color:var(--uncommon);}
+  .offer-item.declined{opacity:0.55;}
+  .offer-item-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
+  .offer-item-name{font-weight:700;font-size:13.5px;}
+  .offer-badge{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:5px;}
+  .offer-badge.accept{background:rgba(74,222,128,0.12);color:var(--uncommon);}
+  .offer-badge.counter{background:rgba(176,110,243,0.14);color:var(--brass);}
+  .offer-badge.declined{background:rgba(244,91,105,0.12);color:var(--danger);}
+  .offer-note{font-size:12.5px;color:var(--text-secondary);font-style:italic;margin-top:8px;}
+  .offer-actions{margin-top:10px;display:flex;gap:8px;}
 
-.room-layout{display:grid;grid-template-columns:1fr;gap:18px;}
-@media(min-width:768px){.room-layout{grid-template-columns:1fr 360px;align-items:start;}}
-.room-title-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;}
-.room-h2{font-family:'Orbitron',sans-serif;font-size:1.25rem;font-weight:900;color:var(--purple);text-shadow:0 0 16px rgba(176,110,243,0.65);}
-.room-timer-pill{font-size:0.82rem;font-weight:800;color:var(--blue2);background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.3);padding:6px 14px;border-radius:20px;}
-.beast-banner{padding:11px 16px;border-radius:11px;font-size:0.85rem;font-weight:800;text-align:center;margin-bottom:16px;}
-.beast-banner.yes{background:rgba(52,211,153,0.1);border:1.5px solid rgba(52,211,153,0.4);color:var(--green);}
-.beast-banner.no{background:rgba(248,113,113,0.1);border:1.5px solid rgba(248,113,113,0.35);color:var(--red);}
-.player-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px;}
-.p-chip{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 11px;font-size:0.84rem;font-weight:700;}
-.p-chip.me{border-color:var(--purple);background:rgba(176,110,243,0.09);}
-.p-chip.empty{border-style:dashed;color:rgba(255,255,255,0.18);font-size:0.78rem;justify-content:center;}
-.p-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.p-boat{font-size:0.95rem;flex-shrink:0;}
-.p-boat.yes{filter:drop-shadow(0 0 5px rgba(52,211,153,0.9));}
-.p-boat.no{opacity:0.3;}
+  .make-offer-box{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-top:24px;}
+  .mo-choice{display:flex;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+  .mo-choice .btn{flex:1;}
+  .closed-banner{
+    display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.03);border:1px solid var(--border);
+    border-radius:10px;padding:14px 16px;color:var(--text-secondary);font-size:13px;margin-top:24px;
+  }
 
-.chat-panel{background:rgba(14,14,40,0.95);border:1.5px solid var(--border);border-radius:18px;display:flex;flex-direction:column;height:490px;}
-.chat-head{padding:13px 16px;font-size:0.88rem;font-weight:800;color:var(--purple);border-bottom:1px solid var(--border);flex-shrink:0;}
-.chat-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin;scrollbar-color:rgba(176,110,243,0.35) transparent;}
-.msg{display:flex;flex-direction:column;gap:3px;max-width:86%;}
-.msg.me{align-self:flex-end;align-items:flex-end;}
-.msg.other{align-self:flex-start;align-items:flex-start;}
-.msg-who{font-size:0.68rem;color:var(--muted);font-weight:700;margin:0 4px;}
-.msg-txt{padding:8px 13px;border-radius:12px;font-size:0.9rem;line-height:1.45;word-break:break-word;font-weight:600;}
-.msg.me .msg-txt{background:linear-gradient(130deg,var(--purple2),var(--purple));color:#fff;}
-.msg.other .msg-txt{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.07);}
-.chat-foot{display:flex;gap:8px;padding:11px;border-top:1px solid var(--border);flex-shrink:0;}
-.chat-input{flex:1;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:9px 13px;color:var(--text);font-family:'Nunito',sans-serif;font-size:0.93rem;font-weight:600;outline:none;transition:border-color 0.2s;}
-.chat-input:focus{border-color:var(--purple);}
-.chat-input::placeholder{color:var(--muted);}
-.btn-send{padding:9px 16px;background:linear-gradient(130deg,var(--purple2),var(--purple));border:none;border-radius:10px;color:#fff;font-size:1rem;cursor:pointer;transition:all 0.18s;}
-.btn-send:hover{opacity:0.85;transform:scale(1.05);}
+  /* ---------- chat ---------- */
+  .chat-box{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-top:26px;}
+  .chat-box-head{font-family:var(--font-mono);font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--brass);margin-bottom:14px;}
+  .chat-msgs{display:flex;flex-direction:column;gap:9px;max-height:300px;overflow-y:auto;margin-bottom:14px;padding-right:4px;}
+  .chat-msg{max-width:80%;display:flex;flex-direction:column;gap:3px;}
+  .chat-msg.me{align-self:flex-end;align-items:flex-end;}
+  .chat-msg.them{align-self:flex-start;align-items:flex-start;}
+  .chat-msg-who{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);}
+  .chat-msg-txt{padding:8px 13px;border-radius:11px;font-size:13px;line-height:1.45;background:var(--bg-surface-2);border:1px solid var(--border-soft);}
+  .chat-msg.me .chat-msg-txt{background:var(--brass);color:#1C1204;border-color:var(--brass);}
+  .chat-input-row{display:flex;gap:8px;}
+  .chat-input-row .text-input{flex:1;}
 
-.sec-title{font-family:'Orbitron',sans-serif;font-size:1.05rem;font-weight:900;color:var(--purple);letter-spacing:1px;margin-bottom:6px;}
-.sec-desc{color:var(--muted);font-size:0.87rem;line-height:1.7;font-weight:600;margin-bottom:16px;}
+  .setup-note{
+    max-width:720px;margin:60px auto;background:var(--bg-surface);border:1px solid var(--legendary);
+    border-radius:var(--radius-lg);padding:24px 26px;font-size:14px;line-height:1.6;color:var(--text-secondary);
+  }
+  .setup-note h2{font-family:var(--font-display);color:var(--legendary);font-size:24px;margin-top:0;letter-spacing:0.3px;}
+  .setup-note code{background:var(--bg-deep);padding:2px 6px;border-radius:4px;font-family:var(--font-mono);font-size:12.5px;color:var(--brass);}
 
-/* Trade feed toolbar */
-.tfilters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center;}
-.tchip{font-family:'Nunito',sans-serif;font-size:0.74rem;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;padding:6px 13px;border-radius:999px;border:1.5px solid var(--border);color:var(--muted);background:transparent;cursor:pointer;transition:all .15s ease;}
-.tchip:hover{border-color:var(--purple);color:var(--text);}
-.tchip.active{background:var(--purple);color:#1a0d2e;border-color:var(--purple);}
-.tsearch{flex:1;min-width:180px;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);color:var(--text);padding:9px 13px;border-radius:10px;font-size:0.85rem;font-family:'Nunito',sans-serif;font-weight:600;}
-.tsearch::placeholder{color:var(--muted);}
+  footer.site-foot{text-align:center;color:var(--text-faint);font-family:var(--font-mono);font-size:11px;margin-top:60px;letter-spacing:0.3px;}
 
-/* Trade grid — no animation, prevents overlap */
-.trade-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start;}
-@media(max-width:860px){.trade-list{grid-template-columns:repeat(2,minmax(0,1fr));}}
-@media(max-width:520px){.trade-list{grid-template-columns:minmax(0,1fr);}}
-
-.trade-card{position:relative;background:rgba(12,12,32,0.96);border:1.5px solid rgba(176,110,243,0.14);border-radius:14px;padding:13px;cursor:pointer;display:flex;flex-direction:column;gap:9px;transition:border-color 0.22s,box-shadow 0.22s;}
-.trade-card:hover{border-color:rgba(176,110,243,0.5);box-shadow:0 4px 20px rgba(176,110,243,0.15);}
-.tc-top{display:flex;justify-content:space-between;align-items:center;}
-.tc-poster{font-size:0.78rem;font-weight:800;color:var(--purple);}
-.tc-age{font-size:0.65rem;color:var(--muted);font-weight:600;}
-.tc-body{display:grid;grid-template-columns:1fr 16px 1fr;align-items:start;gap:5px;}
-.tc-side-tag{font-size:0.6rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
-.tc-side-tag.want{color:var(--blue2);}
-.tc-side-tag.offer{color:var(--green);}
-.tc-arrow{font-size:0.9rem;color:rgba(255,255,255,0.18);text-align:center;padding-top:20px;}
-.tc-fruit-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
-.tc-fruit-tile{border-radius:8px;padding:5px;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:54px;justify-content:center;}
-.tc-fruit-tile.has-fruit{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);}
-.tc-fruit-tile.empty-tile{background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.06);}
-.tc-fruit-tile img{width:34px;height:34px;object-fit:contain;display:block;}
-.tc-fruit-name{font-size:0.58rem;font-weight:800;color:var(--text);text-align:center;line-height:1.2;}
-.tc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:6px;border-top:1px solid rgba(255,255,255,0.05);}
-.tc-note{font-size:0.68rem;color:var(--muted);font-style:italic;grid-column:1/-1;}
-.tc-status{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:5px;}
-.tc-status.open{background:rgba(52,211,153,0.12);color:var(--green);}
-.tc-status.closed{background:rgba(255,255,255,0.06);color:var(--muted);}
-.btn-tc-del{padding:4px 9px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);border-radius:6px;color:var(--red);font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;cursor:pointer;transition:all 0.18s;}
-.btn-tc-del:hover{background:rgba(248,113,113,0.2);}
-.tc-tap-hint{font-size:0.65rem;color:rgba(176,110,243,0.4);font-weight:700;}
-
-.r-common{border-color:rgba(139,155,180,0.3)!important;background:rgba(139,155,180,0.05)!important;}
-.r-uncommon{border-color:rgba(52,211,153,0.4)!important;background:rgba(52,211,153,0.07)!important;}
-.r-rare{border-color:rgba(79,158,248,0.4)!important;background:rgba(79,158,248,0.07)!important;}
-.r-legendary{border-color:rgba(176,110,243,0.5)!important;background:rgba(176,110,243,0.08)!important;}
-.r-mythical{border-color:rgba(251,146,60,0.5)!important;background:rgba(251,146,60,0.08)!important;}
-.rp{display:inline-block;padding:1px 5px;border-radius:20px;font-size:0.55rem;font-weight:900;letter-spacing:0.8px;text-transform:uppercase;}
-.rp-common{background:rgba(139,155,180,0.15);color:var(--muted);}
-.rp-uncommon{background:rgba(52,211,153,0.15);color:var(--green);}
-.rp-rare{background:rgba(79,158,248,0.15);color:var(--blue);}
-.rp-legendary{background:rgba(176,110,243,0.15);color:var(--purple);}
-.rp-mythical{background:rgba(251,146,60,0.15);color:var(--orange);}
-
-/* Trade post form */
-.trade-form-wrap{background:rgba(14,14,40,0.92);border:1.5px solid var(--border);border-radius:16px;padding:20px;max-width:640px;margin:0 auto;}
-.tfw-field{margin-bottom:18px;}
-.tfw-label{display:block;font-size:0.75rem;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}
-.ts-label{font-size:0.7rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
-.ts-label.want{color:var(--blue2);}
-.ts-label.offer{color:var(--green);}
-.slots-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.slot{background:rgba(255,255,255,0.03);border:1.5px dashed rgba(255,255,255,0.1);border-radius:10px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;transition:border-color 0.2s,background 0.2s;position:relative;overflow:hidden;}
-.slot:hover{border-color:var(--purple);background:rgba(176,110,243,0.07);}
-.slot .s-plus{font-size:1.8rem;color:rgba(176,110,243,0.45);line-height:1;}
-.slot:hover .s-plus{color:var(--purple);}
-.slot.filled{border-style:solid;border-color:rgba(176,110,243,0.4);background:rgba(176,110,243,0.07);}
-.slot img{width:44px;height:44px;object-fit:contain;}
-.slot .s-name{font-size:0.6rem;font-weight:800;color:var(--text);text-align:center;line-height:1.2;padding:0 4px;}
-.slot .s-rm{position:absolute;top:3px;right:3px;font-size:0.58rem;color:var(--red);cursor:pointer;background:rgba(248,113,113,0.15);border-radius:4px;padding:1px 5px;line-height:1.5;}
-.tv-bar{display:flex;gap:10px;margin-top:10px;}
-.tv-side{flex:1;background:rgba(255,255,255,0.04);border-radius:8px;padding:7px 11px;font-size:0.76rem;font-weight:700;color:var(--muted);text-align:center;}
-.tv-side b{color:var(--yellow);display:block;margin-top:2px;font-size:0.85rem;}
-.tfw-textarea{width:100%;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 13px;color:var(--text);font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:600;outline:none;resize:vertical;min-height:60px;}
-.tfw-textarea:focus{border-color:var(--purple);}
-.tfw-textarea::placeholder{color:var(--muted);}
-.btn-post-trade{width:100%;padding:12px;background:linear-gradient(130deg,var(--purple2),var(--purple));border:none;border-radius:10px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:800;cursor:pointer;transition:all 0.22s;box-shadow:0 0 16px rgba(176,110,243,0.3);}
-.btn-post-trade:hover{transform:translateY(-2px);}
-.btn-post-trade:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.tfw-err{color:var(--red);font-size:0.82rem;font-weight:700;margin-top:10px;}
-
-/* Fruit picker */
-.fpicker-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
-.fpicker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(94px,1fr));gap:8px;overflow-y:auto;padding-right:4px;max-height:340px;}
-.fpicker-item{background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 7px;text-align:center;cursor:pointer;transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s;}
-.fpicker-item:hover{transform:translateY(-3px);}
-.fpicker-item img{width:50px;height:50px;object-fit:contain;display:block;margin:0 auto 5px;}
-.fpicker-item .fi-name{font-size:0.68rem;font-weight:800;color:var(--text);}
-.no-fruits{text-align:center;color:var(--muted);padding:36px 20px;font-size:0.9rem;font-weight:600;}
-
-/* Trade detail */
-.td-body{padding:20px;}
-.td-poster{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
-.td-av{width:38px;height:38px;border-radius:50%;background:rgba(176,110,243,0.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
-.td-name{font-size:0.95rem;font-weight:800;}
-.td-time{font-size:0.72rem;color:var(--muted);font-weight:600;}
-.td-sides{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
-.td-side h4{font-size:0.68rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;display:inline-block;padding:3px 10px;border-radius:20px;margin-bottom:10px;}
-.td-side h4.want{color:var(--blue2);background:rgba(34,211,238,0.1);}
-.td-side h4.offer{color:var(--green);background:rgba(52,211,153,0.1);}
-.td-fruits{display:flex;flex-direction:column;gap:7px;}
-.td-fruit{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:8px 10px;}
-.td-fruit img{width:36px;height:36px;object-fit:contain;flex-shrink:0;}
-.td-fn{font-size:0.8rem;font-weight:800;color:var(--text);}
-.td-fv{font-size:0.68rem;color:var(--muted);margin-top:1px;}
-.td-note{color:var(--muted);font-size:0.82rem;font-style:italic;margin-bottom:14px;}
-.td-actions{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
-.btn-msg{width:100%;padding:12px;background:linear-gradient(130deg,rgba(52,211,153,0.15),rgba(79,158,248,0.15));border:1.5px solid rgba(52,211,153,0.4);border-radius:10px;color:var(--green);font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
-.btn-msg:hover{background:rgba(52,211,153,0.25);transform:translateY(-2px);}
-.btn-counter{width:100%;padding:12px;background:rgba(176,110,243,0.1);border:1.5px solid rgba(176,110,243,0.4);border-radius:10px;color:var(--purple);font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
-.btn-counter:hover{background:rgba(176,110,243,0.2);transform:translateY(-2px);}
-.btn-del-full{width:100%;padding:10px;background:rgba(248,113,113,0.08);border:1.5px solid rgba(248,113,113,0.3);border-radius:10px;color:var(--red);font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
-.btn-del-full:hover{background:rgba(248,113,113,0.2);}
-.td-closed-banner{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--muted);font-size:0.82rem;font-weight:700;text-align:center;margin-bottom:8px;}
-
-.counter-form{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:10px;}
-
-.offers-thread{margin-top:18px;}
-.ot-title{font-family:'Orbitron',sans-serif;font-size:0.92rem;font-weight:900;color:var(--purple);margin-bottom:10px;}
-.offer-item{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:13px 15px;margin-bottom:10px;}
-.offer-item.accepted{border-color:var(--green);background:rgba(52,211,153,0.05);}
-.offer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
-.offer-name{font-weight:800;font-size:0.82rem;}
-.offer-badge{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:900;letter-spacing:0.5px;text-transform:uppercase;padding:2px 8px;border-radius:5px;}
-.offer-badge.accept{background:rgba(52,211,153,0.12);color:var(--green);}
-.offer-badge.counter{background:rgba(176,110,243,0.12);color:var(--purple);}
-.offer-fruit-row{display:flex;gap:6px;flex-wrap:wrap;}
-.offer-fruit-chip{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.04);border-radius:7px;padding:4px 8px;font-size:0.7rem;font-weight:700;}
-.offer-fruit-chip img{width:22px;height:22px;object-fit:contain;}
-.offer-note{font-size:0.75rem;color:var(--muted);font-style:italic;margin-top:8px;}
-.offer-time{font-size:0.65rem;color:var(--muted);font-weight:600;margin-top:6px;}
-.btn-accept-offer{margin-top:9px;padding:6px 13px;background:linear-gradient(130deg,var(--purple2),var(--purple));border:none;border-radius:7px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;cursor:pointer;}
-.btn-accept-offer:hover{opacity:0.9;}
-
-.admin-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(251,191,36,0.15);border:1.5px solid rgba(251,191,36,0.4);border-radius:20px;padding:5px 14px;font-size:0.78rem;font-weight:800;color:var(--yellow);margin-bottom:20px;}
-.admin-form{background:rgba(14,14,40,0.92);border:1.5px solid rgba(251,191,36,0.2);border-radius:18px;padding:22px;margin-bottom:28px;}
-.admin-form h3{font-size:0.95rem;font-weight:800;color:var(--yellow);margin-bottom:16px;}
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px;}
-.form-field{display:flex;flex-direction:column;gap:5px;}
-.form-label{font-size:0.75rem;font-weight:800;color:var(--muted);letter-spacing:1px;}
-.form-input{background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);border-radius:9px;padding:10px 12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:600;outline:none;transition:border-color 0.2s;}
-.form-input:focus{border-color:var(--yellow);}
-.form-input::placeholder{color:var(--muted);}
-.form-select{background:rgba(14,14,28,0.95);border:1.5px solid rgba(255,255,255,0.1);border-radius:9px;padding:10px 12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:600;outline:none;cursor:pointer;}
-.form-select:focus{border-color:var(--yellow);}
-.btn-admin-add{padding:11px 22px;background:linear-gradient(130deg,#b45309,var(--yellow));border:none;border-radius:10px;color:#000;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
-.btn-admin-add:hover{transform:translateY(-2px);}
-.btn-admin-add:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
-.admin-fruit-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;}
-.afc{background:rgba(14,14,40,0.92);border:1.5px solid var(--border);border-radius:14px;padding:14px;text-align:center;}
-.afc img{width:52px;height:52px;object-fit:contain;margin-bottom:8px;}
-.afc .af-name{font-size:0.85rem;font-weight:800;color:var(--text);margin-bottom:3px;}
-.afc .af-val{font-size:0.75rem;color:var(--muted);font-weight:600;margin-bottom:6px;}
-.btn-del-af{width:100%;padding:6px;background:rgba(248,113,113,0.1);border:1.5px solid rgba(248,113,113,0.3);border-radius:7px;color:var(--red);font-size:0.72rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;}
-.btn-del-af:hover{background:rgba(248,113,113,0.22);}
-
-.cp{max-width:780px;margin:0 auto;}
-.cp h1{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:900;color:var(--purple);margin-bottom:6px;}
-.cp .cp-sub{font-size:0.78rem;letter-spacing:3px;color:var(--muted);font-weight:700;margin-bottom:26px;}
-.cs{background:rgba(14,14,40,0.85);border:1.5px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:16px;}
-.cs h2{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:9px;}
-.cs p{color:var(--muted);font-size:0.88rem;line-height:1.75;font-weight:600;margin-bottom:9px;}
-.cs p:last-child{margin-bottom:0;}
-.cs ul{color:var(--muted);font-size:0.88rem;line-height:1.75;font-weight:600;padding-left:18px;}
-.cs ul li{margin-bottom:3px;}
-.contact-form{display:flex;flex-direction:column;gap:11px;}
-.contact-form input,.contact-form textarea{background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:600;outline:none;transition:border-color 0.2s;width:100%;resize:vertical;}
-.contact-form input:focus,.contact-form textarea:focus{border-color:var(--purple);}
-.contact-form input::placeholder,.contact-form textarea::placeholder{color:var(--muted);}
-.btn-cf{padding:11px 22px;background:linear-gradient(130deg,var(--purple2),var(--purple));border:none;border-radius:10px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:800;cursor:pointer;transition:all 0.2s;align-self:flex-start;}
-.btn-cf:hover{transform:translateY(-2px);}
-.info-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
-.ic{padding:5px 11px;border-radius:20px;font-size:0.75rem;font-weight:800;background:rgba(176,110,243,0.1);border:1px solid rgba(176,110,243,0.25);color:var(--purple);}
-.footer-nav{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;padding:18px;border-top:1px solid var(--border);margin-top:8px;}
-.footer-nav span{font-size:0.78rem;color:var(--muted);font-weight:700;cursor:pointer;transition:color 0.2s;}
-.footer-nav span:hover{color:var(--purple);}
-.footer-nav .sep{color:rgba(255,255,255,0.12);}
-
-::-webkit-scrollbar{width:5px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:rgba(176,110,243,0.35);border-radius:3px;}
+  @media (max-width:640px){
+    .feed-title{font-size:27px;}
+    .brand-mark{font-size:24px;}
+    .panel,.detail-hero{padding:18px;}
+    .notif-panel{width:260px;right:-40px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .radar-dot::after{animation:none;}
+    .card, .btn, .chip, .fruit-tile{transition:none;}
+  }
 </style>
 </head>
 <body>
-
 <div id="app">
-  <div class="loader">
-    <span class="loader-fruit">🍊</span>
-    <div class="loader-text">RentAFruit</div>
-    <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
-    <div class="loader-sub" id="loaderSub">Connecting...</div>
-  </div>
-</div>
-
-<div class="overlay-modal" id="guestModal">
-  <div class="modal-box">
-    <div class="modal-head"><h3>👋 Pick a name!</h3><button class="btn-x" onclick="closeModal('guestModal')">✕</button></div>
-    <p>Enter a display name to continue as Guest.</p>
-    <input type="text" id="guestName" class="name-input" placeholder="e.g. CoolHunter99" maxlength="24" onkeypress="if(event.key==='Enter')confirmGuest()"/>
-    <button class="btn-primary" onclick="confirmGuest()">Let's Go! 🚀</button>
-  </div>
-</div>
-
-<div class="overlay-modal" id="fruitPicker" style="z-index:950">
-  <div class="modal-box" style="max-width:560px;max-height:85vh;display:flex;flex-direction:column;">
-    <div class="modal-head"><h3>🍊 Choose a Fruit</h3><button class="btn-x" onclick="closeModal('fruitPicker')">✕</button></div>
-    <div class="fpicker-toolbar" id="fpToolbar"></div>
-    <div class="fpicker-grid" id="fpGrid"><div class="no-fruits">Loading...</div></div>
-  </div>
-</div>
-
-<div class="overlay-modal" id="tradeDetailModal" style="z-index:940">
-  <div class="modal-box" style="max-width:540px;max-height:90vh;overflow-y:auto;padding:0;">
-    <div class="modal-head" style="padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card);z-index:1;">
-      <h3 style="color:var(--purple);">🤝 Trade Details</h3>
-      <button class="btn-x" onclick="closeModal('tradeDetailModal')">✕</button>
+  <header class="topbar">
+    <div class="brand" id="brand-home">
+      <div class="brand-mark">DEALER'S <span>DOCK</span></div>
     </div>
-    <div id="tradeDetailBody" class="td-body">Loading...</div>
-  </div>
+    <div class="topbar-right" id="topbar-right"></div>
+  </header>
+  <main id="view-root"></main>
+  <footer class="site-foot">Dealer's Dock is a fan-made trading board for Blox Fruits players. Not affiliated with Gamer Robot Inc. or Roblox.</footer>
 </div>
 
 <script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAnalytics }  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getDatabase, ref, set, get, push, update, remove, onValue, off }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-import {
-  getFirestore, collection, doc, addDoc, setDoc, getDoc, getDocs, updateDoc, deleteDoc,
-  onSnapshot, query, where, orderBy, limit, serverTimestamp, enableIndexedDbPersistence
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-/* ══════════════════════════════════════════════════════════
-   SINGLE Firebase project — Realtime Database (rooms/chat)
-   AND Firestore (trades/offers/users/fruits) both live here.
-   Do NOT use a second Firebase project — that would break
-   Google Sign-In continuity (different UIDs per project).
-══════════════════════════════════════════════════════════ */
+/* ============================================================
+   FIREBASE CONFIG — replace with YOUR project's config object.
+   ============================================================ */
 const firebaseConfig = {
-  apiKey:            "AIzaSyDlBIeNVDK5nBPpVFkFSxNY59e7gW-p18c",
-  authDomain:        "rentafruit-f57d9.firebaseapp.com",
-  projectId:         "rentafruit-f57d9",
-  storageBucket:     "rentafruit-f57d9.firebasestorage.app",
-  messagingSenderId: "66702277537",
-  appId:             "1:66702277537:web:e7f210f38252ad4fd0e9e0",
-  measurementId:     "G-0J9TNJNEV5",
-  databaseURL:       "https://rentafruit-f57d9-default-rtdb.asia-southeast1.firebasedatabase.app"
+  apiKey: "AIzaSyADelISonKpsymat21iU_H-J20nVNWDttU",
+  authDomain: "rentafruit2.firebaseapp.com",
+  projectId: "rentafruit2",
+  storageBucket: "rentafruit2.firebasestorage.app",
+  messagingSenderId: "508277976942",
+  appId: "1:508277976942:web:b16f1b15ee20923305db7f",
+  measurementId: "G-TH3CKR5J51"
 };
+const CONFIG_IS_PLACEHOLDER = firebaseConfig.apiKey === "YOUR_API_KEY";
 
-const fbApp = initializeApp(firebaseConfig);
-const analytics = getAnalytics(fbApp);
-const auth = getAuth(fbApp);
-const dbRT = getDatabase(fbApp);   // Realtime Database — rooms + room chat ONLY
-const dbFS = getFirestore(fbApp);  // Firestore — trades, offers, users, fruits
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({prompt:"select_account"});
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, doc, setDoc, updateDoc, onSnapshot,
+  query, where, orderBy, serverTimestamp, getDoc
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword,
+  createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-/* Cache Firestore data locally (IndexedDB) so trades/fruits repaint
-   instantly from cache on repeat visits instead of waiting on network. */
-try{ enableIndexedDbPersistence(dbFS); }catch(e){ /* multiple tabs open or unsupported browser — fine, just no local cache */ }
+const viewRoot = document.getElementById('view-root');
+document.getElementById('brand-home').addEventListener('click', () => { location.hash = '#/'; });
 
-/* ── STATE ── */
-let CU=null, isGuest=false, myBoat=false;
-let currentView="", currentRoom=null, currentDest=null;
-let L_rooms=null, L_roomDoc=null, L_roomChat=null, roomTimer=null;
+/* ============================================================
+   STATE
+   ============================================================ */
+let db, auth, uid = null, myUsername = '';
+let unsubFeed = null, unsubDetail = null, unsubOffers = null, unsubChat = null, unsubNotif = null;
+let feedRarityFilter = 'All';
+let feedSearch = '';
+let latestTrades = [];
+let myNotifications = [];
+let currentOffers = [];
+let currentChatId = null;
 
-/* Trade state (Firestore) */
-let tradeSubView="feed";           // feed | post | detail
-let tradeDetailId=null;
-let U_trades=null, U_tradeDetail=null, U_offers=null, U_fruits=null;
-let tradesCache=[], currentTradeDetail=null, offersCache=[];
-let fruitsCache={}, fruitsReady=false;
-let feedRarity="All", feedSearch="";
-let tradeOffering=[], tradeWanting=[];
-let counterOffering=[];
-let pickerCtx=null; // {mode:'trade'|'counter', side:'offer'|'want'}
-let feedSearchDebounce=null;
-let unsubAdminFruitsLive=null;
-let unsubPickerLive=null;
-
-const ADMINS=["jakelordclash@gmail.com","calvinthomasvinosh@gmail.com"];
-const isAdmin=()=>ADMINS.includes(CU?.email);
-const RARITIES=["Common","Uncommon","Rare","Legendary","Mythical"];
-
-/* ── HELPERS ── */
-const esc = t => String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-const rc  = r => (r||"common").toLowerCase();
-function fallbackImg(){ return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRleHQgeT0iMzIiIGZvbnQtc2l6ZT0iMzIiPvCfjooiPC90ZXh0Pjwvc3ZnPg=="; }
-/* Only ever point <img src> at real http(s) URLs — this is what stops
-   a bad/garbled admin entry (e.g. someone typing "hhttth" instead of
-   "https://...") from firing a broken request against your own domain
-   (that's what caused the "rentafruit.shop/hhttth 404" console error). */
-function imgSrc(u){
-  if(u && typeof u==="string" && /^https?:\/\//i.test(u.trim())) return esc(u.trim());
-  return fallbackImg();
+if (CONFIG_IS_PLACEHOLDER) {
+  renderSetupNotice();
+} else {
+  viewRoot.innerHTML = `<div class="page-sub" style="text-align:center;margin-top:100px">Connecting…</div>`;
+  bootFirebase();
 }
-function tsMillis(ts){ return (ts && typeof ts.toMillis==="function") ? ts.toMillis() : Date.now(); }
-function ago(ts){
-  if(!ts) return "just now";
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
-  const s = Math.floor((Date.now()-d.getTime())/1000);
-  if(s<60) return "just now";
-  if(s<3600) return Math.floor(s/60)+"m ago";
-  if(s<86400) return Math.floor(s/3600)+"h ago";
-  return Math.floor(s/86400)+"d ago";
+
+function renderSetupNotice(){
+  viewRoot.innerHTML = `
+    <div class="setup-note">
+      <h2>⚙ One setup step left</h2>
+      <p>This page is running, but it isn't connected to a database yet. Open this file, find the
+      <code>firebaseConfig</code> object near the top of the &lt;script&gt; tag, and paste in your own
+      Firebase project's config values.</p>
+      <p>You'll also need to enable both <code>Google</code> and <code>Email/Password</code> sign-in
+      methods under Authentication → Sign-in method in your Firebase console — this build uses real
+      accounts instead of anonymous sessions.</p>
+    </div>`;
 }
-window.closeModal = id => {
-  document.getElementById(id).classList.remove("show");
-  if(id==="fruitPicker" && unsubPickerLive){ unsubPickerLive(); unsubPickerLive=null; }
+
+/* ============================================================
+   FRUIT DATA
+   ============================================================ */
+const RARITY_COLOR = {
+  Common: 'var(--common)', Uncommon: 'var(--uncommon)', Rare: 'var(--rare)',
+  Legendary: 'var(--legendary)', Mythical: 'var(--mythical)'
 };
+const RARITIES = ['Common','Uncommon','Rare','Legendary','Mythical'];
+const FRUITS = [
+  {name:"Rocket",rarity:"Common"},{name:"Spin",rarity:"Common"},{name:"Blade",rarity:"Common"},
+  {name:"Spring",rarity:"Common"},{name:"Bomb",rarity:"Common"},{name:"Smoke",rarity:"Common"},
+  {name:"Spike",rarity:"Common"},
+  {name:"Flame",rarity:"Uncommon"},{name:"Ice",rarity:"Uncommon"},{name:"Sand",rarity:"Uncommon"},
+  {name:"Dark",rarity:"Uncommon"},{name:"Eagle",rarity:"Uncommon"},{name:"Diamond",rarity:"Uncommon"},
+  {name:"Light",rarity:"Rare"},{name:"Rubber",rarity:"Rare"},{name:"Ghost",rarity:"Rare"},{name:"Magma",rarity:"Rare"},
+  {name:"Quake",rarity:"Legendary"},{name:"Buddha",rarity:"Legendary"},{name:"Love",rarity:"Legendary"},
+  {name:"Creation",rarity:"Legendary"},{name:"Spider",rarity:"Legendary"},{name:"Sound",rarity:"Legendary"},
+  {name:"Phoenix",rarity:"Legendary"},{name:"Portal",rarity:"Legendary"},{name:"Lightning",rarity:"Legendary"},
+  {name:"Pain",rarity:"Legendary"},{name:"Blizzard",rarity:"Legendary"},
+  {name:"Gravity",rarity:"Mythical"},{name:"Mammoth",rarity:"Mythical"},{name:"T-Rex",rarity:"Mythical"},
+  {name:"Dough",rarity:"Mythical"},{name:"Shadow",rarity:"Mythical"},{name:"Venom",rarity:"Mythical"},
+  {name:"Gas",rarity:"Mythical"},{name:"Spirit",rarity:"Mythical"},{name:"Tiger",rarity:"Mythical"},
+  {name:"Yeti",rarity:"Mythical"},{name:"Kitsune",rarity:"Mythical"},{name:"Control",rarity:"Mythical"},
+  {name:"Dragon",rarity:"Mythical"}
+];
 
-/* ── LOADER ── */
-function ldr(pct,msg){ const b=document.getElementById("loaderBar"),s=document.getElementById("loaderSub"); if(b)b.style.width=pct+"%"; if(s)s.textContent=msg; }
-ldr(15,"Importing Firebase...");
-setTimeout(()=>ldr(35,"Connecting..."),300);
-setTimeout(()=>ldr(55,"Checking auth..."),600);
+/* ============================================================
+   AUTH BOOTSTRAP
+   ============================================================ */
+function bootFirebase(){
+  const app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  auth = getAuth(app);
 
-/* ── AUTH ── */
-window.loginWithGoogle = async () => {
-  const btn=document.getElementById("loginBtn"), err=document.getElementById("loginErr");
-  if(btn)btn.disabled=true; if(err)err.style.display="none";
-  try{ await signInWithPopup(auth,provider); }
-  catch(e){
-    if(btn)btn.disabled=false;
-    if(err){ err.style.display="block";
-      err.textContent = e.code==="auth/popup-blocked" ? "⚠️ Allow popups for this site."
-        : e.code==="auth/popup-closed-by-user" ? "Sign-in cancelled. Try again!"
-        : e.code==="auth/unauthorized-domain" ? "Domain not authorised in Firebase."
-        : "Sign-in failed: "+e.code;
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      uid = user.uid;
+      try { await loadOrCreateUserProfile(user); }
+      catch(e){ myUsername = user.displayName || 'Trader'; }
+      renderTopbarRight();
+      listenNotifications();
+      router();
+    } else {
+      uid = null; myUsername = '';
+      cleanupAll();
+      renderTopbarRight();
+      renderLogin();
     }
-  }
-};
-window.showGuestModal=()=>{document.getElementById("guestModal").classList.add("show");setTimeout(()=>document.getElementById("guestName")?.focus(),100);};
-window.confirmGuest=()=>{
-  const inp=document.getElementById("guestName"), name=inp?.value.trim();
-  if(!name||name.length<2){inp.style.borderColor="var(--red)";return;}
-  closeModal("guestModal");
-  isGuest=true;
-  CU={uid:"guest_"+Math.random().toString(36).slice(2,9),displayName:name,photoURL:"https://api.dicebear.com/7.x/bottts/svg?seed="+encodeURIComponent(name)};
-  myBoat=false; go("home");
-  startFruitsListener(); // warm the fruits cache in the background
-};
-window.logOut=async()=>{
-  killAll();
-  if(isGuest){isGuest=false;CU=null;myBoat=false;go("login");}
-  else await signOut(auth);
-};
-
-let authDone=false;
-const authTimer=setTimeout(()=>{if(!authDone&&!isGuest)go("login");},8000);
-
-onAuthStateChanged(auth, async user => {
-  if(isGuest) return;
-  authDone=true; clearTimeout(authTimer);
-  CU=user;
-  if(user){
-    ldr(75,"Loading profile...");
-    const uRef=doc(dbFS,"users",user.uid);
-    try{
-      const snap=await getDoc(uRef);
-      if(!snap.exists()) await setDoc(uRef,{uid:user.uid,name:user.displayName,photo:user.photoURL,hasBeastBoat:false});
-      myBoat=(snap.exists()?snap.data().hasBeastBoat:false)===true;
-    }catch(e){ myBoat=false; }
-    ldr(100,"Done! 🍊");
-    startFruitsListener(); // warm the fruits cache in the background so Trade/Admin open instantly later
-    setTimeout(()=>go("home"),300);
-  }else{ ldr(100,"Ready!"); setTimeout(()=>go("login"),200); }
-},()=>{authDone=true;clearTimeout(authTimer);go("login");});
-
-/* ── BOAT TOGGLE (Firestore) ── */
-window.toggleBoat=async()=>{
-  myBoat=!myBoat;
-  const ind=document.getElementById("boatInd"), tog=document.getElementById("boatTog");
-  if(ind){ind.className="boat-ind "+(myBoat?"on":"off");ind.innerHTML=`<span class="dot ${myBoat?"on":"off"}"></span>${myBoat?"🚢 Active!":"Not Active"}`;}
-  if(tog)tog.checked=myBoat;
-  if(!isGuest&&CU?.uid) try{ await updateDoc(doc(dbFS,"users",CU.uid),{hasBeastBoat:myBoat}); }catch(e){}
-};
-
-/* ── LISTENER CLEANUP ── */
-function killListeners(){
-  if(L_rooms){off(L_rooms);L_rooms=null;}
-  if(L_roomDoc){off(L_roomDoc);L_roomDoc=null;}
-  if(L_roomChat){off(L_roomChat);L_roomChat=null;}
-  if(roomTimer){clearInterval(roomTimer);roomTimer=null;}
-  if(U_trades){U_trades();U_trades=null;}
-  if(U_tradeDetail){U_tradeDetail();U_tradeDetail=null;}
-  if(U_offers){U_offers();U_offers=null;}
-  if(unsubAdminFruitsLive){unsubAdminFruitsLive();unsubAdminFruitsLive=null;}
-  if(feedSearchDebounce){clearTimeout(feedSearchDebounce);feedSearchDebounce=null;}
-}
-function killAll(){
-  killListeners();
-  if(U_fruits){U_fruits();U_fruits=null;}
-  fruitsReady=false; fruitsCache={}; fruitsOneTimeCbs=[]; fruitsLiveCbs=new Set();
+  });
 }
 
-/* ── NAV ── */
-const go = view => { killListeners(); currentView=view; render(view); };
-window.goHome=()=>go("home");
-window.goDestination=dest=>{currentDest=dest;go("destination");listenRooms(dest);};
-window.goAbout=()=>go("about");
-window.goContact=()=>go("contact");
-window.goPrivacy=()=>go("privacy");
-window.goTerms=()=>go("terms");
-window.goAdmin=()=>{
-  if(!isAdmin())return;
-  go("admin");
-  unsubAdminFruitsLive = onFruitsLive(()=>renderAdminFruits(Object.values(fruitsCache)));
-};
-window.goTrade=()=>{ tradeSubView="feed"; go("trade"); ensureFruits(()=>listenTrades()); };
-window.goTradePost=()=>{ tradeOffering=[]; tradeWanting=[]; tradeSubView="post"; render("trade"); };
-window.goTradeFeed=()=>{ tradeSubView="feed"; render("trade"); };
-
-/* ══════════════════════════════════════════════════════════
-   ROOMS — Realtime Database (unchanged logic)
-══════════════════════════════════════════════════════════ */
-function listenRooms(dest){
-  const r=ref(dbRT,"rooms"); L_rooms=r;
-  onValue(r, snap=>{
-    const now=Date.now(), rooms=[];
-    if(snap.exists()) snap.forEach(c=>{
-      const rm={id:c.key,...c.val()};
-      if(rm.expiresAt&&rm.expiresAt<now){remove(ref(dbRT,"rooms/"+c.key));return;}
-      if(rm.destination===dest) rooms.push(rm);
+async function loadOrCreateUserProfile(user){
+  const uRef = doc(db,'users',user.uid);
+  const snap = await getDoc(uRef);
+  if (snap.exists()) {
+    myUsername = snap.data().username || user.displayName || 'Trader';
+  } else {
+    myUsername = user.displayName || ('Trader' + user.uid.slice(0,4));
+    await setDoc(uRef, {
+      username: myUsername,
+      provider: user.providerData?.[0]?.providerId === 'google.com' ? 'google' : 'guest',
+      createdAt: serverTimestamp()
     });
-    renderRoomList(rooms);
-  });
-}
-function renderRoomList(rooms){
-  const el=document.getElementById("roomList"); if(!el)return;
-  if(!rooms.length){el.innerHTML=`<div class="empty-msg">😴 No rooms yet! Hit ✨ Create Room to start the hunt!</div>`;return;}
-  el.innerHTML=rooms.map(r=>{
-    const pl=r.players?Object.values(r.players):[];
-    const hb=pl.some(p=>p.hasBeastBoat===true), full=pl.length>=7;
-    const rem=r.expiresAt?Math.max(0,r.expiresAt-Date.now()):0;
-    return `<div class="room-card" onclick="enterRoom('${r.id}')">
-      <div class="room-head"><span class="room-host">👑 ${esc(r.host||"Unknown")}</span><span class="timer-pill">⏱ ${Math.floor(rem/60000)}m ${Math.floor((rem%60000)/1000)}s</span></div>
-      <div class="room-stats"><span class="room-count ${full?"full":""}">👥 ${pl.length}/7</span><span class="room-beast ${hb?"yes":"no"}">${hb?"🚢 Beast Hunter Available!":"❌ No Beast Hunter"}</span></div>
-      <button class="btn-join ${full?"full":""}" onclick="event.stopPropagation();joinRoom('${r.id}')">${full?"Room Full 😔":"Join Room →"}</button>
-    </div>`;
-  }).join("");
-}
-window.createRoom=async()=>{
-  if(!CU||!currentDest)return;
-  const btn=document.querySelector(".btn-create");
-  if(btn){btn.disabled=true;btn.textContent="Creating...";}
-  const now=Date.now(), rid=push(ref(dbRT,"rooms")).key;
-  try{
-    await set(ref(dbRT,"rooms/"+rid),{destination:currentDest,host:CU.displayName,hostUid:CU.uid,createdAt:now,expiresAt:now+3600000,
-      players:{[CU.uid]:{uid:CU.uid,name:CU.displayName,hasBeastBoat:myBoat===true}}});
-    enterRoom(rid);
-  }catch(e){alert("❌ Couldn't create room!\n"+e.message);if(btn){btn.disabled=false;btn.textContent="✨ Create Room";}}
-};
-window.joinRoom=async rid=>{
-  try{
-    const snap=await get(ref(dbRT,"rooms/"+rid)); if(!snap.exists()){alert("Room doesn't exist!");return;}
-    const r=snap.val(), pl=r.players?Object.values(r.players):[];
-    if(pl.length>=7){alert("😔 Room is full!");return;}
-    if(r.players&&r.players[CU.uid]){enterRoom(rid);return;}
-    await update(ref(dbRT,"rooms/"+rid+"/players"),{[CU.uid]:{uid:CU.uid,name:CU.displayName,hasBeastBoat:myBoat===true}});
-    enterRoom(rid);
-  }catch(e){alert("Couldn't join room. Try again!");}
-};
-window.leaveRoom=async()=>{
-  if(!currentRoom)return;
-  try{
-    await remove(ref(dbRT,"rooms/"+currentRoom+"/players/"+CU.uid));
-    const snap=await get(ref(dbRT,"rooms/"+currentRoom+"/players"));
-    if(!snap.exists()||!Object.keys(snap.val()||{}).length) await remove(ref(dbRT,"rooms/"+currentRoom));
-  }catch(e){}
-  killListeners(); currentRoom=null; go("destination"); listenRooms(currentDest);
-};
-window.enterRoom=rid=>{killListeners();currentRoom=rid;go("room");listenRoomDoc(rid);listenRoomChat(rid);};
-function listenRoomDoc(rid){
-  const r=ref(dbRT,"rooms/"+rid); L_roomDoc=r; let last=null;
-  onValue(r, snap=>{
-    if(!snap.exists()){window.goDestination(currentDest);return;}
-    const rm={id:rid,...snap.val()};
-    if(rm.expiresAt&&rm.expiresAt<Date.now()){remove(r);window.goDestination(currentDest);return;}
-    last=rm; renderRoomView(rm);
-  });
-  if(roomTimer)clearInterval(roomTimer);
-  roomTimer=setInterval(()=>{
-    if(!last)return;
-    const pill=document.getElementById("rTimerPill"); if(!pill){clearInterval(roomTimer);return;}
-    const rem=last.expiresAt?Math.max(0,last.expiresAt-Date.now()):0;
-    if(!rem){remove(ref(dbRT,"rooms/"+rid));window.goDestination(currentDest);return;}
-    pill.textContent=`⏱ ${Math.floor(rem/60000)}:${String(Math.floor((rem%60000)/1000)).padStart(2,"0")}`;
-  },1000);
-}
-function renderRoomView(r){
-  const pl=r.players?Object.values(r.players):[], hb=pl.some(p=>p.hasBeastBoat===true);
-  const rem=r.expiresAt?Math.max(0,r.expiresAt-Date.now()):0;
-  const el=document.getElementById("roomContent"); if(!el)return;
-  el.innerHTML=`<div class="room-title-row"><h2 class="room-h2">📍 ${esc(r.destination)}</h2><span class="room-timer-pill" id="rTimerPill">⏱ ${Math.floor(rem/60000)}:${String(Math.floor((rem%60000)/1000)).padStart(2,"0")}</span></div>
-    <div class="beast-banner ${hb?"yes":"no"}">${hb?"🚢 BEAST HUNTER IS HERE!":"❌ No Beast Hunter yet!"}</div>
-    <div class="player-grid">
-      ${pl.map(p=>`<div class="p-chip ${p.uid===CU?.uid?"me":""}"><span class="p-name">${p.uid===CU?.uid?"⭐ You":esc(p.name)}</span><span class="p-boat ${p.hasBeastBoat?"yes":"no"}">${p.hasBeastBoat?"🚢":"🚫"}</span></div>`).join("")}
-      ${Array(Math.max(0,7-pl.length)).fill(0).map(()=>`<div class="p-chip empty">Waiting...</div>`).join("")}
-    </div>`;
-}
-function listenRoomChat(rid){
-  const r=ref(dbRT,"chat/"+rid); L_roomChat=r;
-  onValue(r, snap=>{
-    const box=document.getElementById("chatBox"); if(!box)return;
-    const msgs=[]; if(snap.exists())snap.forEach(c=>msgs.push({id:c.key,...c.val()}));
-    box.innerHTML=msgs.map(m=>{const me=m.uid===CU?.uid;
-      return`<div class="msg ${me?"me":"other"}"><span class="msg-who">${me?"You":esc(m.name)}</span><span class="msg-txt">${esc(m.text)}</span></div>`;
-    }).join("");
-    box.scrollTop=box.scrollHeight;
-  });
-}
-window.sendRoomMsg=async()=>{
-  const inp=document.getElementById("roomMsgInput"), text=inp?.value.trim();
-  if(!text||!currentRoom)return; inp.value="";
-  try{ const mr=push(ref(dbRT,"chat/"+currentRoom)); await set(mr,{uid:CU.uid,name:CU.displayName,text,ts:Date.now()}); }catch(e){}
-};
-window.roomMsgKey=e=>{if(e.key==="Enter")window.sendRoomMsg();};
-
-/* ══════════════════════════════════════════════════════════
-   FRUITS — Firestore, admin-managed, shared cache.
-   Rebuilt so BOTH a one-time "ready" callback AND ongoing live
-   updates are supported — previously, adding a fruit in the
-   admin panel updated Firestore instantly but the on-screen
-   list never refreshed until you navigated away and back.
-══════════════════════════════════════════════════════════ */
-let fruitsOneTimeCbs=[];
-let fruitsLiveCbs=new Set();
-function startFruitsListener(){
-  if(U_fruits) return;
-  U_fruits = onSnapshot(collection(dbFS,"fruits"), snap=>{
-    fruitsCache={};
-    snap.forEach(d=>fruitsCache[d.id]={id:d.id,...d.data()});
-    fruitsReady=true;
-    fruitsOneTimeCbs.forEach(f=>f()); fruitsOneTimeCbs=[];
-    fruitsLiveCbs.forEach(f=>f());
-  }, err=>{ console.error("[FRUITS]",err.message); });
-}
-function ensureFruits(cb){
-  if(fruitsReady){ cb(); return; }
-  fruitsOneTimeCbs.push(cb);
-  startFruitsListener();
-}
-function onFruitsLive(cb){
-  fruitsLiveCbs.add(cb);
-  startFruitsListener();
-  if(fruitsReady) cb();
-  return ()=>fruitsLiveCbs.delete(cb);
+  }
 }
 
-/* ══════════════════════════════════════════════════════════
-   TRADES — Firestore feed (Dealer's Dock counter-offer system)
-
-   IMPORTANT FIX: the original query combined a `where(...)`
-   filter with `orderBy(...)` on a different field. Firestore
-   requires a manually-created composite index for that exact
-   combination — without it the listener silently fails and the
-   trade board never loads (this is almost certainly what you
-   were seeing: rooms work because Realtime Database doesn't
-   need indexes, trades didn't because Firestore does).
-   Fixed by using a single equality filter only (auto-indexed by
-   Firestore with zero setup) and sorting client-side instead.
-══════════════════════════════════════════════════════════ */
-function listenTrades(){
-  if(U_trades) return;
-  // Uses the "status ASC, createdAt DESC" composite index — server does the
-  // filtering AND sorting now, so no client-side sort/discard needed.
-  const q = query(collection(dbFS,"trades"), where("status","==","open"), orderBy("createdAt","desc"), limit(80));
-  U_trades = onSnapshot(q, snap=>{
-    tradesCache = snap.docs.map(d=>({id:d.id,...d.data()}));
-    paintTradeFeed();
-  }, err=>{
-    console.error("[TRADES]",err.message);
-    const el=document.getElementById("tradeList");
-    if(el) el.innerHTML=`<div class="empty-msg" style="grid-column:1/-1">⚠️ Couldn't load trades.<br/><span style="font-size:0.75rem">${esc(err.message)}</span></div>`;
-  });
+function usernameToEmail(u){
+  return u.trim().toLowerCase().replace(/[^a-z0-9_]/g,'') + '@guest.dealersdock.local';
 }
-
-function paintTradeFeed(){
-  const rows = tradesCache.filter(t=>{
-    if(t.status!=="open") return false;
-    if(feedRarity!=="All"){
-      const has = (t.offering||[]).some(f=>f.rarity===feedRarity) || (t.wanting?.fruits||[]).some(f=>f.rarity===feedRarity);
-      if(!has) return false;
+function friendlyAuthError(err){
+  if (err.code === 'auth/weak-password') return 'Password must be at least 6 characters.';
+  if (err.code === 'auth/invalid-email') return 'Usernames can only contain letters, numbers and underscores.';
+  return err.message || 'Something went wrong — try again.';
+}
+async function guestContinue(username, password){
+  const email = usernameToEmail(username);
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    return;
+  } catch(err){
+    if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(cred.user, { displayName: username });
+        await setDoc(doc(db,'users',cred.user.uid), { username, provider:'guest', createdAt: serverTimestamp() });
+        return;
+      } catch(createErr){
+        if (createErr.code === 'auth/email-already-in-use') {
+          throw new Error('That username is taken. Double-check your password, or pick a different username.');
+        }
+        throw new Error(friendlyAuthError(createErr));
+      }
     }
-    if(feedSearch){
-      const s=feedSearch.toLowerCase();
-      const hay=[t.username,...(t.offering||[]).map(f=>f.name),...((t.wanting?.fruits)||[]).map(f=>f.name),t.wanting?.note].filter(Boolean).join(" ").toLowerCase();
-      if(!hay.includes(s)) return false;
+    if (err.code === 'auth/wrong-password') {
+      throw new Error('Wrong password for that username. Try again, or pick a different username to create a new account.');
+    }
+    throw new Error(friendlyAuthError(err));
+  }
+}
+async function googleSignIn(){
+  const provider = new GoogleAuthProvider();
+  await signInWithPopup(auth, provider);
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function timeAgo(ts){
+  if (!ts) return 'just now';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  const secs = Math.floor((Date.now() - d.getTime())/1000);
+  if (secs < 60) return 'just now';
+  if (secs < 3600) return Math.floor(secs/60)+'m ago';
+  if (secs < 86400) return Math.floor(secs/3600)+'h ago';
+  return Math.floor(secs/86400)+'d ago';
+}
+function tsMillis(ts){
+  if (!ts) return Date.now();
+  return ts.toMillis ? ts.toMillis() : new Date(ts).getTime();
+}
+function initials(name){
+  return (name || '?').trim().slice(0,2).toUpperCase();
+}
+function slotHtml(fruit, big){
+  const cls = big ? 'big-slot' : 'slot';
+  return `<span class="${cls}"><span class="fruit-dot" style="background:${RARITY_COLOR[fruit.rarity]}"></span>${esc(fruit.name)}${big?`<span class="rarity-tag">${fruit.rarity}</span>`:''}</span>`;
+}
+function setLiveCount(text){
+  const el = document.getElementById('live-count');
+  if (el) el.textContent = text;
+}
+function cleanupListeners(){
+  if (unsubDetail) { unsubDetail(); unsubDetail = null; }
+  if (unsubOffers) { unsubOffers(); unsubOffers = null; }
+  if (unsubChat) { unsubChat(); unsubChat = null; currentChatId = null; }
+}
+function cleanupAll(){
+  cleanupListeners();
+  if (unsubFeed) { unsubFeed(); unsubFeed = null; }
+  if (unsubNotif) { unsubNotif(); unsubNotif = null; }
+  latestTrades = []; myNotifications = []; currentOffers = [];
+}
+
+/* ============================================================
+   TOPBAR (auth-aware)
+   ============================================================ */
+function renderTopbarRight(){
+  const right = document.getElementById('topbar-right');
+  if (!right) return;
+  if (!uid) { right.innerHTML = ''; return; }
+  right.innerHTML = `
+    <div class="notif-wrap">
+      <button class="btn btn-ghost btn-sm" id="notif-btn" aria-label="Notifications">🔔<span id="notif-badge" class="notif-badge"></span></button>
+      <div class="notif-panel" id="notif-panel"></div>
+    </div>
+    <div class="live-pill"><span class="radar-dot"></span><span id="live-count">connecting…</span></div>
+    <div class="user-chip"><span class="avatar">${esc(initials(myUsername))}</span><span class="user-chip-name">${esc(myUsername)}</span></div>
+    <button class="btn btn-ghost btn-sm" id="logout-btn">Log out</button>
+    <button class="btn btn-brass" id="btn-post-top">+ Post a Trade</button>
+  `;
+  document.getElementById('btn-post-top').addEventListener('click', () => { location.hash = '#/post'; });
+  document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+  document.getElementById('notif-btn').addEventListener('click', toggleNotifPanel);
+}
+
+/* ============================================================
+   LOGIN VIEW
+   ============================================================ */
+function renderLogin(){
+  viewRoot.innerHTML = `
+    <div class="page" style="max-width:420px;margin:50px auto;">
+      <div class="panel" style="text-align:center;">
+        <div class="page-title" style="font-size:30px;">Welcome to the Dock</div>
+        <div class="page-sub">Sign in to post trades, send counters, and chat once a deal's locked in.</div>
+        <button class="btn btn-ghost" id="google-btn" style="width:100%;margin-bottom:18px;">Continue with Google</button>
+        <div style="display:flex;align-items:center;gap:10px;margin:4px 0 20px;color:var(--text-faint);font-family:var(--font-mono);font-size:11px;">
+          <div style="flex:1;height:1px;background:var(--border-soft)"></div>OR<div style="flex:1;height:1px;background:var(--border-soft)"></div>
+        </div>
+        <div class="field" style="text-align:left">
+          <label class="field-label">Guest username</label>
+          <input class="text-input" id="guest-username" placeholder="e.g. xX_SeaKing_Xx" maxlength="24">
+        </div>
+        <div class="field" style="text-align:left;margin-bottom:8px">
+          <label class="field-label">Guest password</label>
+          <input class="text-input" id="guest-password" type="password" placeholder="Create a password">
+        </div>
+        <div class="field-hint" style="text-align:left;margin-bottom:20px;">
+          New here? This creates a guest account for you. <strong style="color:var(--text-secondary)">Remember your
+          username and password</strong> — that's how you log back into this exact account later, even on
+          another device. Already have one? Just enter the same username and password to sign back in.
+        </div>
+        <div id="login-error" class="error-msg"></div>
+        <button class="btn btn-brass" id="guest-btn" style="width:100%;">Continue as Guest</button>
+      </div>
+    </div>`;
+
+  const errEl = document.getElementById('login-error');
+  document.getElementById('google-btn').addEventListener('click', async () => {
+    errEl.textContent = '';
+    try { await googleSignIn(); }
+    catch(err){ errEl.textContent = friendlyAuthError(err); }
+  });
+
+  const doGuest = async () => {
+    const u = document.getElementById('guest-username').value.trim();
+    const p = document.getElementById('guest-password').value;
+    errEl.textContent = '';
+    if (!u || u.length < 3) { errEl.textContent = 'Pick a username, at least 3 characters.'; return; }
+    if (!p || p.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
+    const btn = document.getElementById('guest-btn');
+    btn.disabled = true; btn.textContent = 'Connecting…';
+    try { await guestContinue(u, p); }
+    catch(err){ errEl.textContent = err.message; btn.disabled = false; btn.textContent = 'Continue as Guest'; }
+  };
+  document.getElementById('guest-btn').addEventListener('click', doGuest);
+  document.getElementById('guest-password').addEventListener('keypress', (e) => { if (e.key === 'Enter') doGuest(); });
+}
+
+/* ============================================================
+   NOTIFICATIONS
+   ============================================================ */
+function listenNotifications(){
+  if (unsubNotif) unsubNotif();
+  // Single equality filter only — avoids needing a composite index.
+  const q = query(collection(db,'notifications'), where('toUid','==',uid));
+  unsubNotif = onSnapshot(q, (snap) => {
+    myNotifications = snap.docs.map(d => ({id:d.id, ...d.data()}))
+      .sort((a,b) => tsMillis(b.createdAt) - tsMillis(a.createdAt));
+    updateNotifBadge();
+    paintNotifPanel();
+  });
+}
+function updateNotifBadge(){
+  const badge = document.getElementById('notif-badge');
+  if (!badge) return;
+  const unread = myNotifications.filter(n => !n.read).length;
+  if (unread > 0) { badge.style.display = 'flex'; badge.textContent = unread > 9 ? '9+' : unread; }
+  else { badge.style.display = 'none'; }
+}
+function toggleNotifPanel(){
+  const panel = document.getElementById('notif-panel');
+  if (!panel) return;
+  const opening = !panel.classList.contains('open');
+  panel.classList.toggle('open');
+  if (opening) { paintNotifPanel(); markAllNotifsRead(); }
+}
+function paintNotifPanel(){
+  const panel = document.getElementById('notif-panel');
+  if (!panel) return;
+  if (!myNotifications.length) { panel.innerHTML = '<div class="notif-empty">No notifications yet.</div>'; return; }
+  panel.innerHTML = myNotifications.map(n => `
+    <div class="notif-item ${n.read?'':'unread'}" data-trade="${n.tradeId||''}">
+      <div class="notif-msg">${esc(n.message)}</div>
+      <div class="timeago" style="margin-top:6px">${timeAgo(n.createdAt)}</div>
+    </div>`).join('');
+  panel.querySelectorAll('[data-trade]').forEach(el => {
+    el.addEventListener('click', () => {
+      const tid = el.dataset.trade;
+      panel.classList.remove('open');
+      if (tid) location.hash = '#/trade/' + tid;
+    });
+  });
+}
+async function markAllNotifsRead(){
+  const unread = myNotifications.filter(n => !n.read);
+  for (const n of unread) {
+    try { await updateDoc(doc(db,'notifications',n.id), { read:true }); } catch(e){}
+  }
+}
+
+/* ============================================================
+   ROUTER
+   ============================================================ */
+window.addEventListener('hashchange', router);
+function router(){
+  if (!uid) return;
+  const hash = location.hash || '#/';
+  cleanupListeners();
+  if (hash.startsWith('#/trade/')) {
+    renderTradeDetail(hash.replace('#/trade/',''));
+  } else if (hash === '#/post') {
+    renderPostForm();
+  } else {
+    renderHome();
+  }
+  window.scrollTo(0,0);
+}
+
+/* ============================================================
+   HOME FEED
+   ============================================================ */
+function renderHome(){
+  if (!unsubFeed) {
+    const q = query(collection(db,'trades'), where('status','==','open'), orderBy('createdAt','desc'));
+    unsubFeed = onSnapshot(q, (snap) => {
+      latestTrades = snap.docs.map(d => ({id:d.id, ...d.data()}));
+      setLiveCount(latestTrades.length + (latestTrades.length===1?' trade live':' trades live'));
+      if (!location.hash || location.hash === '#/') paintFeed();
+    }, (err) => {
+      viewRoot.innerHTML = `<div class="setup-note"><h2>⚠ Database error</h2><p>${esc(err.message)}</p>
+        <p>This often means the Firestore security rules haven't been pasted in yet, or a required index is still building.</p></div>`;
+    });
+  }
+  paintFeed();
+}
+
+function paintFeed(){
+  const rows = latestTrades.filter(t => {
+    if (feedRarityFilter !== 'All') {
+      const has = (t.offering||[]).some(f=>f.rarity===feedRarityFilter) || (t.wanting?.fruits||[]).some(f=>f.rarity===feedRarityFilter);
+      if (!has) return false;
+    }
+    if (feedSearch) {
+      const s = feedSearch.toLowerCase();
+      const hay = [t.username, ...(t.offering||[]).map(f=>f.name), ...((t.wanting?.fruits)||[]).map(f=>f.name), t.wanting?.note]
+        .filter(Boolean).join(' ').toLowerCase();
+      if (!hay.includes(s)) return false;
     }
     return true;
   });
-  renderTradeGrid(rows);
-  const countEl=document.getElementById("tradeCount");
-  if(countEl) countEl.textContent = rows.length+" open "+(rows.length===1?"listing":"listings");
-}
 
-function fruitTileHtml(f){
-  if(!f) return `<div class="tc-fruit-tile empty-tile"></div>`;
-  return `<div class="tc-fruit-tile has-fruit r-${rc(f.rarity)}">
-    <img src="${imgSrc(f.photo)}" alt="${esc(f.name)}" loading="lazy" decoding="async" onerror="this.src='${fallbackImg()}'"/>
-    <span class="tc-fruit-name">${esc(f.name)}</span>
-  </div>`;
-}
-
-function renderTradeGrid(rows){
-  const el=document.getElementById("tradeList"); if(!el) return;
-  if(!rows.length){
-    el.innerHTML=`<div class="empty-msg" style="grid-column:1/-1">🤝 No trades match yet.<br/>Be the first to post one above!</div>`;
-    return;
-  }
-  const html = rows.map(t=>{
-    const wi=(t.wanting?.fruits)||[], oi=t.offering||[];
-    const isOwn = CU && t.ownerId===CU.uid;
-    const canDel = CU && (isOwn||isAdmin());
-    const wTiles=[0,1,2,3].map(i=>fruitTileHtml(wi[i])).join("");
-    const oTiles=[0,1,2,3].map(i=>fruitTileHtml(oi[i])).join("");
-    return `<div class="trade-card" onclick="openTradeDetail('${t.id}')">
-      <div class="tc-top">
-        <span class="tc-poster">👤 ${esc(t.username)}${isOwn?` <span style="opacity:0.45;font-size:0.62rem">(you)</span>`:""}</span>
-        <span class="tc-age">${ago(t.createdAt)}</span>
+  viewRoot.innerHTML = `
+    <div class="feed-head">
+      <div>
+        <div class="feed-title">Live Trade Board</div>
+        <div class="feed-count">${rows.length} open ${rows.length===1?'post':'posts'} · updates in real time</div>
       </div>
-      <div class="tc-body">
-        <div><div class="tc-side-tag offer">Offers</div><div class="tc-fruit-grid">${oTiles}</div></div>
-        <div class="tc-arrow">⇄</div>
-        <div><div class="tc-side-tag want">Wants</div><div class="tc-fruit-grid">${wTiles}</div></div>
-      </div>
-      ${t.wanting?.note?`<div class="tc-note">"${esc(t.wanting.note)}"</div>`:""}
-      <div class="tc-footer">
-        ${canDel
-          ? `<button class="btn-tc-del" onclick="event.stopPropagation();cancelTrade('${t.id}')">🗑 Cancel</button>`
-          : `<span class="tc-tap-hint">tap to view →</span>`}
-      </div>
-    </div>`;
-  }).join("");
-  el.innerHTML = html;
-}
-
-/* ── POST A TRADE ── */
-function refreshTradeSlots(){
-  ["offer","want"].forEach(side=>{
-    const arr = side==="offer"?tradeOffering:tradeWanting;
-    for(let i=0;i<4;i++){
-      const el=document.getElementById(`sl-${side}-${i}`); if(!el)continue;
-      const f=arr[i];
-      if(f){
-        el.className=`slot filled r-${rc(f.rarity)}`;
-        el.innerHTML=`<img src="${imgSrc(f.photo)}" alt="${esc(f.name)}" loading="lazy" decoding="async" onerror="this.src='${fallbackImg()}'"/>
-          <span class="s-name">${esc(f.name)}</span>
-          <span class="s-rm" onclick="rmTradeSlot('${side}',${i},event)">✕</span>`;
-        el.onclick=null;
-      }else{
-        el.className="slot"; el.innerHTML=`<span class="s-plus">+</span>`;
-        el.onclick=()=>openPicker("trade",side,i);
-      }
-    }
-  });
-  const wv=document.getElementById("tvOffer"), ov=document.getElementById("tvWant");
-  if(wv) wv.textContent="💰 "+tradeOffering.reduce((s,f)=>s+(f?Number(f.value||0):0),0).toLocaleString();
-  if(ov) ov.textContent="💰 "+tradeWanting.reduce((s,f)=>s+(f?Number(f.value||0):0),0).toLocaleString();
-}
-window.rmTradeSlot=(side,i,e)=>{e.stopPropagation(); if(side==="offer")tradeOffering[i]=null; else tradeWanting[i]=null; refreshTradeSlots();};
-
-window.openPicker=(mode,side,idx)=>{
-  pickerCtx={mode,side,idx};
-  buildPickerUI();
-  document.getElementById("fruitPicker").classList.add("show");
-  if(unsubPickerLive) unsubPickerLive();
-  unsubPickerLive = onFruitsLive(()=>{
-    if(document.getElementById("fruitPicker")?.classList.contains("show")) rebuildPickerGrid();
-  });
-};
-function buildPickerUI(){
-  const tb=document.getElementById("fpToolbar");
-  tb.innerHTML = `<input class="tsearch" id="fpSearch" placeholder="Search fruits..." oninput="rebuildPickerGrid()"/>` +
-    ["All",...RARITIES].map(r=>`<button class="tchip ${window._fpRarity===r||(!window._fpRarity&&r==="All")?"active":""}" onclick="setPickerRarity('${r}')">${r}</button>`).join("");
-  window._fpRarity = window._fpRarity || "All";
-  rebuildPickerGrid();
-}
-window.setPickerRarity = r => { window._fpRarity=r; buildPickerUI(); };
-window.rebuildPickerGrid = () => {
-  const grid=document.getElementById("fpGrid");
-  const search=(document.getElementById("fpSearch")?.value||"").toLowerCase();
-  const rarity=window._fpRarity||"All";
-  const fruits=Object.values(fruitsCache).filter(f=>(rarity==="All"||f.rarity===rarity)&&f.name.toLowerCase().includes(search))
-    .sort((a,b)=>({Mythical:0,Legendary:1,Rare:2,Uncommon:3,Common:4}[a.rarity]??5)-({Mythical:0,Legendary:1,Rare:2,Uncommon:3,Common:4}[b.rarity]??5));
-  if(!fruits.length){grid.innerHTML=`<div class="no-fruits">No fruits found. ${Object.keys(fruitsCache).length===0?"Admin needs to add fruits first!":""}</div>`;return;}
-  grid.innerHTML = fruits.map(f=>`
-    <div class="fpicker-item r-${rc(f.rarity)}" onclick="pickFruitFor('${f.id}')">
-      <img src="${imgSrc(f.photo)}" alt="${esc(f.name)}" loading="lazy" decoding="async" onerror="this.src='${fallbackImg()}'"/>
-      <div class="fi-name">${esc(f.name)}</div>
-      <span class="rp rp-${rc(f.rarity)}">${f.rarity||"?"}</span>
-    </div>`).join("");
-};
-window.pickFruitFor = id => {
-  if(!pickerCtx) return;
-  const f = fruitsCache[id]; if(!f) return;
-  const {mode,side,idx} = pickerCtx;
-  if(mode==="trade"){
-    if(side==="offer") tradeOffering[idx]=f; else tradeWanting[idx]=f;
-    refreshTradeSlots();
-  } else if(mode==="counter"){
-    counterOffering[idx]=f;
-    refreshCounterSlots();
-  }
-  closeModal("fruitPicker");
-};
-
-window.postTrade = async () => {
-  if(!CU||isGuest){ alert("Please sign in to post a trade!"); return; }
-  const errEl=document.getElementById("tfwErr");
-  errEl.textContent="";
-  const offering=tradeOffering.filter(Boolean);
-  const wantFruits=tradeWanting.filter(Boolean);
-  const note=document.getElementById("tfNote")?.value.trim()||"";
-  if(!offering.length){ errEl.textContent="Pick at least one fruit you're offering."; return; }
-  if(!wantFruits.length&&!note){ errEl.textContent="Say what you want back — pick fruits or add a note."; return; }
-
-  const btn=document.getElementById("postBtn"); if(btn){btn.disabled=true;btn.textContent="Posting...";}
-  try{
-    // Enforce one active trade per user (single getDocs read — faster & simpler than opening a listener just to close it)
-    const existSnap = await getDocs(query(collection(dbFS,"trades"), where("ownerId","==",CU.uid), where("status","==","open")));
-    if(!existSnap.empty){
-      errEl.textContent="⚠️ You already have an active trade! Cancel it before posting a new one.";
-      if(btn){btn.disabled=false;btn.textContent="🤝 Post Trade";}
-      return;
-    }
-    const ref = await addDoc(collection(dbFS,"trades"),{
-      ownerId:CU.uid, username:CU.displayName,
-      offering: offering.map(f=>({name:f.name,rarity:f.rarity,photo:f.photo||"",value:f.value||0})),
-      wanting: { fruits: wantFruits.map(f=>({name:f.name,rarity:f.rarity,photo:f.photo||"",value:f.value||0})), note },
-      status:"open", createdAt: serverTimestamp()
-    });
-    tradeOffering=[]; tradeWanting=[];
-    tradeSubView="feed"; render("trade");
-    openTradeDetail(ref.id);
-  }catch(e){
-    errEl.textContent="Couldn't post: "+e.message;
-  }
-  if(btn){btn.disabled=false;btn.textContent="🤝 Post Trade";}
-};
-
-window.cancelTrade = async tid => {
-  if(!confirm("Cancel this trade? This can't be undone.")) return;
-  try{ await updateDoc(doc(dbFS,"trades",tid),{status:"closed",closedWith:null}); }
-  catch(e){ alert("Couldn't cancel: "+e.message); }
-};
-
-/* ── TRADE DETAIL + OFFERS ── */
-window.openTradeDetail = tid => {
-  tradeDetailId = tid;
-  document.getElementById("tradeDetailModal").classList.add("show");
-  document.getElementById("tradeDetailBody").innerHTML = "Loading...";
-  if(U_tradeDetail) U_tradeDetail();
-  U_tradeDetail = onSnapshot(doc(dbFS,"trades",tid), snap=>{
-    if(!snap.exists()){
-      document.getElementById("tradeDetailBody").innerHTML=`<div class="empty-msg">This trade no longer exists.</div>`;
-      return;
-    }
-    currentTradeDetail = {id:snap.id,...snap.data()};
-    renderTradeDetailBody();
-  });
-  if(U_offers) U_offers();
-  /* Single equality filter only (no orderBy in the query) — same
-     composite-index trap as the trades feed, fixed the same way:
-     sort client-side after fetching instead. */
-  const q = query(collection(dbFS,"offers"), where("tradeId","==",tid));
-  U_offers = onSnapshot(q, snap=>{
-    offersCache = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>tsMillis(a.createdAt)-tsMillis(b.createdAt));
-    renderOffersThread();
-  }, err=>{
-    console.error("[OFFERS]",err.message);
-  });
-};
-
-function renderTradeDetailBody(){
-  const t = currentTradeDetail; if(!t) return;
-  const isOwner = CU && t.ownerId===CU.uid;
-  const isOpen = t.status==="open";
-  const canDel = CU && (isOwner||isAdmin());
-  const offering=t.offering||[], wantFruits=t.wanting?.fruits||[], wantNote=t.wanting?.note||"";
-
-  const mkFruits = list => list.length ? list.map(f=>`
-    <div class="td-fruit"><img src="${imgSrc(f.photo)}" alt="${esc(f.name)}" loading="lazy" decoding="async" onerror="this.src='${fallbackImg()}'"/>
-      <div><div class="td-fn">${esc(f.name)}</div><div class="td-fv"><span class="rp rp-${rc(f.rarity)}">${f.rarity||"?"}</span></div></div>
-    </div>`).join("") : `<div style="color:var(--muted);font-size:0.82rem;font-weight:600;">Anything / Negotiable</div>`;
-
-  let actionsHtml = "";
-  if(isOpen){
-    if(!isOwner && CU && !isGuest){
-      actionsHtml = `
-        <button class="btn-msg" onclick="sendAcceptOffer()">✅ Send exactly what they want</button>
-        <button class="btn-counter" onclick="toggleCounterForm()">🔄 Propose a different offer</button>
-        <div id="counterFormSlot"></div>`;
-    } else if(!CU||isGuest){
-      actionsHtml = `<p style="text-align:center;color:var(--muted);font-size:0.85rem;font-weight:600;">🔒 Sign in to make an offer</p>`;
-    }
-  } else {
-    actionsHtml = `<div class="td-closed-banner">This trade is closed and no longer accepting offers.</div>`;
-  }
-
-  document.getElementById("tradeDetailBody").innerHTML = `
-    <div class="td-poster">
-      <div class="td-av">👤</div>
-      <div><div class="td-name">${esc(t.username)} <span class="tc-status ${isOpen?"open":"closed"}">${isOpen?"OPEN":"CLOSED"}</span></div><div class="td-time">Posted ${ago(t.createdAt)}</div></div>
     </div>
-    <div class="td-sides">
-      <div class="td-side"><h4 class="offer">🟢 OFFERING</h4><div class="td-fruits">${mkFruits(offering)}</div></div>
-      <div class="td-side"><h4 class="want">🔵 WANTS</h4><div class="td-fruits">${mkFruits(wantFruits)}</div></div>
+    <div class="filters">
+      <input class="search-input" id="feed-search" placeholder="Search a fruit or a username…" value="${esc(feedSearch)}">
+      <button class="chip ${feedRarityFilter==='All'?'active':''}" data-r="All">All</button>
+      ${RARITIES.map(r=>`<button class="chip ${feedRarityFilter===r?'active':''}" data-r="${r}">${r}</button>`).join('')}
     </div>
-    ${wantNote?`<div class="td-note">"${esc(wantNote)}"</div>`:""}
-    <div class="td-actions">${actionsHtml}</div>
-    ${canDel&&isOpen?`<button class="btn-del-full" onclick="cancelTrade('${t.id}');closeModal('tradeDetailModal')">🗑 Cancel This Listing</button>`:""}
-    <div class="offers-thread"><div class="ot-title">💬 Counter Offers</div><div id="offersThread"></div></div>
+    <div class="grid" id="feed-grid">
+      ${rows.length ? rows.map(cardHtml).join('') : `<div class="empty-state" style="grid-column:1/-1">
+        <strong>No trades match yet</strong>No one's posted this combo right now — be the first.
+      </div>`}
+    </div>
   `;
-  renderOffersThread();
+
+  document.getElementById('feed-search').addEventListener('input', (e)=>{
+    feedSearch = e.target.value; paintFeed();
+    const inp = document.getElementById('feed-search');
+    inp.focus(); inp.selectionStart = inp.value.length;
+  });
+  document.querySelectorAll('.chip[data-r]').forEach(el=>{
+    el.addEventListener('click', ()=>{ feedRarityFilter = el.dataset.r; paintFeed(); });
+  });
+  document.querySelectorAll('.card[data-id]').forEach(el=>{
+    el.addEventListener('click', ()=> location.hash = '#/trade/'+el.dataset.id);
+  });
 }
 
-window.sendAcceptOffer = async () => {
-  const t = currentTradeDetail; if(!t) return;
-  const wantFruits = t.wanting?.fruits||[];
-  await submitOffer(t.id, "accept", wantFruits, "");
-};
-
-window.toggleCounterForm = () => {
-  const slot = document.getElementById("counterFormSlot");
-  if(!slot) return;
-  if(slot.innerHTML.trim()){ slot.innerHTML=""; return; }
-  counterOffering=[];
-  slot.innerHTML = `
-    <div class="counter-form">
-      <div class="ts-label offer">What you're offering instead</div>
-      <div class="slots-grid">
-        <div class="slot" id="csl-0" onclick="openPicker('counter',null,0)"><span class="s-plus">+</span></div>
-        <div class="slot" id="csl-1" onclick="openPicker('counter',null,1)"><span class="s-plus">+</span></div>
-        <div class="slot" id="csl-2" onclick="openPicker('counter',null,2)"><span class="s-plus">+</span></div>
-        <div class="slot" id="csl-3" onclick="openPicker('counter',null,3)"><span class="s-plus">+</span></div>
-      </div>
-      <textarea class="tfw-textarea" id="counterNote" placeholder="Optional note..." maxlength="140" style="margin-top:10px"></textarea>
-      <div class="tfw-err" id="counterErr"></div>
-      <button class="btn-counter" style="margin-top:10px" onclick="sendCounterOffer()">Send Counter Offer</button>
-    </div>`;
-};
-function refreshCounterSlots(){
-  for(let i=0;i<4;i++){
-    const el=document.getElementById(`csl-${i}`); if(!el)continue;
-    const f=counterOffering[i];
-    if(f){
-      el.className=`slot filled r-${rc(f.rarity)}`;
-      el.innerHTML=`<img src="${imgSrc(f.photo)}" alt="${esc(f.name)}" loading="lazy" decoding="async" onerror="this.src='${fallbackImg()}'"/>
-        <span class="s-name">${esc(f.name)}</span>
-        <span class="s-rm" onclick="counterOffering[${i}]=null;refreshCounterSlots();event.stopPropagation()">✕</span>`;
-      el.onclick=null;
-    }else{
-      el.className="slot"; el.innerHTML=`<span class="s-plus">+</span>`;
-      el.onclick=()=>openPicker("counter",null,i);
-    }
-  }
-}
-window.sendCounterOffer = async () => {
-  const t = currentTradeDetail; if(!t) return;
-  const sel = counterOffering.filter(Boolean);
-  const note = document.getElementById("counterNote")?.value.trim()||"";
-  const err = document.getElementById("counterErr");
-  if(!sel.length&&!note){ if(err)err.textContent="Add at least one fruit or a note."; return; }
-  await submitOffer(t.id,"counter",sel,note);
-  document.getElementById("counterFormSlot").innerHTML="";
-};
-
-async function submitOffer(tradeId,type,offering,note){
-  if(!CU||isGuest){ alert("Sign in to make an offer!"); return; }
-  try{
-    await addDoc(collection(dbFS,"offers"),{
-      ownerId:CU.uid, tradeId, username:CU.displayName, type,
-      offering: offering.map(f=>({name:f.name,rarity:f.rarity,photo:f.photo||"",value:f.value||0})),
-      note, createdAt: serverTimestamp()
-    });
-  }catch(e){ alert("Couldn't send offer: "+e.message); }
-}
-
-function renderOffersThread(){
-  const el = document.getElementById("offersThread"); if(!el) return;
-  const t = currentTradeDetail;
-  if(!offersCache.length){ el.innerHTML=`<div class="empty-msg" style="padding:24px">No offers yet — be the first to counter.</div>`; return; }
-  const isOwner = CU && t && t.ownerId===CU.uid;
-  const isOpen = t && t.status==="open";
-  el.innerHTML = offersCache.map(o=>{
-    const accepted = t && t.closedWith===o.id;
-    return `<div class="offer-item ${accepted?"accepted":""}">
-      <div class="offer-head">
-        <span class="offer-name">👤 ${esc(o.username)}</span>
-        <span class="offer-badge ${o.type}">${o.type==="accept"?(accepted?"✅ Accepted":"Sent what you asked"):(accepted?"✅ Accepted":"Counter offer")}</span>
-      </div>
-      <div class="offer-fruit-row">${(o.offering||[]).map(f=>`<div class="offer-fruit-chip"><img src="${imgSrc(f.photo)}" loading="lazy" decoding="async" onerror="this.src='${fallbackImg()}'"/>${esc(f.name)}</div>`).join("")||'<span style="color:var(--muted);font-size:0.72rem">no fruits listed</span>'}</div>
-      ${o.note?`<div class="offer-note">"${esc(o.note)}"</div>`:""}
-      <div class="offer-time">${ago(o.createdAt)}</div>
-      ${(isOwner&&isOpen&&!accepted)?`<button class="btn-accept-offer" onclick="acceptOffer('${o.id}')">Accept this offer</button>`:""}
-    </div>`;
-  }).join("");
-}
-window.acceptOffer = async offerId => {
-  const t = currentTradeDetail; if(!t) return;
-  try{ await updateDoc(doc(dbFS,"trades",t.id),{status:"closed",closedWith:offerId}); }
-  catch(e){ alert("Couldn't accept: "+e.message); }
-};
-
-/* ── ADMIN — Firestore fruits ── */
-window.addFruit = async () => {
-  if(!isAdmin()) return;
-  const name=document.getElementById("fn-name")?.value.trim();
-  const value=document.getElementById("fn-value")?.value.trim();
-  const photo=document.getElementById("fn-photo")?.value.trim();
-  const rarity=document.getElementById("fn-rarity")?.value;
-  const type=document.getElementById("fn-type")?.value;
-  if(!name||!value||!photo||!rarity||!type){alert("Fill in all fields!");return;}
-  if(isNaN(Number(value))||Number(value)<0){ alert("Value must be a positive number!"); return; }
-  /* This check is what stops a mistyped URL like "hhttth" from ever
-     being saved — that typo is what caused the rentafruit.shop/hhttth
-     404 you were seeing (the browser was treating it as a relative
-     path on your own domain instead of a real image link). */
-  if(!/^https?:\/\//i.test(photo)){
-    alert("⚠️ Photo URL must be a full link starting with http:// or https://\n\nExample: https://i.imgur.com/example.png");
-    return;
-  }
-  const btn=document.getElementById("addFruitBtn"); if(btn){btn.disabled=true;btn.textContent="Adding...";}
-  try{
-    await addDoc(collection(dbFS,"fruits"),{name,value:Number(value),photo,rarity,type,addedAt:serverTimestamp()});
-    document.getElementById("fn-name").value="";
-    document.getElementById("fn-value").value="";
-    document.getElementById("fn-photo").value="";
-  }catch(e){ alert("Failed: "+e.message); }
-  if(btn){btn.disabled=false;btn.textContent="➕ Add Item";}
-};
-window.deleteFruit = async id => {
-  if(!isAdmin()||!confirm("Delete this fruit?")) return;
-  try{ await deleteDoc(doc(dbFS,"fruits",id)); } catch(e){}
-};
-function renderAdminFruits(fruits){
-  const el=document.getElementById("adminFruitList"); if(!el)return;
-  if(!fruits.length){ el.innerHTML=`<div style="color:var(--muted);font-size:0.9rem;font-weight:600;padding:18px 0">No items yet.</div>`; return; }
-  el.innerHTML=fruits.map(f=>`
-    <div class="afc">
-      <img src="${imgSrc(f.photo)}" alt="${esc(f.name)}" loading="lazy" decoding="async" onerror="this.src='${fallbackImg()}'"/>
-      <div class="af-name">${esc(f.name)}</div><div class="af-val">💰 ${Number(f.value||0).toLocaleString()}</div>
-      <span class="rp rp-${rc(f.rarity)}">${f.rarity||"?"}</span>
-      <div style="font-size:0.68rem;color:var(--muted);margin-top:3px">${f.type||""}</div>
-      <button class="btn-del-af" style="margin-top:9px" onclick="deleteFruit('${f.id}')">🗑 Delete</button>
-    </div>`).join("");
-}
-
-window.submitContact=()=>{
-  const n=document.getElementById("cname")?.value.trim(), e=document.getElementById("cemail")?.value.trim(), m=document.getElementById("cmsg")?.value.trim();
-  if(!n||!e||!m){alert("Fill all fields!");return;}
-  alert(`✅ Thanks ${n}! We'll reply to ${e} soon.\n\nYou can also reach us at:\n• jakelordclash@gmail.com\n• calvinthomasvinosh@gmail.com`);
-  document.getElementById("cname").value="";document.getElementById("cemail").value="";document.getElementById("cmsg").value="";
-};
-
-/* ══════════════════════════════════════════════════════════
-   RENDER
-══════════════════════════════════════════════════════════ */
-function render(view){
-  const root=document.getElementById("app");
-  const photo=CU?.photoURL||"https://api.dicebear.com/7.x/bottts/svg?seed=guest";
-  const name=CU?.displayName||"Guest";
-
-  if(view==="login"){
-    root.innerHTML=`<div class="login-wrap"><div class="login-glow"></div><div class="login-box">
-      <span class="login-fruit">🍊</span>
-      <div class="login-title">RentAFruit</div>
-      <div class="login-sub">LEVIATHAN HUNT & TRADING</div>
-      <p class="login-desc">Team up, trade fruits, and take down the Leviathan! 🐉</p>
-      <button class="btn-google" id="loginBtn" onclick="loginWithGoogle()">
-        <svg width="20" height="20" viewBox="0 0 48 48">
-          <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.3 30.2 0 24 0 14.7 0 6.7 5.4 2.7 13.4l7.8 6C12.3 13.2 17.7 9.5 24 9.5z"/>
-          <path fill="#4285F4" d="M46.1 24.6c0-1.5-.1-3-.4-4.4H24v8.3h12.4c-.5 2.7-2.1 5-4.4 6.5l6.9 5.4c4-3.7 6.2-9.2 6.2-15.8z"/>
-          <path fill="#FBBC05" d="M10.5 28.6A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.7 10.6l7.8-6z"/>
-          <path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-6.9-5.4c-2.1 1.4-4.8 2.3-8.3 2.3-6.3 0-11.7-3.7-13.5-9.1l-7.8 6C6.7 42.6 14.7 48 24 48z"/>
-        </svg>Sign in with Google</button>
-      <div class="divider"><span>OR</span></div>
-      <button class="btn-guest" onclick="showGuestModal()">👤 Continue as Guest</button>
-      <div class="login-err" id="loginErr"></div>
-    </div></div>`;
-    return;
-  }
-
-  const adminBtn = isAdmin()?`<span class="nav-btn is-admin ${view==="admin"?"active":""}" onclick="goAdmin()">⭐ Admin</span>`:"";
-  const hdr=`
-    <header class="topbar">
-      <span class="topbar-logo" onclick="goHome()">🍊 RentAFruit</span>
-      <div class="topbar-right">
-        <img src="${esc(photo)}" class="t-avatar" alt=""/>
-        <span class="uname">${esc(name)}</span>
-        <button class="btn-sm" onclick="logOut()">Logout</button>
-      </div>
-    </header>
-    <nav class="navbar">
-      <span class="nav-btn ${["home","destination","room"].includes(view)?"active":""}" onclick="goHome()">🏠 Home</span>
-      <span class="nav-btn ${view==="trade"?"active":""}" onclick="goTrade()">🔄 Trade</span>
-      <span class="nav-btn ${view==="about"?"active":""}" onclick="goAbout()">ℹ️ About</span>
-      <span class="nav-btn ${view==="contact"?"active":""}" onclick="goContact()">✉️ Contact</span>
-      <span class="nav-btn ${view==="privacy"?"active":""}" onclick="goPrivacy()">🔒 Privacy</span>
-      <span class="nav-btn ${view==="terms"?"active":""}" onclick="goTerms()">📜 Terms</span>
-      ${adminBtn}
-    </nav>`;
-
-  const footer=`<div class="footer-nav">
-    <span onclick="goHome()">🏠 Home</span><span class="sep">·</span>
-    <span onclick="goTrade()">🔄 Trade</span><span class="sep">·</span>
-    <span onclick="goAbout()">ℹ️ About</span><span class="sep">·</span>
-    <span onclick="goContact()">✉️ Contact</span><span class="sep">·</span>
-    <span onclick="goPrivacy()">🔒 Privacy</span><span class="sep">·</span>
-    <span onclick="goTerms()">📜 Terms</span><span class="sep">·</span>
-    <span style="color:var(--muted);cursor:default">© 2025 RentAFruit</span>
+function cardHtml(t){
+  const offering = t.offering || [];
+  const wantFruits = t.wanting?.fruits || [];
+  const wantNote = t.wanting?.note || '';
+  return `
+  <div class="card" data-id="${t.id}">
+    <div class="stamp open">OPEN</div>
+    <div>
+      <div class="card-row-label">Offering</div>
+      <div class="slots" style="margin-top:7px">${offering.map(f=>slotHtml(f,false)).join('') || '<span class="slot-empty">nothing listed</span>'}</div>
+    </div>
+    <div class="swap-divider">wants</div>
+    <div>
+      <div class="slots">${wantFruits.map(f=>slotHtml(f,false)).join('')}</div>
+      ${wantNote ? `<div class="card-note">"${esc(wantNote)}"</div>` : ''}
+      ${(!wantFruits.length && !wantNote) ? '<div class="slot-empty">open to offers</div>' : ''}
+    </div>
+    <div class="card-foot">
+      <div class="poster"><span class="avatar">${esc(initials(t.username))}</span>${esc(t.username)}</div>
+      <div class="timeago">${timeAgo(t.createdAt)}</div>
+    </div>
   </div>`;
+}
 
-  if(view==="home"){
-    root.innerHTML=hdr+`<main class="main">
-      <div class="profile-panel"><div class="profile-inner">
-        <img src="${esc(photo)}" class="pr-avatar" alt=""/>
-        <div style="flex:1">
-          <div class="pr-name">${esc(name)}</div>
-          <div class="pr-badge">${isGuest?"👤 Guest":"✅ Signed in"}</div>
-          <div class="boat-row"><span class="boat-label">🚢 Beast Hunter Boat:</span>
-            <div style="display:flex;align-items:center;gap:8px">
-              <label class="switch"><input type="checkbox" id="boatTog" ${myBoat?"checked":""} onchange="toggleBoat()"/><span class="slider"></span></label>
-              <div id="boatInd" class="boat-ind ${myBoat?"on":"off"}"><span class="dot ${myBoat?"on":"off"}"></span>${myBoat?"🚢 Active!":"Not Active"}</div>
-            </div>
-          </div>
+/* ============================================================
+   FRUIT PICKER COMPONENT
+   ============================================================ */
+function createFruitPicker(maxCount, initial){
+  let selected = [...(initial||[])];
+  let rarity = 'All';
+  let search = '';
+
+  const wrap = document.createElement('div');
+  wrap.className = 'picker';
+
+  const rarityRow = document.createElement('div');
+  rarityRow.className = 'picker-rarity-row';
+  const top = document.createElement('div');
+  top.className = 'picker-top';
+  const searchInput = document.createElement('input');
+  searchInput.className = 'text-input';
+  searchInput.placeholder = 'Search fruits…';
+  top.appendChild(searchInput);
+
+  const grid = document.createElement('div');
+  grid.className = 'picker-grid';
+
+  const selectedRow = document.createElement('div');
+  selectedRow.className = 'picker-selected';
+
+  const countEl = document.createElement('div');
+  countEl.className = 'picker-count';
+
+  wrap.append(top, rarityRow, grid, selectedRow, countEl);
+
+  function isSelected(f){ return selected.some(s=>s.name===f.name); }
+  function toggle(f){
+    if (isSelected(f)) selected = selected.filter(s=>s.name!==f.name);
+    else if (selected.length < maxCount) selected = [...selected, f];
+    paint();
+  }
+
+  function paint(){
+    countEl.textContent = `${selected.length} / ${maxCount} selected`;
+
+    rarityRow.innerHTML = '';
+    ['All', ...RARITIES].forEach(r=>{
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip' + (rarity===r?' active':'');
+      b.textContent = r;
+      b.addEventListener('click', ()=>{ rarity = r; paint(); });
+      rarityRow.appendChild(b);
+    });
+
+    grid.innerHTML = '';
+    FRUITS.filter(f => (rarity==='All'||f.rarity===rarity) && f.name.toLowerCase().includes(search.toLowerCase()))
+      .forEach(f=>{
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        const full = !isSelected(f) && selected.length >= maxCount;
+        btn.className = 'fruit-tile' + (isSelected(f)?' selected':'') + (full?' disabled':'');
+        btn.innerHTML = `<span class="fruit-dot" style="background:${RARITY_COLOR[f.rarity]}"></span>${esc(f.name)}`;
+        btn.addEventListener('click', ()=> toggle(f));
+        grid.appendChild(btn);
+      });
+
+    selectedRow.innerHTML = '';
+    selected.forEach(f=>{
+      const chip = document.createElement('div');
+      chip.className = 'selected-chip';
+      chip.innerHTML = `<span class="fruit-dot" style="background:${RARITY_COLOR[f.rarity]}"></span>${esc(f.name)}`;
+      const rm = document.createElement('button');
+      rm.className = 'chip-remove'; rm.type='button'; rm.textContent = '×';
+      rm.addEventListener('click', ()=> toggle(f));
+      chip.appendChild(rm);
+      selectedRow.appendChild(chip);
+    });
+  }
+
+  searchInput.addEventListener('input', (e)=>{ search = e.target.value; paint(); });
+  paint();
+
+  return { el: wrap, getSelected: () => selected };
+}
+
+/* ============================================================
+   POST A TRADE
+   ============================================================ */
+function renderPostForm(){
+  viewRoot.innerHTML = `
+    <div class="page">
+      <button class="back-link" id="back">← Back to board</button>
+      <div class="panel">
+        <div class="page-title">Post a Trade</div>
+        <div class="page-sub">List up to 4 fruits you're offering, and what you want back. It'll go live on the board instantly.</div>
+
+        <div class="field">
+          <label class="field-label">Your in-game name</label>
+          <input class="text-input" id="f-username" maxlength="24" placeholder="e.g. xX_SeaKing_Xx" value="${esc(myUsername)}">
+          <div class="field-hint">Shown on this post. Defaults to your account name — feel free to change it for just this listing.</div>
         </div>
-      </div></div>
-      <div class="hero"><div class="hero-eye">PICK WHERE TO HUNT</div>
-        <h1 class="hero-h1">Find your <span class="grad">Leviathan Heart</span> 🐉</h1>
-        <p class="hero-tip">Click a location to see who's hunting right now!</p>
-      </div>
-      <div class="dest-grid">
-        <div class="dest-card" onclick="goDestination('Tiki Outpost')"><div class="dest-glow"></div><span class="dest-icon">🏝️</span><div class="dest-name">Tiki Outpost</div><div class="dest-desc">Sunny island, big waves, bigger loot!</div><div class="dest-cta">Hunt here →</div></div>
-        <div class="dest-card" onclick="goDestination('Hydra Island')"><div class="dest-glow b"></div><span class="dest-icon">🐉</span><div class="dest-name">Hydra Island</div><div class="dest-desc">Dangerous waters — for the brave only!</div><div class="dest-cta">Hunt here →</div></div>
-      </div>
-    </main>${footer}`;
-    return;
-  }
 
-  if(view==="destination"){
-    root.innerHTML=hdr+`<main class="main">
-      <div class="pg-header"><button class="btn-back" onclick="goHome()">← Back</button><h2 class="pg-title">📍 ${esc(currentDest)}</h2><button class="btn-create" onclick="createRoom()">✨ Create Room</button></div>
-      <div id="roomList" class="room-list"><div class="empty-msg" style="border:none">🔍 Looking for rooms...</div></div>
-    </main>`;
-    return;
-  }
-
-  if(view==="room"){
-    root.innerHTML=hdr+`<main class="main room-layout">
-      <div><div style="margin-bottom:14px"><button class="btn-back" onclick="leaveRoom()">← Leave Room</button></div><div id="roomContent"></div></div>
-      <div class="chat-panel"><div class="chat-head">💬 Room Chat</div><div class="chat-body" id="chatBox"></div>
-        <div class="chat-foot"><input id="roomMsgInput" class="chat-input" placeholder="Say something..." onkeypress="roomMsgKey(event)"/><button class="btn-send" onclick="sendRoomMsg()">➤</button></div>
-      </div></main>`;
-    return;
-  }
-
-  if(view==="trade"){
-    if(tradeSubView==="post"){
-      root.innerHTML=hdr+`<main class="main">
-        <div class="pg-header"><button class="btn-back" onclick="goTradeFeed()">← Back to board</button><h2 class="pg-title">📬 Post a Trade</h2><span></span></div>
-        <div class="trade-form-wrap">
-          <div class="tfw-field">
-            <label class="tfw-label">🟢 You're Offering (up to 4)</label>
-            <div class="slots-grid">
-              <div class="slot" id="sl-offer-0" onclick="openPicker('trade','offer',0)"><span class="s-plus">+</span></div>
-              <div class="slot" id="sl-offer-1" onclick="openPicker('trade','offer',1)"><span class="s-plus">+</span></div>
-              <div class="slot" id="sl-offer-2" onclick="openPicker('trade','offer',2)"><span class="s-plus">+</span></div>
-              <div class="slot" id="sl-offer-3" onclick="openPicker('trade','offer',3)"><span class="s-plus">+</span></div>
-            </div>
-          </div>
-          <div class="tfw-field">
-            <label class="tfw-label">🔵 You Want (up to 4, optional)</label>
-            <div class="slots-grid">
-              <div class="slot" id="sl-want-0" onclick="openPicker('trade','want',0)"><span class="s-plus">+</span></div>
-              <div class="slot" id="sl-want-1" onclick="openPicker('trade','want',1)"><span class="s-plus">+</span></div>
-              <div class="slot" id="sl-want-2" onclick="openPicker('trade','want',2)"><span class="s-plus">+</span></div>
-              <div class="slot" id="sl-want-3" onclick="openPicker('trade','want',3)"><span class="s-plus">+</span></div>
-            </div>
-          </div>
-          <div class="tv-bar">
-            <div class="tv-side">Offering Value<b id="tvOffer">💰 0</b></div>
-            <div class="tv-side">Wanting Value<b id="tvWant">💰 0</b></div>
-          </div>
-          <div class="tfw-field" style="margin-top:18px">
-            <label class="tfw-label">Extra Note (optional)</label>
-            <textarea class="tfw-textarea" id="tfNote" maxlength="140" placeholder="e.g. or best offer, will add Beli"></textarea>
-          </div>
-          <div class="tfw-err" id="tfwErr"></div>
-          <button class="btn-post-trade" id="postBtn" onclick="postTrade()">🤝 Post Trade</button>
+        <div class="field">
+          <label class="field-label">You're offering (up to 4)</label>
+          <div id="offer-picker-slot"></div>
         </div>
-      </main>${footer}`;
-      refreshTradeSlots();
+
+        <div class="field">
+          <label class="field-label">You want (up to 4, optional)</label>
+          <div id="want-picker-slot"></div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Extra note (optional)</label>
+          <textarea class="text-input" id="f-note" maxlength="140" placeholder="e.g. or best offer, will add Beli"></textarea>
+        </div>
+
+        <div id="form-error" class="error-msg"></div>
+        <div class="form-actions">
+          <button class="btn btn-ghost" id="cancel-btn">Cancel</button>
+          <button class="btn btn-brass" id="submit-btn">Post Trade</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('back').addEventListener('click', ()=> history.back());
+  document.getElementById('cancel-btn').addEventListener('click', ()=> location.hash = '#/');
+
+  const offerPicker = createFruitPicker(4, []);
+  const wantPicker = createFruitPicker(4, []);
+  document.getElementById('offer-picker-slot').appendChild(offerPicker.el);
+  document.getElementById('want-picker-slot').appendChild(wantPicker.el);
+
+  document.getElementById('submit-btn').addEventListener('click', async ()=>{
+    const username = document.getElementById('f-username').value.trim();
+    const note = document.getElementById('f-note').value.trim();
+    const offering = offerPicker.getSelected();
+    const wantFruits = wantPicker.getSelected();
+    const errEl = document.getElementById('form-error');
+    errEl.textContent = '';
+
+    if (!username) { errEl.textContent = 'Enter your in-game name.'; return; }
+    if (!offering.length) { errEl.textContent = 'Pick at least one fruit you\'re offering.'; return; }
+    if (!wantFruits.length && !note) { errEl.textContent = 'Say what you want back — pick fruits or add a note.'; return; }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true; btn.textContent = 'Posting…';
+    try {
+      const ref = await addDoc(collection(db,'trades'), {
+        ownerId: uid,
+        username,
+        offering,
+        wanting: { fruits: wantFruits, note },
+        status: 'open',
+        createdAt: serverTimestamp()
+      });
+      location.hash = '#/trade/'+ref.id;
+    } catch(err){
+      errEl.textContent = 'Could not post: ' + err.message;
+      btn.disabled = false; btn.textContent = 'Post Trade';
+    }
+  });
+}
+
+/* ============================================================
+   TRADE DETAIL + COUNTER OFFERS + CHAT
+   ============================================================ */
+function renderTradeDetail(tradeId){
+  viewRoot.innerHTML = `<div class="page"><button class="back-link" id="back">← Back to board</button><div class="feed-count">Loading trade…</div></div>`;
+  document.getElementById('back').addEventListener('click', ()=> location.hash = '#/');
+
+  unsubDetail = onSnapshot(doc(db,'trades',tradeId), (snap)=>{
+    if (!snap.exists()) {
+      viewRoot.innerHTML = `<div class="page"><button class="back-link" id="back">← Back to board</button>
+        <div class="empty-state"><strong>Trade not found</strong>It may have been removed.</div></div>`;
+      document.getElementById('back').addEventListener('click', ()=> location.hash = '#/');
       return;
     }
-
-    // feed view
-    root.innerHTML=hdr+`<main class="main">
-      <div class="pg-header">
-        <div><div class="sec-title" style="margin-bottom:2px">🔄 Live Trade Board</div><div style="font-size:0.78rem;color:var(--muted);font-weight:600" id="tradeCount">Loading...</div></div>
-        ${CU&&!isGuest?`<button class="btn-create" onclick="goTradePost()">+ Post a Trade</button>`:""}
-      </div>
-      <div class="tfilters">
-        <input class="tsearch" id="feedSearchInput" placeholder="Search a fruit or username..." value="${esc(feedSearch)}"/>
-        <button class="tchip ${feedRarity==="All"?"active":""}" onclick="setFeedRarity('All')">All</button>
-        ${RARITIES.map(r=>`<button class="tchip ${feedRarity===r?"active":""}" onclick="setFeedRarity('${r}')">${r}</button>`).join("")}
-      </div>
-      <div id="tradeList" class="trade-list"><div class="empty-msg" style="grid-column:1/-1;border:none">🔍 Loading trades...</div></div>
-      ${!CU||isGuest?`<p style="text-align:center;color:var(--muted);font-size:0.85rem;font-weight:600;margin-top:16px">🔒 Sign in with Google to post a trade or make offers</p>`:""}
-    </main>${footer}`;
-    document.getElementById("feedSearchInput")?.addEventListener("input", e=>{
-      const val=e.target.value;
-      clearTimeout(feedSearchDebounce);
-      feedSearchDebounce=setTimeout(()=>{ feedSearch=val; paintTradeFeed(); },120);
-    });
-    if(fruitsReady) paintTradeFeed();
-    return;
-  }
-
-  if(view==="admin" && isAdmin()){
-    root.innerHTML=hdr+`<main class="main">
-      <div class="admin-badge">⭐ Admin Panel — ${esc(name)}</div>
-      <div class="sec-title">🍊 Manage Items</div>
-      <p class="sec-desc">Add fruits with a direct image URL. PNG with transparent background recommended.</p>
-      <div class="admin-form"><h3>➕ Add New Item</h3>
-        <div class="form-grid">
-          <div class="form-field"><label class="form-label">NAME</label><input id="fn-name" class="form-input" placeholder="Dragon Fruit"/></div>
-          <div class="form-field"><label class="form-label">VALUE (Beli)</label><input id="fn-value" class="form-input" type="number" placeholder="3500000"/></div>
-          <div class="form-field"><label class="form-label">PHOTO URL</label><input id="fn-photo" class="form-input" placeholder="https://i.imgur.com/example.png"/></div>
-          <div class="form-field"><label class="form-label">RARITY</label>
-            <select id="fn-rarity" class="form-select">${RARITIES.map(r=>`<option>${r}</option>`).join("")}</select>
-          </div>
-          <div class="form-field"><label class="form-label">TYPE</label>
-            <select id="fn-type" class="form-select"><option value="Devil Fruit">Devil Fruit</option><option value="Game Pass">Game Pass</option></select>
-          </div>
-        </div>
-        <button class="btn-admin-add" id="addFruitBtn" onclick="addFruit()">➕ Add Item</button>
-      </div>
-      <div class="sec-title" style="margin-bottom:12px">📦 All Items</div>
-      <div id="adminFruitList" class="admin-fruit-list"><div style="color:var(--muted);font-size:0.9rem;font-weight:600">Loading...</div></div>
-    </main>`;
-    return;
-  }
-
-  if(view==="about"){root.innerHTML=hdr+`<main class="main"><div class="cp">
-    <h1>About RentAFruit</h1><p class="cp-sub">COMMUNITY TOOL FOR BLOX FRUITS PLAYERS</p>
-    <div class="cs"><h2>🍊 What is RentAFruit?</h2><p>RentAFruit is a free, fan-made community platform for Blox Fruits players. Find hunt partners, coordinate Leviathan raids, and trade Devil Fruits — no download required.</p></div>
-    <div class="cs"><h2>🐉 Leviathan Hunt System</h2><p>The Leviathan needs up to 7 players and at least one Beast Hunter Boat. Create or join rooms at Tiki Outpost or Hydra Island. Rooms use a live 1-hour timer and update in real time.</p></div>
-    <div class="cs"><h2>🔄 Trading System</h2><p>Post what you're offering and what you want back — up to 4 fruits per side. Other players can send exactly what you asked, or propose a counter offer. All offers are visible on the trade thread so you can compare and accept the best one.</p></div>
-    <div class="cs"><h2>👥 Community Built</h2><p>Fan-made, not affiliated with Roblox Corporation or the Blox Fruits team.</p>
-    <div class="info-chips"><span class="ic">🆓 Free</span><span class="ic">⚡ Real-Time</span><span class="ic">📱 Mobile Friendly</span></div></div>
-  </div></main>${footer}`;return;}
-
-  if(view==="contact"){root.innerHTML=hdr+`<main class="main"><div class="cp">
-    <h1>Contact Us</h1><p class="cp-sub">WE'D LOVE TO HEAR FROM YOU</p>
-    <div class="cs"><h2>✉️ Reach Us</h2><p>Have a suggestion or found a bug? You can reach us directly at:</p>
-    <ul><li><strong style="color:var(--purple)">jakelordclash@gmail.com</strong></li><li><strong style="color:var(--purple)">calvinthomasvinosh@gmail.com</strong></li></ul></div>
-    <div class="cs"><h2>📬 Send a Message</h2><div class="contact-form">
-      <input id="cname" type="text" placeholder="Your name"/><input id="cemail" type="email" placeholder="Your email"/>
-      <textarea id="cmsg" rows="5" placeholder="Your message..."></textarea>
-      <button class="btn-cf" onclick="submitContact()">Send Message ➤</button>
-    </div></div>
-  </div></main>${footer}`;return;}
-
-  if(view==="privacy"){root.innerHTML=hdr+`<main class="main"><div class="cp">
-    <h1>Privacy Policy</h1><p class="cp-sub">LAST UPDATED: JANUARY 2025</p>
-    <div class="cs"><h2>📋 Overview</h2><p>RentAFruit is committed to protecting user privacy.</p></div>
-    <div class="cs"><h2>🔐 Data We Collect</h2><p>Google display name, profile photo URL, user ID, Beast Hunter Boat preference. Guest users only provide a chosen display name. Room and chat data lives in Firebase Realtime Database; trade and offer data lives in Firebase Firestore.</p></div>
-    <div class="cs"><h2>🔧 How We Use It</h2><p>Solely to operate the platform. We do not sell your data.</p></div>
-    <div class="cs"><h2>🗑 Data Deletion</h2><p>Rooms auto-delete after 1 hour. Trade listings can be cancelled anytime. Email jakelordclash@gmail.com to remove your profile.</p></div>
-  </div></main>${footer}`;return;}
-
-  if(view==="terms"){root.innerHTML=hdr+`<main class="main"><div class="cp">
-    <h1>Terms & Conditions</h1><p class="cp-sub">PLEASE READ CAREFULLY</p>
-    <div class="cs"><h2>📜 Acceptance</h2><p>By using RentAFruit you agree to these Terms.</p></div>
-    <div class="cs"><h2>🎮 Platform Purpose</h2><p>Fan-made Blox Fruits tool. Not affiliated with Roblox Corporation or the Blox Fruits team.</p></div>
-    <div class="cs"><h2>✅ Acceptable Use</h2><p>No spam, harassment, hacking, impersonation, or real-money transactions.</p></div>
-    <div class="cs"><h2>⚖️ Disclaimer</h2><p>RentAFruit provided "as is". Not liable for any loss resulting from use of this platform.</p></div>
-  </div></main>${footer}`;return;}
+    paintDetail(tradeId, {id:snap.id, ...snap.data()});
+  });
 }
 
-window.setFeedRarity = r => {
-  feedRarity = r;
-  document.querySelectorAll('.tfilters .tchip').forEach(ch=>{
-    ch.classList.toggle('active', ch.textContent.trim()===r);
-  });
-  paintTradeFeed();
-};
+function paintDetail(tradeId, t){
+  const isOwner = t.ownerId === uid;
+  const isOpen = t.status === 'open';
+  const offering = t.offering || [];
+  const wantFruits = t.wanting?.fruits || [];
+  const wantNote = t.wanting?.note || '';
 
+  viewRoot.innerHTML = `
+    <div class="page">
+      <button class="back-link" id="back">← Back to board</button>
+
+      <div class="detail-hero">
+        <div class="stamp ${isOpen?'open':'closed'}">${isOpen?'OPEN':'CLOSED'}</div>
+        <div class="detail-poster"><span class="avatar">${esc(initials(t.username))}</span>
+          <div><div class="detail-poster-name">${esc(t.username)}</div><div class="timeago">${timeAgo(t.createdAt)}</div></div>
+        </div>
+        <div class="detail-slots-block">
+          <div class="card-row-label">Offering</div>
+          <div class="detail-slots" style="margin-top:8px">${offering.map(f=>slotHtml(f,true)).join('')}</div>
+        </div>
+        <div class="detail-slots-block">
+          <div class="card-row-label">Wants in return</div>
+          <div class="detail-slots" style="margin-top:8px">${wantFruits.map(f=>slotHtml(f,true)).join('')}</div>
+          ${wantNote ? `<div class="card-note" style="margin-top:8px">"${esc(wantNote)}"</div>` : ''}
+          ${(!wantFruits.length && !wantNote) ? '<div class="slot-empty">open to any offer</div>' : ''}
+        </div>
+        ${isOwner ? `<div class="form-actions" style="margin-top:6px">
+            ${isOpen ? `<button class="btn btn-danger btn-sm" id="cancel-trade">Cancel this post</button>` : ''}
+          </div>` : ''}
+      </div>
+
+      <div class="thread">
+        <div class="thread-title">Counter Offers</div>
+        <div id="offers-list"></div>
+      </div>
+
+      ${isOpen && !isOwner ? `
+      <div class="make-offer-box" id="make-offer-box">
+        <div class="card-row-label" style="margin-bottom:12px">Make an Offer</div>
+        <div class="mo-choice">
+          <button class="btn btn-brass" id="mo-accept">Send exactly what they want</button>
+          <button class="btn btn-ghost" id="mo-counter">Propose a different offer</button>
+        </div>
+        <div id="mo-form"></div>
+      </div>` : (!isOpen ? `<div class="closed-banner">This trade is closed and no longer accepting offers.</div>` : '')}
+
+      <div id="chat-slot"></div>
+    </div>
+  `;
+
+  document.getElementById('back').addEventListener('click', ()=> location.hash = '#/');
+  if (isOwner && isOpen) {
+    document.getElementById('cancel-trade').addEventListener('click', async ()=>{
+      if (!confirm('Cancel this trade post? This cannot be undone.')) return;
+      await updateDoc(doc(db,'trades',tradeId), { status:'closed', closedWith:null });
+    });
+  }
+
+  if (isOpen && !isOwner) {
+    document.getElementById('mo-accept').addEventListener('click', ()=> submitOffer(tradeId, t, 'accept', wantFruits, ''));
+    document.getElementById('mo-counter').addEventListener('click', ()=> showCounterForm(tradeId, t));
+  }
+
+  if (unsubOffers) unsubOffers();
+  const q = query(collection(db,'offers'), where('tradeId','==',tradeId), orderBy('createdAt','asc'));
+  unsubOffers = onSnapshot(q, (snap)=>{
+    currentOffers = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    paintOffers(tradeId, t, isOwner, isOpen);
+  });
+}
+
+function paintOffers(tradeId, t, isOwner, isOpen){
+  const listEl = document.getElementById('offers-list');
+  if (!listEl) return;
+
+  if (!currentOffers.length) {
+    listEl.innerHTML = `<div class="empty-state">No offers yet — be the first to counter.</div>`;
+  } else {
+    listEl.innerHTML = currentOffers.map(o=>{
+      const status = o.status || 'pending';
+      const badgeClass = status==='declined' ? 'declined' : (o.type==='accept' ? 'accept' : 'counter');
+      const badgeText = status==='accepted' ? 'Accepted'
+        : status==='declined' ? 'Declined'
+        : (o.type==='accept' ? 'Sent what you asked' : 'Counter offer');
+      const canAct = isOwner && isOpen && status==='pending';
+      return `
+      <div class="offer-item ${status}">
+        <div class="offer-item-head">
+          <span class="offer-item-name">${esc(o.username)}</span>
+          <span class="offer-badge ${badgeClass}">${badgeText}</span>
+        </div>
+        <div class="slots">${(o.offering||[]).map(f=>slotHtml(f,false)).join('') || '<span class="slot-empty">no fruits listed</span>'}</div>
+        ${o.note ? `<div class="offer-note">"${esc(o.note)}"</div>` : ''}
+        <div class="timeago" style="margin-top:8px">${timeAgo(o.createdAt)}</div>
+        ${canAct ? `<div class="offer-actions">
+          <button class="btn btn-brass btn-sm" data-accept="${o.id}">Accept this offer</button>
+          <button class="btn btn-danger btn-sm" data-decline="${o.id}">Decline</button>
+        </div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  listEl.querySelectorAll('[data-accept]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const offer = currentOffers.find(o=>o.id===btn.dataset.accept);
+      if (!offer) return;
+      btn.disabled = true; btn.textContent = 'Accepting…';
+      await acceptOfferFn(tradeId, t, offer);
+    });
+  });
+  listEl.querySelectorAll('[data-decline]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const offer = currentOffers.find(o=>o.id===btn.dataset.decline);
+      if (!offer) return;
+      btn.disabled = true; btn.textContent = 'Declining…';
+      await declineOfferFn(tradeId, t, offer);
+    });
+  });
+
+  renderChatSection(tradeId, t);
+}
+
+async function acceptOfferFn(tradeId, t, offer){
+  try {
+    await updateDoc(doc(db,'trades',tradeId), { status:'closed', closedWith: offer.id });
+    await updateDoc(doc(db,'offers',offer.id), { status:'accepted' });
+    await setDoc(doc(db,'chats',offer.id), {
+      tradeId, participants: [t.ownerId, offer.ownerId], createdAt: serverTimestamp()
+    }, { merge:true });
+    await addDoc(collection(db,'notifications'), {
+      toUid: offer.ownerId, type:'accepted', tradeId, offerId: offer.id,
+      message: `${myUsername} accepted your offer! Open the trade to chat and swap in-game names.`,
+      createdAt: serverTimestamp(), read:false
+    });
+  } catch(err){
+    alert('Could not accept offer: ' + err.message);
+  }
+}
+
+async function declineOfferFn(tradeId, t, offer){
+  const custom = prompt("Optional note to send with the decline (leave blank for the default message):", "");
+  const message = (custom && custom.trim())
+    ? custom.trim()
+    : "Your trade was declined — try offering something a little better and send another counter!";
+  try {
+    await updateDoc(doc(db,'offers',offer.id), { status:'declined' });
+    await addDoc(collection(db,'notifications'), {
+      toUid: offer.ownerId, type:'declined', tradeId, offerId: offer.id,
+      message, createdAt: serverTimestamp(), read:false
+    });
+  } catch(err){
+    alert('Could not decline offer: ' + err.message);
+  }
+}
+
+function showCounterForm(tradeId, t){
+  const box = document.getElementById('mo-form');
+  const picker = createFruitPicker(4, []);
+  box.innerHTML = '';
+  const label = document.createElement('div');
+  label.className = 'field-label';
+  label.style.marginTop = '16px';
+  label.textContent = "What you're offering instead";
+  const noteWrap = document.createElement('textarea');
+  noteWrap.className = 'text-input';
+  noteWrap.placeholder = 'Optional note…';
+  noteWrap.maxLength = 140;
+  noteWrap.style.marginTop = '12px';
+  const sendBtn = document.createElement('button');
+  sendBtn.className = 'btn btn-brass';
+  sendBtn.style.marginTop = '14px';
+  sendBtn.textContent = 'Send Counter Offer';
+  const err = document.createElement('div');
+  err.className = 'error-msg';
+
+  sendBtn.addEventListener('click', ()=>{
+    const sel = picker.getSelected();
+    const note = noteWrap.value.trim();
+    if (!sel.length && !note) { err.textContent = 'Add at least one fruit or a note.'; return; }
+    sendBtn.disabled = true; sendBtn.textContent = 'Sending…';
+    submitOffer(tradeId, t, 'counter', sel, note);
+  });
+
+  box.append(label, picker.el, noteWrap, err, sendBtn);
+}
+
+async function submitOffer(tradeId, t, type, offering, note){
+  try {
+    await addDoc(collection(db,'offers'), {
+      ownerId: uid,
+      tradeId,
+      username: myUsername,
+      type,
+      status: 'pending',
+      offering,
+      note,
+      createdAt: serverTimestamp()
+    });
+  } catch(err){
+    alert('Could not send offer: ' + err.message);
+  }
+}
+
+/* ---------- chat ---------- */
+function renderChatSection(tradeId, t){
+  const container = document.getElementById('chat-slot');
+  if (!container) return;
+
+  const acceptedOffer = currentOffers.find(o => o.status === 'accepted');
+  const canChat = acceptedOffer && (uid === t.ownerId || uid === acceptedOffer.ownerId);
+
+  if (!canChat) {
+    container.innerHTML = '';
+    if (unsubChat) { unsubChat(); unsubChat = null; currentChatId = null; }
+    return;
+  }
+
+  const chatId = acceptedOffer.id;
+  if (currentChatId === chatId) return; // already wired up
+
+  currentChatId = chatId;
+  if (unsubChat) unsubChat();
+
+  container.innerHTML = `
+    <div class="chat-box">
+      <div class="chat-box-head">💬 Deal chat — swap your in-game names here</div>
+      <div class="chat-msgs" id="chat-msgs"></div>
+      <div class="chat-input-row">
+        <input class="text-input" id="chat-input" placeholder="Type a message…" maxlength="300">
+        <button class="btn btn-brass btn-sm" id="chat-send">Send</button>
+      </div>
+    </div>`;
+
+  const msgsQ = query(collection(db,'chats',chatId,'messages'), orderBy('createdAt','asc'));
+  unsubChat = onSnapshot(msgsQ, (snap)=>{
+    const msgs = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    paintChatMsgs(msgs);
+  });
+
+  document.getElementById('chat-send').addEventListener('click', ()=> sendChatMsg(chatId));
+  document.getElementById('chat-input').addEventListener('keypress', (e)=>{ if (e.key==='Enter') sendChatMsg(chatId); });
+}
+
+function paintChatMsgs(msgs){
+  const el = document.getElementById('chat-msgs');
+  if (!el) return;
+  if (!msgs.length) {
+    el.innerHTML = '<div class="slot-empty" style="padding:16px 0">Say hi and trade your usernames!</div>';
+    return;
+  }
+  el.innerHTML = msgs.map(m => `
+    <div class="chat-msg ${m.senderId===uid?'me':'them'}">
+      <div class="chat-msg-who">${esc(m.senderName)}</div>
+      <div class="chat-msg-txt">${esc(m.text)}</div>
+    </div>`).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+async function sendChatMsg(chatId){
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  try {
+    await addDoc(collection(db,'chats',chatId,'messages'), {
+      senderId: uid, senderName: myUsername, text, createdAt: serverTimestamp()
+    });
+  } catch(err){
+    alert('Could not send message: ' + err.message);
+  }
+}
 </script>
 </body>
 </html>
