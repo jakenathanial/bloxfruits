@@ -58,14 +58,14 @@
 
     // --- Firebase Configuration ---
     const firebaseConfig = {
-      apiKey: "AIzaSyDlBIeNVDK5nBPpVFkFSxNY59e7gW-p18c",
-      authDomain: "rentafruit-f57d9.firebaseapp.com",
-      projectId: "rentafruit-f57d9",
-      storageBucket: "rentafruit-f57d9.firebasestorage.app",
-      messagingSenderId: "66702277537",
-      appId: "1:66702277537:web:e7f210f38252ad4fd0e9e0",
-      measurementId: "G-0J9TNJNEV5",
-      databaseURL: "https://rentafruit-f57d9-default-rtdb.asia-southeast1.firebasedatabase.app"
+      apiKey: "AIzaSyADelISonKpsymat21iU_H-J20nVNWDttU",
+      authDomain: "rentafruit2.firebaseapp.com",
+      projectId: "rentafruit2",
+      storageBucket: "rentafruit2.firebasestorage.app",
+      messagingSenderId: "508277976942",
+      appId: "1:508277976942:web:b16f1b15ee20923305db7f",
+      measurementId: "G-TH3CKR5J51",
+      databaseURL: "https://rentafruit2-default-rtdb.asia-southeast1.firebasedatabase.app"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -135,19 +135,23 @@
       React.useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
           if (currentUser) {
-            const userDocRef = doc(dbFS, 'users', currentUser.uid);
-            const userSnap = await getDoc(userDocRef);
             let boatState = false;
-            if (userSnap.exists()) {
-              boatState = userSnap.data().hasBeastBoat || false;
-            } else {
-              await setDoc(userDocRef, {
-                uid: currentUser.uid,
-                displayName: currentUser.displayName || 'Blox Pirate',
-                photoURL: currentUser.photoURL || '',
-                hasBeastBoat: false,
-                email: currentUser.email
-              });
+            try {
+              const userDocRef = doc(dbFS, 'users', currentUser.uid);
+              const userSnap = await getDoc(userDocRef);
+              if (userSnap.exists()) {
+                boatState = userSnap.data().hasBeastBoat || false;
+              } else {
+                await setDoc(userDocRef, {
+                  uid: currentUser.uid,
+                  displayName: currentUser.displayName || 'Blox Pirate',
+                  photoURL: currentUser.photoURL || '',
+                  hasBeastBoat: false,
+                  email: currentUser.email
+                });
+              }
+            } catch (err) {
+              console.warn("User profile fetch error (using auth default):", err);
             }
             setUser({
               uid: currentUser.uid,
@@ -187,6 +191,8 @@
             }));
             setFruits(list);
           }
+        }, (err) => {
+          console.warn("Fruits catalog snapshot fallback to default list:", err);
         });
         return () => unsubscribe();
       }, []);
