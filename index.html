@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   ============================================================================
-  RENTAFRUIT — Blox Fruits Trading Board
+  DEALER'S DOCK — Blox Fruits Trading Board
   ============================================================================
   SETUP (do this once, then never touch the code again):
 
@@ -9,37 +9,31 @@
   2. In your project: Build → Firestore Database → Create database
      (start in "production mode", pick any region)
   3. In your project: Build → Authentication → Sign-in method → enable
-     "Anonymous" (lets any visitor post/offer without a password) AND
-     "Google" (only needed for the admin account below).
+     "Anonymous". (This app auto-signs in every visitor anonymously so
+     nobody needs a password to post a trade — zero maintenance for you.
+     If you'd rather require Google or Email/Password accounts later,
+     enable those providers too and swap signInAnonymously() for a
+     sign-in UI — that's an optional upgrade, not required to run this.)
   4. Firestore → Rules → paste this, then click Publish:
 
      rules_version = '2';
      service cloud.firestore {
        match /databases/{database}/documents {
-
-         function isAdmin() {
-           return request.auth != null &&
-                  request.auth.token.email == 'jakelordclash@gmail.com' &&
-                  request.auth.token.email_verified == true;
-         }
-
          match /trades/{tradeId} {
            allow read: if true;
            allow create: if request.auth != null
                          && request.resource.data.ownerId == request.auth.uid;
            allow update: if request.auth != null
-                         && (request.auth.uid == resource.data.ownerId || isAdmin());
-           allow delete: if isAdmin();
+                         && request.auth.uid == resource.data.ownerId;
+           allow delete: if false;
          }
          match /offers/{offerId} {
            allow read: if true;
            allow create: if request.auth != null
                          && request.resource.data.ownerId == request.auth.uid;
            allow update: if request.auth != null
-                         && (request.auth.uid == get(/databases/$(database)/documents/trades/$(resource.data.tradeId)).data.ownerId
-                             || request.auth.uid == resource.data.ownerId
-                             || isAdmin());
-           allow delete: if isAdmin();
+                         && request.auth.uid == get(/databases/$(database)/documents/trades/$(resource.data.tradeId)).data.ownerId;
+           allow delete: if false;
 
            match /messages/{messageId} {
              allow read: if request.auth != null;
@@ -47,14 +41,6 @@
                            && request.resource.data.senderId == request.auth.uid;
              allow update, delete: if false;
            }
-         }
-
-         // Admin-only price/value overrides. Anyone can read them (so the
-         // fairness meter uses the latest numbers) but only the admin
-         // account can write.
-         match /itemOverrides/{itemId} {
-           allow read: if true;
-           allow write: if isAdmin();
          }
        }
      }
@@ -64,59 +50,47 @@
   6. Upload this single file to GitHub Pages / Vercel / Firebase Hosting /
      Cloudflare Pages. Done — no build step, no server, no dependencies.
 
-  ADMIN ACCESS: click the small "Admin" link in the top bar and sign in
-  with Google using jakelordclash@gmail.com. Anyone else who tries will
-  simply see nothing extra (and Firestore rules block writes regardless
-  of what the client shows). Admin sign-in swaps your session from
-  anonymous to that Google account, so posting trades as the admin will
-  use the Google-account uid instead.
-
-  Trade values in ITEM DATABASE are starting community estimates — Blox
-  Fruits values drift with updates. The admin panel lets the admin adjust
-  them live, without editing code, and those overrides sync to everyone.
-
-  Every open trade auto-expires 48 hours after it's posted: expired
-  trades vanish from the feed immediately (client-side filter) and get
-  swept up and deleted from Firestore by a purge routine that runs once
-  per page load.
+  Trade values below (see ITEM DATABASE) are starting estimates, not a
+  live market feed — Blox Fruits trade values drift with updates and
+  community sentiment, so revisit that block every so often and adjust
+  the numbers to taste. Everything else in the app updates itself.
   ============================================================================
 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RentAFruit — Blox Fruits Trade Board</title>
+<title>Dealer's Dock — Blox Fruits Trade Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-deep:#05040F;
-    --bg-deep-2:#0A0820;
-    --bg-surface:rgba(20,18,46,0.55);
-    --bg-surface-2:rgba(32,28,68,0.6);
-    --border:rgba(140,130,255,0.22);
-    --border-soft:rgba(140,130,255,0.12);
-    --text-primary:#F1EEFF;
-    --text-secondary:#A79FD1;
-    --text-faint:#645C90;
-    --neon-cyan:#4CF5E0;
-    --neon-cyan-glow:rgba(76,245,224,0.45);
-    --neon-violet:#B285FF;
-    --neon-violet-glow:rgba(178,133,255,0.45);
-    --neon-pink:#FF6FD8;
-    --danger:#FF5D7A;
+    --bg-deep:#071626;
+    --bg-deep-2:#0A1E33;
+    --bg-surface:#0F2438;
+    --bg-surface-2:#16324A;
+    --border:#1E3A52;
+    --border-soft:#16283A;
+    --text-primary:#EAF2F6;
+    --text-secondary:#8FA7B6;
+    --text-faint:#5A7383;
+    --brass:#E0A63A;
+    --brass-dim:#B8862B;
+    --brass-glow:rgba(224,166,58,0.18);
+    --danger:#F45B69;
     --common:#9CA3AF;
     --uncommon:#4ADE80;
     --rare:#38BDF8;
     --legendary:#FB923C;
-    --mythical:#FF5D9E;
-    --perm-gold:#FFD166;
-    --perm-glow:rgba(255,209,102,0.4);
-    --gamepass-neon:#B285FF;
-    --gamepass-glow:rgba(178,133,255,0.4);
-    --radius:12px;
-    --radius-lg:18px;
+    --legendary-2:#C084FC;
+    --mythical:#F43F5E;
+    --perm-gold:#F5CE4E;
+    --perm-glow:rgba(245,206,78,0.35);
+    --gamepass-neon:#8B7CF6;
+    --gamepass-glow:rgba(139,124,246,0.38);
+    --radius:10px;
+    --radius-lg:16px;
     --font-display:'Bebas Neue', sans-serif;
     --font-body:'Space Grotesk', sans-serif;
     --font-mono:'JetBrains Mono', monospace;
@@ -124,19 +98,20 @@
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    background:var(--bg-deep);
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(56,189,248,0.06), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(224,166,58,0.05), transparent 55%),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep-2) 100%);
+    background-attachment:fixed;
     color:var(--text-primary);
     font-family:var(--font-body);
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
-    position:relative;
   }
-  #starfield{position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at 50% -10%, #14103A 0%, #05040F 60%);}
   a{color:inherit;}
   button{font-family:inherit;cursor:pointer;}
   input,textarea{font-family:inherit;}
-  :focus-visible{outline:2px solid var(--neon-cyan);outline-offset:2px;}
-  ::selection{background:var(--neon-violet-glow);}
+  :focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
 
   /* ---------- layout shell ---------- */
   #app{max-width:1180px;margin:0 auto;padding:0 20px 80px;}
@@ -145,77 +120,60 @@
     gap:16px;padding:22px 0 18px;flex-wrap:wrap;
     border-bottom:1px solid var(--border-soft);margin-bottom:28px;
   }
-  .brand{display:flex;align-items:baseline;gap:2px;cursor:pointer;}
+  .brand{display:flex;align-items:baseline;gap:10px;cursor:pointer;}
   .brand-mark{
-    font-family:var(--font-display);font-size:32px;letter-spacing:0.5px;
-    background:linear-gradient(90deg,#F1EEFF,var(--neon-cyan));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-    line-height:1;
+    font-family:var(--font-display);font-size:30px;letter-spacing:0.5px;
+    color:var(--text-primary);line-height:1;
   }
-  .brand-mark span{
-    background:linear-gradient(90deg,var(--neon-violet),var(--neon-pink));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .topbar-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .brand-mark span{color:var(--brass);}
+  .brand-sub{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);
+    letter-spacing:1.5px;text-transform:uppercase;}
+  .topbar-right{display:flex;align-items:center;gap:18px;}
   .live-pill{
     display:flex;align-items:center;gap:8px;font-family:var(--font-mono);
     font-size:12px;color:var(--text-secondary);letter-spacing:0.3px;
   }
-  .radar-dot{position:relative;width:8px;height:8px;border-radius:50%;background:var(--neon-cyan);flex:none;box-shadow:0 0 6px var(--neon-cyan);}
+  .radar-dot{position:relative;width:8px;height:8px;border-radius:50%;background:#37E27A;flex:none;}
   .radar-dot::after{
     content:'';position:absolute;inset:-6px;border-radius:50%;
-    border:1.5px solid var(--neon-cyan);opacity:0;animation:ping 2.2s ease-out infinite;
+    border:1.5px solid #37E27A;opacity:0;animation:ping 2.2s ease-out infinite;
   }
   @keyframes ping{0%{opacity:0.65;transform:scale(0.4);}80%{opacity:0;transform:scale(2.2);}100%{opacity:0;}}
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    border-radius:9px;border:1px solid transparent;font-weight:600;font-size:14px;
+    border-radius:8px;border:1px solid transparent;font-weight:600;font-size:14px;
     padding:11px 18px;transition:transform .12s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
     white-space:nowrap;
   }
   .btn:active{transform:scale(0.96);}
-  .btn-brass{background:linear-gradient(135deg,var(--neon-cyan),var(--neon-violet));color:#0A0820;}
-  .btn-brass:hover{box-shadow:0 0 18px var(--neon-cyan-glow);}
-  .btn-ghost{background:rgba(255,255,255,0.03);color:var(--text-primary);border-color:var(--border);backdrop-filter:blur(10px);}
-  .btn-ghost:hover{border-color:var(--neon-cyan);color:var(--neon-cyan);}
-  .btn-danger{background:transparent;color:var(--danger);border-color:rgba(255,93,122,0.4);}
-  .btn-danger:hover{background:rgba(255,93,122,0.08);box-shadow:0 0 14px rgba(255,93,122,0.25);}
-  .btn-admin{background:rgba(255,209,102,0.1);color:var(--perm-gold);border-color:rgba(255,209,102,0.4);}
-  .btn-admin:hover{box-shadow:0 0 14px var(--perm-glow);}
+  .btn-brass{background:var(--brass);color:#1C1204;}
+  .btn-brass:hover{background:#EFB750;box-shadow:0 0 0 4px var(--brass-glow);}
+  .btn-ghost{background:transparent;color:var(--text-primary);border-color:var(--border);}
+  .btn-ghost:hover{border-color:var(--brass-dim);color:var(--brass);}
+  .btn-danger{background:transparent;color:var(--danger);border-color:rgba(244,91,105,0.4);}
+  .btn-danger:hover{background:rgba(244,91,105,0.08);}
   .btn-sm{padding:8px 13px;font-size:12.5px;border-radius:7px;}
   .btn:disabled{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none;}
-  .link-btn{background:none;border:none;color:var(--text-faint);font-family:var(--font-mono);font-size:11.5px;letter-spacing:0.4px;padding:4px 2px;}
-  .link-btn:hover{color:var(--neon-cyan);}
-
-  /* ---------- glass panel base ---------- */
-  .glass{
-    background:var(--bg-surface);
-    border:1px solid var(--border);
-    border-radius:var(--radius-lg);
-    backdrop-filter:blur(18px) saturate(140%);
-    -webkit-backdrop-filter:blur(18px) saturate(140%);
-  }
 
   /* ---------- item badges + rarity glow ---------- */
   .item-badge{
     font-family:var(--font-mono);font-size:8.5px;letter-spacing:0.8px;text-transform:uppercase;
     padding:2px 6px;border-radius:4px;font-weight:700;line-height:1.5;
   }
-  .badge-physical{background:rgba(76,245,224,0.12);color:var(--neon-cyan);}
-  .badge-perm{background:rgba(255,209,102,0.16);color:var(--perm-gold);}
-  .badge-gamepass{background:rgba(178,133,255,0.18);color:var(--gamepass-neon);}
+  .badge-physical{background:rgba(224,166,58,0.12);color:var(--brass);}
+  .badge-perm{background:rgba(245,206,78,0.16);color:var(--perm-gold);}
+  .badge-gamepass{background:rgba(139,124,246,0.18);color:var(--gamepass-neon);}
   @keyframes glowpulse{
     0%,100%{box-shadow:0 0 0 0 var(--glow-color);}
-    50%{box-shadow:0 0 12px 1px var(--glow-color);}
+    50%{box-shadow:0 0 10px 1px var(--glow-color);}
   }
-  .glow-perm{--glow-color:var(--perm-glow);border-color:rgba(255,209,102,0.55) !important;animation:glowpulse 2.8s ease-in-out infinite;}
-  .glow-gamepass{--glow-color:var(--gamepass-glow);border-color:rgba(178,133,255,0.55) !important;animation:glowpulse 2.8s ease-in-out infinite;}
+  .glow-perm{--glow-color:var(--perm-glow);border-color:rgba(245,206,78,0.55) !important;animation:glowpulse 2.8s ease-in-out infinite;}
+  .glow-gamepass{--glow-color:var(--gamepass-glow);border-color:rgba(139,124,246,0.55) !important;animation:glowpulse 2.8s ease-in-out infinite;}
   @media (prefers-reduced-motion: reduce){ .glow-perm,.glow-gamepass{animation:none;} }
 
   /* ---------- feed toolbar ---------- */
   .feed-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:18px;flex-wrap:wrap;}
-  .feed-title{font-family:var(--font-display);font-size:36px;letter-spacing:0.3px;line-height:1;
-    background:linear-gradient(90deg,#F1EEFF,var(--neon-violet));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .feed-title{font-family:var(--font-display);font-size:34px;letter-spacing:0.3px;line-height:1;}
   .feed-count{font-family:var(--font-mono);color:var(--text-faint);font-size:12.5px;margin-top:4px;}
   .filter-block{margin-bottom:14px;}
   .filter-label{font-family:var(--font-mono);font-size:9.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-faint);margin-bottom:7px;}
@@ -223,15 +181,15 @@
   .chip{
     font-family:var(--font-mono);font-size:11.5px;letter-spacing:0.4px;text-transform:uppercase;
     padding:6px 12px;border-radius:999px;border:1px solid var(--border);color:var(--text-secondary);
-    background:rgba(255,255,255,0.02);transition:all .12s ease;
+    background:transparent;transition:all .12s ease;
   }
-  .chip:hover{border-color:var(--neon-cyan);color:var(--text-primary);}
-  .chip.active{background:linear-gradient(135deg,var(--neon-cyan),var(--neon-violet));color:#0A0820;border-color:transparent;}
-  .chip.cat-perm.active{background:var(--perm-gold);border-color:var(--perm-gold);color:#221703;}
-  .chip.cat-gamepass.active{background:var(--gamepass-neon);border-color:var(--gamepass-neon);color:#140B33;}
+  .chip:hover{border-color:var(--brass-dim);color:var(--text-primary);}
+  .chip.active{background:var(--brass);color:#1C1204;border-color:var(--brass);}
+  .chip.cat-perm.active{background:var(--perm-gold);border-color:var(--perm-gold);}
+  .chip.cat-gamepass.active{background:var(--gamepass-neon);border-color:var(--gamepass-neon);color:#0C0920;}
   .search-input{
-    width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);
-    color:var(--text-primary);padding:10px 14px;border-radius:9px;font-size:13.5px;margin-bottom:14px;
+    flex:1;min-width:180px;background:var(--bg-surface);border:1px solid var(--border);
+    color:var(--text-primary);padding:9px 13px;border-radius:8px;font-size:13.5px;margin-bottom:14px;
   }
   .search-input::placeholder{color:var(--text-faint);}
 
@@ -245,24 +203,25 @@
     font-size:20px;letter-spacing:0.3px;margin-bottom:6px;font-weight:400;}
 
   .card{
-    position:relative;padding:18px 18px 16px;cursor:pointer;
+    position:relative;background:var(--bg-surface);border:1px solid var(--border);
+    border-radius:var(--radius-lg);padding:18px 18px 16px;cursor:pointer;
     transition:border-color .15s ease, transform .15s ease, box-shadow .15s ease;
     display:flex;flex-direction:column;gap:12px;overflow:hidden;
   }
-  .card:hover{border-color:var(--neon-cyan);transform:translateY(-3px);box-shadow:0 14px 34px -16px rgba(76,245,224,0.35);}
+  .card:hover{border-color:var(--brass-dim);transform:translateY(-2px);box-shadow:0 10px 28px -14px rgba(0,0,0,0.55);}
   .stamp{
     position:absolute;top:14px;right:-30px;transform:rotate(38deg);
     font-family:var(--font-mono);font-size:10px;letter-spacing:2px;font-weight:600;
     padding:3px 34px;border:1.5px solid;
   }
   .stamp.open{color:var(--uncommon);border-color:var(--uncommon);}
-  .stamp.closed{color:var(--perm-gold);border-color:var(--perm-gold);}
+  .stamp.closed{color:var(--brass);border-color:var(--brass);}
   .stamp.cancelled{color:var(--text-faint);border-color:var(--text-faint);}
   .card-row-label{font-family:var(--font-mono);font-size:10px;letter-spacing:1.6px;color:var(--text-faint);text-transform:uppercase;}
   .slots{display:flex;gap:7px;flex-wrap:wrap;}
   .slot{
     display:flex;align-items:center;gap:6px;background:var(--bg-surface-2);
-    border:1px solid var(--border);border-radius:8px;padding:6px 9px;font-size:12.5px;font-weight:600;
+    border:1px solid var(--border);border-radius:7px;padding:6px 9px;font-size:12.5px;font-weight:600;
   }
   .slot-dot{width:7px;height:7px;border-radius:2px;flex:none;}
   .slot-value{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);font-weight:500;}
@@ -272,54 +231,54 @@
   .card-note{font-size:12.5px;color:var(--text-secondary);font-style:italic;}
   .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:2px;padding-top:12px;border-top:1px solid var(--border-soft);}
   .poster{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;}
-  .avatar{width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,var(--neon-cyan),var(--neon-violet));flex:none;
-    display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:#0A0820;font-weight:700;}
+  .avatar{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--brass),var(--legendary));flex:none;
+    display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:#1C1204;font-weight:700;}
   .timeago{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);}
 
   /* ---------- fairness meter ---------- */
   .fair-meter{margin-top:2px;}
-  .fair-track{display:flex;height:7px;border-radius:999px;overflow:hidden;background:rgba(0,0,0,0.3);border:1px solid var(--border-soft);}
-  .fair-fill-a{background:linear-gradient(90deg,var(--neon-violet),var(--neon-pink));transition:width .25s ease;}
-  .fair-fill-b{background:linear-gradient(90deg,var(--neon-cyan),#8CFFF0);transition:width .25s ease;}
+  .fair-track{display:flex;height:7px;border-radius:999px;overflow:hidden;background:var(--bg-deep);border:1px solid var(--border-soft);}
+  .fair-fill-a{background:linear-gradient(90deg,var(--brass-dim),var(--brass));transition:width .25s ease;}
+  .fair-fill-b{background:linear-gradient(90deg,var(--rare),#5ED2FF);transition:width .25s ease;}
   .fair-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:7px;font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);flex-wrap:wrap;}
   .fair-side b{color:var(--text-secondary);font-weight:600;}
   .fair-verdict{font-weight:700;letter-spacing:0.3px;text-transform:uppercase;font-size:10px;}
   .tone-good{color:var(--uncommon);}
-  .tone-warn{color:var(--perm-gold);}
+  .tone-warn{color:var(--brass);}
   .tone-bad{color:var(--danger);}
   .tone-neutral{color:var(--text-faint);}
 
   /* ---------- forms / pages ---------- */
-  .page{max-width:760px;margin:0 auto;}
+  .page{max-width:720px;margin:0 auto;}
   .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text-secondary);font-size:13px;
     font-family:var(--font-mono);margin-bottom:20px;background:none;border:none;padding:0;}
-  .back-link:hover{color:var(--neon-cyan);}
-  .panel{padding:28px;}
-  .page-title{font-family:var(--font-display);font-size:34px;margin:0 0 4px;letter-spacing:0.3px;}
+  .back-link:hover{color:var(--brass);}
+  .panel{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px;}
+  .page-title{font-family:var(--font-display);font-size:32px;margin:0 0 4px;letter-spacing:0.3px;}
   .page-sub{color:var(--text-faint);font-size:13.5px;margin:0 0 26px;}
   .field{margin-bottom:22px;}
   .field-label{display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:1.4px;
     text-transform:uppercase;color:var(--text-secondary);margin-bottom:9px;}
   .field-hint{font-size:12px;color:var(--text-faint);margin-top:7px;}
   .text-input{
-    width:100%;background:rgba(0,0,0,0.25);border:1px solid var(--border);color:var(--text-primary);
-    padding:11px 13px;border-radius:9px;font-size:14px;
+    width:100%;background:var(--bg-deep);border:1px solid var(--border);color:var(--text-primary);
+    padding:11px 13px;border-radius:8px;font-size:14px;
   }
-  .text-input:focus{border-color:var(--neon-cyan);}
+  .text-input:focus{border-color:var(--brass-dim);}
   textarea.text-input{resize:vertical;min-height:64px;}
 
-  .picker{border:1px solid var(--border);border-radius:12px;background:rgba(0,0,0,0.2);padding:12px;}
+  .picker{border:1px solid var(--border);border-radius:10px;background:var(--bg-deep);padding:12px;}
   .picker-top{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
   .picker-cat-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
   .picker-rarity-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
   .picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:6px;max-height:220px;overflow-y:auto;padding-right:2px;}
   .fruit-tile{
-    display:flex;align-items:center;gap:6px;padding:7px 9px;border-radius:8px;
-    border:1px solid var(--border);background:rgba(255,255,255,0.02);font-size:12.5px;font-weight:600;
+    display:flex;align-items:center;gap:6px;padding:7px 9px;border-radius:7px;
+    border:1px solid var(--border);background:var(--bg-surface);font-size:12.5px;font-weight:600;
     color:var(--text-secondary);text-align:left;transition:all .1s ease;position:relative;
   }
-  .fruit-tile:hover{border-color:var(--neon-cyan);color:var(--text-primary);}
-  .fruit-tile.selected{border-color:var(--neon-cyan);background:rgba(76,245,224,0.12);color:var(--text-primary);animation:tilepop .22s ease;}
+  .fruit-tile:hover{border-color:var(--brass-dim);color:var(--text-primary);}
+  .fruit-tile.selected{border-color:var(--brass);background:var(--brass-glow);color:var(--text-primary);animation:tilepop .22s ease;}
   @keyframes tilepop{0%{transform:scale(0.94);}60%{transform:scale(1.03);}100%{transform:scale(1);}}
   .fruit-tile.disabled{opacity:0.3;pointer-events:none;}
   .fruit-dot{width:7px;height:7px;border-radius:2px;flex:none;}
@@ -327,43 +286,43 @@
   .fruit-tile-val{font-family:var(--font-mono);font-size:9.5px;color:var(--text-faint);flex:none;}
   .picker-selected{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;min-height:34px;}
   .selected-chip{
-    display:flex;align-items:center;gap:7px;background:var(--bg-surface-2);border:1px solid var(--neon-cyan);
-    border-radius:8px;padding:6px 6px 6px 10px;font-size:12.5px;font-weight:600;
+    display:flex;align-items:center;gap:7px;background:var(--bg-surface-2);border:1px solid var(--brass-dim);
+    border-radius:7px;padding:6px 6px 6px 10px;font-size:12.5px;font-weight:600;
   }
   .chip-remove{background:none;border:none;color:var(--text-faint);font-size:14px;line-height:1;padding:2px 4px;}
   .chip-remove:hover{color:var(--danger);}
   .picker-count{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);margin-top:8px;}
 
-  .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap;}
+  .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;}
   .error-msg{color:var(--danger);font-size:13px;margin-top:10px;min-height:1px;}
 
   /* ---------- trade detail ---------- */
-  .detail-hero{padding:26px;position:relative;overflow:hidden;margin-bottom:26px;}
+  .detail-hero{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px;position:relative;overflow:hidden;margin-bottom:26px;}
   .detail-poster{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
   .detail-poster-name{font-family:var(--font-display);font-size:22px;letter-spacing:0.3px;}
   .detail-slots-block{margin-bottom:16px;}
   .detail-slots{display:flex;gap:10px;flex-wrap:wrap;}
   .big-slot{
     display:flex;align-items:center;gap:8px;background:var(--bg-surface-2);border:1px solid var(--border);
-    border-radius:10px;padding:10px 14px;font-size:14px;font-weight:600;
+    border-radius:9px;padding:10px 14px;font-size:14px;font-weight:600;
   }
   .big-slot .fruit-dot{width:9px;height:9px;}
   .rarity-tag{font-family:var(--font-mono);font-size:9.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;}
-  .result-banner{display:flex;align-items:center;gap:10px;background:rgba(76,245,224,0.08);border:1px solid var(--neon-cyan);
+  .result-banner{display:flex;align-items:center;gap:10px;background:rgba(224,166,58,0.08);border:1px solid var(--brass-dim);
     border-radius:10px;padding:12px 16px;color:var(--text-primary);font-size:13px;margin-top:18px;}
 
   .thread{margin-top:6px;}
-  .thread-title{font-family:var(--font-display);font-size:24px;margin:0 0 14px;letter-spacing:0.3px;}
-  .offer-item{padding:16px 18px;margin-bottom:12px;transition:border-color .15s ease;border:1px solid var(--border-soft);border-radius:12px;background:var(--bg-surface);backdrop-filter:blur(14px);}
+  .thread-title{font-family:var(--font-display);font-size:22px;margin:0 0 14px;letter-spacing:0.3px;}
+  .offer-item{background:var(--bg-surface);border:1px solid var(--border-soft);border-radius:12px;padding:16px 18px;margin-bottom:12px;transition:border-color .15s ease;}
   .offer-item.accepted{border-color:var(--uncommon);}
   .offer-item.declined{opacity:0.55;}
   .offer-item-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
   .offer-item-name{font-weight:700;font-size:13.5px;}
   .offer-badge{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:5px;}
-  .offer-badge.accept{background:rgba(76,245,224,0.12);color:var(--neon-cyan);}
-  .offer-badge.counter{background:rgba(178,133,255,0.14);color:var(--gamepass-neon);}
+  .offer-badge.accept{background:rgba(74,222,128,0.12);color:var(--uncommon);}
+  .offer-badge.counter{background:rgba(224,166,58,0.12);color:var(--brass);}
   .offer-badge.accepted{background:rgba(74,222,128,0.18);color:var(--uncommon);}
-  .offer-badge.declined{background:rgba(255,93,122,0.12);color:var(--danger);}
+  .offer-badge.declined{background:rgba(244,91,105,0.12);color:var(--danger);}
   .offer-note{font-size:12.5px;color:var(--text-secondary);font-style:italic;margin-top:8px;}
   .offer-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
   .offer-fair{margin-top:10px;}
@@ -372,15 +331,15 @@
   .chat-messages{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto;padding:2px 2px 6px;}
   .msg-bubble{max-width:78%;padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.4;}
   .msg-theirs{align-self:flex-start;background:var(--bg-surface-2);border:1px solid var(--border);border-bottom-left-radius:3px;}
-  .msg-mine{align-self:flex-end;background:rgba(76,245,224,0.14);border:1px solid var(--neon-cyan);border-bottom-right-radius:3px;}
+  .msg-mine{align-self:flex-end;background:var(--brass-glow);border:1px solid var(--brass-dim);border-bottom-right-radius:3px;}
   .msg-pending{opacity:0.55;}
   .msg-meta{font-family:var(--font-mono);font-size:9.5px;color:var(--text-faint);margin-top:3px;}
   .chat-input-row{display:flex;gap:8px;margin-top:10px;}
   .chat-input{flex:1;}
   .chat-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);border-radius:7px;padding:6px 11px;font-size:12px;font-family:var(--font-mono);}
-  .chat-toggle:hover{border-color:var(--neon-cyan);color:var(--neon-cyan);}
+  .chat-toggle:hover{border-color:var(--brass-dim);color:var(--brass);}
 
-  .make-offer-box{padding:22px;margin-top:24px;}
+  .make-offer-box{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-top:24px;}
   .mo-choice{display:flex;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
   .mo-choice .btn{flex:1;}
   .closed-banner{
@@ -389,43 +348,29 @@
   }
 
   .setup-note{
-    max-width:720px;margin:60px auto;border:1px solid var(--legendary);
+    max-width:720px;margin:60px auto;background:var(--bg-surface);border:1px solid var(--legendary);
     border-radius:var(--radius-lg);padding:24px 26px;font-size:14px;line-height:1.6;color:var(--text-secondary);
   }
   .setup-note h2{font-family:var(--font-display);color:var(--legendary);font-size:24px;margin-top:0;letter-spacing:0.3px;}
-  .setup-note code{background:rgba(0,0,0,0.4);padding:2px 6px;border-radius:4px;font-family:var(--font-mono);font-size:12.5px;color:var(--neon-cyan);}
+  .setup-note code{background:var(--bg-deep);padding:2px 6px;border-radius:4px;font-family:var(--font-mono);font-size:12.5px;color:var(--brass);}
 
   /* ---------- toasts ---------- */
   .toast-host{position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:8px;z-index:999;max-width:280px;}
   .toast{
-    padding:12px 16px;border-radius:10px;
+    background:var(--bg-surface);border:1px solid var(--border);padding:12px 16px;border-radius:9px;
     font-size:13px;font-weight:600;opacity:0;transform:translateY(8px);
     transition:opacity .25s ease, transform .25s ease;box-shadow:0 10px 24px -10px rgba(0,0,0,.6);
-    background:var(--bg-surface);border:1px solid var(--border);backdrop-filter:blur(16px);
   }
   .toast.show{opacity:1;transform:translateY(0);}
   .toast.tone-good{border-color:var(--uncommon);}
   .toast.tone-bad{border-color:var(--danger);}
-  .toast.tone-warn{border-color:var(--perm-gold);}
+  .toast.tone-warn{border-color:var(--brass);}
 
   footer.site-foot{text-align:center;color:var(--text-faint);font-family:var(--font-mono);font-size:11px;margin-top:60px;letter-spacing:0.3px;}
 
-  /* ---------- modal (confirm + admin) ---------- */
-  .modal-overlay{position:fixed;inset:0;background:rgba(5,4,15,0.72);backdrop-filter:blur(4px);z-index:900;
-    display:flex;align-items:center;justify-content:center;padding:20px;}
-  .modal-box{max-width:560px;width:100%;padding:26px;max-height:86vh;overflow-y:auto;}
-  .modal-title{font-family:var(--font-display);font-size:26px;margin:0 0 14px;letter-spacing:0.3px;}
-  .admin-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--border-soft);}
-  .admin-row:last-child{border-bottom:none;}
-  .admin-row-name{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;}
-  .admin-row input{width:90px;background:rgba(0,0,0,0.3);border:1px solid var(--border);color:var(--text-primary);
-    padding:6px 8px;border-radius:6px;font-family:var(--font-mono);font-size:12.5px;}
-  .admin-search{margin-bottom:12px;}
-  .admin-tabs{display:flex;gap:6px;margin-bottom:14px;}
-
   @media (max-width:640px){
-    .feed-title{font-size:28px;}
-    .brand-mark{font-size:26px;}
+    .feed-title{font-size:27px;}
+    .brand-mark{font-size:24px;}
     .panel,.detail-hero{padding:18px;}
     .msg-bubble{max-width:90%;}
   }
@@ -437,20 +382,18 @@
 </style>
 </head>
 <body>
-<canvas id="starfield"></canvas>
 <div id="app">
   <header class="topbar">
     <div class="brand" id="brand-home">
-      <div class="brand-mark">RENT<span>AFRUIT</span></div>
+      <div class="brand-mark">DEALER'S <span>DOCK</span></div>
     </div>
     <div class="topbar-right">
       <div class="live-pill"><span class="radar-dot"></span><span id="live-count">connecting…</span></div>
-      <button class="link-btn" id="btn-admin-link" style="display:none">Admin</button>
       <button class="btn btn-brass" id="btn-post-top">+ Post a Trade</button>
     </div>
   </header>
   <main id="view-root"></main>
-  <footer class="site-foot">RentAFruit is a fan-made trading board for Blox Fruits players. Not affiliated with Gamer Robot Inc. or Roblox. Trade values shown are community estimates, not guarantees.</footer>
+  <footer class="site-foot">Dealer's Dock is a fan-made trading board for Blox Fruits players. Not affiliated with Gamer Robot Inc. or Roblox. Trade values shown are community estimates, not guarantees.</footer>
 </div>
 
 <script type="module">
@@ -468,73 +411,16 @@ const firebaseConfig = {
   measurementId: "G-TH3CKR5J51"
 };
 const CONFIG_IS_PLACEHOLDER = firebaseConfig.apiKey === "YOUR_API_KEY";
-const ADMIN_EMAIL = "jakelordclash@gmail.com";
-const TRADE_LIFETIME_MS = 48 * 60 * 60 * 1000; // 48 hours
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-  getFirestore, collection, addDoc, doc, setDoc, updateDoc, onSnapshot,
-  query, where, orderBy, serverTimestamp, getDoc, getDocs, deleteDoc, Timestamp
+  getFirestore, collection, addDoc, doc, updateDoc, onSnapshot,
+  query, where, orderBy, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-import {
-  getAuth, signInAnonymously, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-/* ============================================================
-   STARFIELD BACKGROUND — twinkling stars + drifting stardust
-   ============================================================ */
-(function starfield(){
-  const canvas = document.getElementById('starfield');
-  const ctx = canvas.getContext('2d');
-  let w, h, stars = [], dust = [];
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function resize(){
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-    const count = Math.floor((w*h)/9000);
-    stars = Array.from({length: count}, () => ({
-      x: Math.random()*w, y: Math.random()*h,
-      r: Math.random()*1.4 + 0.3,
-      baseA: Math.random()*0.5 + 0.35,
-      phase: Math.random()*Math.PI*2,
-      speed: Math.random()*0.015 + 0.006,
-      hue: Math.random() < 0.15 ? (Math.random()<0.5 ? '178,133,255' : '76,245,224') : '241,238,255'
-    }));
-    dust = Array.from({length: Math.floor(count/8)}, () => ({
-      x: Math.random()*w, y: Math.random()*h,
-      vx: (Math.random()-0.5)*0.06, vy: (Math.random()-0.5)*0.06,
-      r: Math.random()*1.8 + 0.6
-    }));
-  }
-  function frame(t){
-    ctx.clearRect(0,0,w,h);
-    stars.forEach(s=>{
-      const a = s.baseA + Math.sin(t*s.speed + s.phase) * 0.35;
-      ctx.beginPath();
-      ctx.fillStyle = `rgba(${s.hue},${Math.max(0.08,a)})`;
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-      ctx.fill();
-    });
-    dust.forEach(d=>{
-      d.x += d.vx; d.y += d.vy;
-      if (d.x < -5) d.x = w+5; if (d.x > w+5) d.x = -5;
-      if (d.y < -5) d.y = h+5; if (d.y > h+5) d.y = -5;
-      ctx.beginPath();
-      ctx.fillStyle = 'rgba(178,133,255,0.10)';
-      ctx.arc(d.x, d.y, d.r*3, 0, Math.PI*2);
-      ctx.fill();
-    });
-    if (!reduced) requestAnimationFrame(frame);
-  }
-  window.addEventListener('resize', resize);
-  resize();
-  if (reduced) { frame(0); } else { requestAnimationFrame(frame); }
-})();
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 const viewRoot = document.getElementById('view-root');
 const liveCountEl = document.getElementById('live-count');
-const adminLinkBtn = document.getElementById('btn-admin-link');
 document.getElementById('brand-home').addEventListener('click', () => location.hash = '#/');
 document.getElementById('btn-post-top').addEventListener('click', () => location.hash = '#/post');
 
@@ -542,20 +428,17 @@ document.getElementById('btn-post-top').addEventListener('click', () => location
    STATE
    ============================================================ */
 let db, auth, uid = null;
-let isAdmin = false;
 let unsubFeed = null, unsubDetail = null, unsubOffers = null;
-let chatUnsubs = {};
-let confirmedMessages = {};
-let pendingMessages = {};
-let expandedChats = new Set();
+let chatUnsubs = {};              // offerId -> unsubscribe fn
+let confirmedMessages = {};       // offerId -> [{...}]
+let pendingMessages = {};         // offerId -> [{tempId, ...}]
+let expandedChats = new Set();    // offerId set, which chat panels are open
 let feedCategoryFilter = 'All';
 let feedRarityFilter = 'All';
 let feedSearch = '';
 let latestTrades = [];
 let currentOffers = [];
-let lastUsedName = '';
-let overridesLoaded = false;
-let purgeRan = false;
+let lastUsedName = '';            // in-memory convenience prefill, not persisted
 
 if (CONFIG_IS_PLACEHOLDER) {
   renderSetupNotice();
@@ -565,7 +448,7 @@ if (CONFIG_IS_PLACEHOLDER) {
 
 function renderSetupNotice(){
   viewRoot.innerHTML = `
-    <div class="setup-note glass">
+    <div class="setup-note">
       <h2>⚙ One setup step left</h2>
       <p>This page is running, but it isn't connected to a database yet. Open this file, find the
       <code>firebaseConfig</code> object near the top of the &lt;script&gt; tag, and paste in your own
@@ -578,9 +461,9 @@ function renderSetupNotice(){
 }
 
 /* ============================================================
-   ITEM DATABASE — Physical Fruits, Permanent Fruits, Gamepasses/Skins
+   ITEM DATABASE — Physical Fruits, Permanent Fruits, Gamepasses
    Values are internal relative "trade value" units for the fairness
-   meter — community estimates, adjustable live by the admin.
+   meter — starting estimates you can retune any time, not a live feed.
    ============================================================ */
 const RARITIES = ['Common','Uncommon','Rare','Legendary','Mythical'];
 const RARITY_COLOR = {
@@ -594,7 +477,6 @@ const CATEGORY_META = {
 };
 const CATEGORIES = ['physical','perm','gamepass'];
 
-// Every physical fruit currently tradable, with a base community value.
 const FRUIT_BASE = [
   {name:"Rocket",rarity:"Common",value:50},{name:"Spin",rarity:"Common",value:50},
   {name:"Blade",rarity:"Common",value:60},{name:"Spring",rarity:"Common",value:55},
@@ -624,34 +506,29 @@ const FRUIT_BASE = [
   {name:"Dragon",rarity:"Mythical",value:4200},{name:"Leopard",rarity:"Mythical",value:3800}
 ];
 
-// Perm multiplier by rarity — permanent fruits trade far above physical.
-const PERM_MULTIPLIER = { Common:5, Uncommon:6, Rare:8, Legendary:5.2, Mythical:4 };
-
-const GAMEPASS_BASE = [
-  {name:"Fast Boats",value:400},
-  {name:"2x Money",value:800},
-  {name:"2x Mastery",value:900},
-  {name:"Dark Blade",value:1200},
-  {name:"Fruit Notifier",value:350},
-  {name:"Scroll Pack",value:300},
-  {name:"Fruit Storage",value:500},
-  {name:"Fighting Style: Death Step (Skin)",value:900},
-  {name:"Dragon Trail (Skin Bundle)",value:1100},
-  {name:"Soul Guitar (Instrument)",value:650},
-  {name:"Chest Farm Access",value:250}
+// Curated set of fruits commonly traded as permanent versions.
+const PERM_BASE = [
+  {name:"Light",rarity:"Rare",value:1280},{name:"Magma",rarity:"Rare",value:1400},
+  {name:"Ghost",rarity:"Rare",value:1120},
+  {name:"Quake",rarity:"Legendary",value:3600},{name:"Buddha",rarity:"Legendary",value:3800},
+  {name:"Portal",rarity:"Legendary",value:3400},
+  {name:"Mammoth",rarity:"Mythical",value:6400},{name:"Yeti",rarity:"Mythical",value:7800},
+  {name:"T-Rex",rarity:"Mythical",value:8800},{name:"Venom",rarity:"Mythical",value:8000},
+  {name:"Spirit",rarity:"Mythical",value:8400},{name:"Gas",rarity:"Mythical",value:9600},
+  {name:"Shadow",rarity:"Mythical",value:10400},{name:"Control",rarity:"Mythical",value:11200},
+  {name:"Dough",rarity:"Mythical",value:12800},{name:"Kitsune",rarity:"Mythical",value:14000},
+  {name:"Leopard",rarity:"Mythical",value:15000},{name:"Dragon",rarity:"Mythical",value:16000}
 ];
 
-const PHYSICAL_ITEMS = FRUIT_BASE.map(f => ({...f, category:'physical', id:'phys_'+f.name.replace(/[^a-zA-Z0-9]/g,'')}));
-const PERM_ITEMS = FRUIT_BASE.map(f => ({
-  ...f,
-  category:'perm',
-  name:'Perm '+f.name,
-  id:'perm_'+f.name.replace(/[^a-zA-Z0-9]/g,''),
-  value: Math.round(f.value * (PERM_MULTIPLIER[f.rarity]||5) / 10) * 10
-}));
-const GAMEPASS_ITEMS = GAMEPASS_BASE.map(g => ({...g, category:'gamepass', rarity:'Gamepass', id:'gp_'+g.name.replace(/[^a-zA-Z0-9]/g,'')}));
+const GAMEPASS_BASE = [
+  {name:"2x Money",value:800},{name:"2x Mastery",value:900},{name:"Fast Boats",value:400},
+  {name:"Dark Blade",value:1200},{name:"Fruit Notifier",value:350},{name:"Scroll Pack",value:300}
+];
+
+const PHYSICAL_ITEMS = FRUIT_BASE.map(f => ({...f, category:'physical', id:'phys_'+f.name}));
+const PERM_ITEMS = PERM_BASE.map(f => ({...f, category:'perm', id:'perm_'+f.name, name:'Perm '+f.name}));
+const GAMEPASS_ITEMS = GAMEPASS_BASE.map(g => ({...g, category:'gamepass', rarity:'Gamepass', id:'gp_'+g.name.replace(/\s+/g,'')}));
 const ITEMS = [...PHYSICAL_ITEMS, ...PERM_ITEMS, ...GAMEPASS_ITEMS];
-const ITEMS_BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
 
 function bootFirebase(){
   const app = initializeApp(firebaseConfig);
@@ -660,143 +537,13 @@ function bootFirebase(){
   onAuthStateChanged(auth, (user) => {
     if (user) {
       uid = user.uid;
-      isAdmin = !!(user.email && user.email.toLowerCase() === ADMIN_EMAIL && user.emailVerified);
-      adminLinkBtn.style.display = 'inline-flex';
-      adminLinkBtn.textContent = isAdmin ? '⚙ Admin Panel' : 'Admin';
-      loadOverrides().then(()=>{ runExpiryPurge(); router(); });
+      router();
     }
   });
   signInAnonymously(auth).catch((err) => {
-    viewRoot.innerHTML = `<div class="setup-note glass"><h2>⚠ Couldn't connect</h2><p>${esc(err.message)}</p>
+    viewRoot.innerHTML = `<div class="setup-note"><h2>⚠ Couldn't connect</h2><p>${esc(err.message)}</p>
       <p>Double check that Anonymous sign-in is enabled under Authentication → Sign-in method in your Firebase console.</p></div>`;
   });
-}
-
-adminLinkBtn.addEventListener('click', async ()=>{
-  if (isAdmin) { openAdminPanel(); return; }
-  try {
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ login_hint: ADMIN_EMAIL });
-    const result = await signInWithPopup(auth, provider);
-    if (result.user.email && result.user.email.toLowerCase() === ADMIN_EMAIL) {
-      showToast('Signed in as admin.', 'good');
-    } else {
-      showToast('That Google account is not the admin account.', 'bad');
-      await signOut(auth);
-      await signInAnonymously(auth);
-    }
-  } catch(err){
-    showToast('Admin sign-in failed: ' + err.message, 'bad');
-  }
-});
-
-/* ============================================================
-   ADMIN VALUE OVERRIDES — synced from Firestore, applied to ITEMS
-   ============================================================ */
-async function loadOverrides(){
-  if (overridesLoaded) return;
-  try {
-    const snap = await getDocs(collection(db,'itemOverrides'));
-    snap.forEach(d=>{
-      const data = d.data();
-      if (ITEMS_BY_ID[d.id] && typeof data.value === 'number') {
-        ITEMS_BY_ID[d.id].value = data.value;
-      }
-    });
-  } catch(err){
-    // Non-fatal — app still works with base values.
-    console.warn('Could not load item overrides', err);
-  }
-  overridesLoaded = true;
-}
-
-function openAdminPanel(){
-  let cat = 'physical';
-  let search = '';
-
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay';
-  overlay.innerHTML = `
-    <div class="modal-box glass">
-      <div class="modal-title">⚙ Admin — Item Values</div>
-      <div class="page-sub" style="margin-bottom:14px">Edit any value and press Enter or click away to save. Changes sync to every visitor's fairness meter immediately.</div>
-      <input class="text-input admin-search" id="admin-search" placeholder="Search items…">
-      <div class="admin-tabs">
-        ${CATEGORIES.map(c=>`<button class="chip ${c===cat?'active':''}" data-admin-cat="${c}">${CATEGORY_META[c].label}</button>`).join('')}
-      </div>
-      <div id="admin-list"></div>
-      <div class="form-actions">
-        <button class="btn btn-ghost" id="admin-close">Close</button>
-      </div>
-    </div>`;
-  document.body.appendChild(overlay);
-
-  function paintList(){
-    const list = overlay.querySelector('#admin-list');
-    const rows = ITEMS.filter(i => i.category===cat && i.name.toLowerCase().includes(search.toLowerCase()));
-    list.innerHTML = rows.map(i => `
-      <div class="admin-row">
-        <span class="admin-row-name"><span class="fruit-dot" style="background:${RARITY_COLOR[i.rarity]}"></span>${esc(i.name)}</span>
-        <input type="number" min="0" step="10" value="${i.value}" data-admin-id="${i.id}">
-      </div>`).join('') || `<div class="slot-empty" style="padding:12px 0">No items match.</div>`;
-
-    list.querySelectorAll('[data-admin-id]').forEach(inp=>{
-      const commit = async ()=>{
-        const id = inp.dataset.adminId;
-        const v = Math.max(0, Math.round(Number(inp.value)||0));
-        inp.value = v;
-        if (ITEMS_BY_ID[id].value === v) return;
-        ITEMS_BY_ID[id].value = v;
-        try {
-          await setDoc(doc(db,'itemOverrides',id), { value: v, name: ITEMS_BY_ID[id].name, updatedAt: serverTimestamp() });
-          showToast(ITEMS_BY_ID[id].name + ' updated.', 'good');
-        } catch(err){
-          showToast('Could not save: ' + err.message, 'bad');
-        }
-      };
-      inp.addEventListener('change', commit);
-      inp.addEventListener('keydown', (e)=>{ if (e.key==='Enter') inp.blur(); });
-    });
-  }
-
-  overlay.querySelectorAll('[data-admin-cat]').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      cat = b.dataset.adminCat;
-      overlay.querySelectorAll('[data-admin-cat]').forEach(x=>x.classList.toggle('active', x.dataset.adminCat===cat));
-      paintList();
-    });
-  });
-  overlay.querySelector('#admin-search').addEventListener('input', (e)=>{ search = e.target.value; paintList(); });
-  overlay.querySelector('#admin-close').addEventListener('click', ()=> overlay.remove());
-  overlay.addEventListener('click', (e)=>{ if (e.target === overlay) overlay.remove(); });
-  paintList();
-}
-
-/* ============================================================
-   48-HOUR AUTO-EXPIRY
-   ============================================================ */
-function isExpired(t){
-  if (!t.createdAt) return false;
-  const created = t.createdAt.toDate ? t.createdAt.toDate() : new Date(t.createdAt);
-  return (Date.now() - created.getTime()) > TRADE_LIFETIME_MS;
-}
-
-async function runExpiryPurge(){
-  if (purgeRan) return;
-  purgeRan = true;
-  try {
-    const cutoff = Timestamp.fromMillis(Date.now() - TRADE_LIFETIME_MS);
-    const q = query(collection(db,'trades'), where('status','==','open'), where('createdAt','<', cutoff));
-    const snap = await getDocs(q);
-    if (snap.empty) return;
-    await Promise.all(snap.docs.map(d => deleteDoc(doc(db,'trades', d.id)).catch(()=>{
-      // If security rules don't grant delete to this client (non-admin),
-      // fall back to just marking it closed so it disappears from the feed.
-      return updateDoc(doc(db,'trades', d.id), { status:'closed', cancelled:true }).catch(()=>{});
-    })));
-  } catch(err){
-    console.warn('Expiry purge skipped:', err.message);
-  }
 }
 
 /* ============================================================
@@ -924,11 +671,11 @@ function renderHome(){
   if (!unsubFeed) {
     const q = query(collection(db,'trades'), where('status','==','open'), orderBy('createdAt','desc'));
     unsubFeed = onSnapshot(q, (snap) => {
-      latestTrades = snap.docs.map(d => ({id:d.id, ...d.data()})).filter(t => !isExpired(t));
+      latestTrades = snap.docs.map(d => ({id:d.id, ...d.data()}));
       liveCountEl.textContent = latestTrades.length + (latestTrades.length===1?' trade live':' trades live');
       if (!location.hash || location.hash === '#/') paintFeed();
     }, (err) => {
-      viewRoot.innerHTML = `<div class="setup-note glass"><h2>⚠ Database error</h2><p>${esc(err.message)}</p>
+      viewRoot.innerHTML = `<div class="setup-note"><h2>⚠ Database error</h2><p>${esc(err.message)}</p>
         <p>This often means the Firestore security rules haven't been pasted in yet, or Firestore hasn't finished being created. See the setup comment at the top of this file.</p></div>`;
     });
   }
@@ -956,7 +703,7 @@ function paintFeed(){
     <div class="feed-head">
       <div>
         <div class="feed-title">Live Trade Board</div>
-        <div class="feed-count">${rows.length} open ${rows.length===1?'post':'posts'} · updates in real time · posts auto-expire after 48h</div>
+        <div class="feed-count">${rows.length} open ${rows.length===1?'post':'posts'} · updates in real time</div>
       </div>
     </div>
     <input class="search-input" id="feed-search" placeholder="Search a fruit, gamepass, or username…" value="${esc(feedSearch)}">
@@ -975,7 +722,7 @@ function paintFeed(){
       </div>
     </div>
     <div class="grid" id="feed-grid" style="margin-top:20px">
-      ${rows.length ? rows.map(cardHtml).join('') : `<div class="empty-state glass" style="grid-column:1/-1">
+      ${rows.length ? rows.map(cardHtml).join('') : `<div class="empty-state" style="grid-column:1/-1">
         <strong>No trades match yet</strong>No one's posted this combo right now — be the first.
       </div>`}
     </div>
@@ -1005,7 +752,7 @@ function cardHtml(t){
   const wantFruits = t.wanting?.fruits || [];
   const wantNote = t.wanting?.note || '';
   return `
-  <div class="card glass" data-id="${t.id}">
+  <div class="card" data-id="${t.id}">
     <div class="stamp open">OPEN</div>
     <div>
       <div class="card-row-label">Offering</div>
@@ -1131,15 +878,15 @@ function createFruitPicker(maxCount, initial, onChange){
 }
 
 /* ============================================================
-   POST A TRADE — dedicated screen with review/confirm step
+   POST A TRADE
    ============================================================ */
 function renderPostForm(){
   viewRoot.innerHTML = `
     <div class="page">
       <button class="back-link" id="back">← Back to board</button>
-      <div class="panel glass">
+      <div class="panel">
         <div class="page-title">Post a Trade</div>
-        <div class="page-sub">List up to 4 items you're offering, and what you want back. Physical fruits, Perm fruits, and Gamepasses/Skins can all be mixed on either side.</div>
+        <div class="page-sub">List up to 4 items you're offering, and what you want back. Physical fruits, Perm fruits, and Gamepasses can all be mixed on either side.</div>
 
         <div class="field">
           <label class="field-label">Your Roblox / in-game name</label>
@@ -1166,7 +913,7 @@ function renderPostForm(){
         <div id="form-error" class="error-msg"></div>
         <div class="form-actions">
           <button class="btn btn-ghost" id="cancel-btn">Cancel</button>
-          <button class="btn btn-brass" id="review-btn">Review &amp; Post →</button>
+          <button class="btn btn-brass" id="submit-btn">Post Trade</button>
         </div>
       </div>
     </div>
@@ -1186,7 +933,7 @@ function renderPostForm(){
   document.getElementById('want-picker-slot').appendChild(wantPicker.el);
   refreshFair();
 
-  document.getElementById('review-btn').addEventListener('click', ()=>{
+  document.getElementById('submit-btn').addEventListener('click', async ()=>{
     const username = document.getElementById('f-username').value.trim();
     const note = document.getElementById('f-note').value.trim();
     const offering = offerPicker.getSelected();
@@ -1198,37 +945,7 @@ function renderPostForm(){
     if (!offering.length) { errEl.textContent = 'Pick at least one item you\'re offering.'; return; }
     if (!wantFruits.length && !note) { errEl.textContent = 'Say what you want back — pick items or add a note.'; return; }
 
-    openConfirmModal({ username, note, offering, wantFruits });
-  });
-}
-
-function openConfirmModal({ username, note, offering, wantFruits }){
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay';
-  overlay.innerHTML = `
-    <div class="modal-box glass">
-      <div class="modal-title">Confirm your trade</div>
-      <div class="page-sub">Double check this before it goes live on the board.</div>
-      <div class="card-row-label">Posting as</div>
-      <div class="poster" style="margin:8px 0 16px"><span class="avatar">${esc(initials(username))}</span>${esc(username)}</div>
-      <div class="card-row-label">Offering</div>
-      <div class="slots" style="margin:8px 0 16px">${offering.map(f=>slotHtml(f,false)).join('')}</div>
-      <div class="card-row-label">Wants</div>
-      <div class="slots" style="margin:8px 0 4px">${wantFruits.map(f=>slotHtml(f,false)).join('') || '<span class="slot-empty">open to offers</span>'}</div>
-      ${note ? `<div class="card-note" style="margin-top:8px">"${esc(note)}"</div>` : ''}
-      <div style="margin-top:16px">${fairnessBarHtml(offering, wantFruits)}</div>
-      <div id="confirm-error" class="error-msg"></div>
-      <div class="form-actions">
-        <button class="btn btn-ghost" id="confirm-back">← Edit</button>
-        <button class="btn btn-brass" id="confirm-post">Post Trade</button>
-      </div>
-    </div>`;
-  document.body.appendChild(overlay);
-  overlay.querySelector('#confirm-back').addEventListener('click', ()=> overlay.remove());
-  overlay.addEventListener('click', (e)=>{ if (e.target === overlay) overlay.remove(); });
-
-  overlay.querySelector('#confirm-post').addEventListener('click', async ()=>{
-    const btn = overlay.querySelector('#confirm-post');
+    const btn = document.getElementById('submit-btn');
     btn.disabled = true; btn.textContent = 'Posting…';
     try {
       lastUsedName = username;
@@ -1242,11 +959,10 @@ function openConfirmModal({ username, note, offering, wantFruits }){
         closedWith: null,
         createdAt: serverTimestamp()
       });
-      overlay.remove();
       showToast('Trade posted — it\'s live on the board.', 'good');
       location.hash = '#/trade/'+ref.id;
     } catch(err){
-      overlay.querySelector('#confirm-error').textContent = 'Could not post: ' + err.message;
+      errEl.textContent = 'Could not post: ' + err.message;
       btn.disabled = false; btn.textContent = 'Post Trade';
     }
   });
@@ -1262,7 +978,7 @@ function renderTradeDetail(tradeId){
   unsubDetail = onSnapshot(doc(db,'trades',tradeId), (snap)=>{
     if (!snap.exists()) {
       viewRoot.innerHTML = `<div class="page"><button class="back-link" id="back">← Back to board</button>
-        <div class="empty-state glass"><strong>Trade not found</strong>It may have been removed.</div></div>`;
+        <div class="empty-state"><strong>Trade not found</strong>It may have been removed.</div></div>`;
       document.getElementById('back').addEventListener('click', ()=> location.hash = '#/');
       return;
     }
@@ -1272,7 +988,7 @@ function renderTradeDetail(tradeId){
 
 function paintDetail(tradeId, t){
   const isOwner = t.ownerId === uid;
-  const isOpen = t.status === 'open' && !isExpired(t);
+  const isOpen = t.status === 'open';
   const offering = t.offering || [];
   const wantFruits = t.wanting?.fruits || [];
   const wantNote = t.wanting?.note || '';
@@ -1281,7 +997,6 @@ function paintDetail(tradeId, t){
   let stampClass = 'open', stampText = 'OPEN';
   if (!isOpen) {
     if (t.cancelled) { stampClass = 'cancelled'; stampText = 'CANCELLED'; }
-    else if (t.status === 'open' && isExpired(t)) { stampClass = 'cancelled'; stampText = 'EXPIRED'; }
     else { stampClass = 'closed'; stampText = 'TRADED'; }
   }
 
@@ -1289,7 +1004,7 @@ function paintDetail(tradeId, t){
     <div class="page">
       <button class="back-link" id="back">← Back to board</button>
 
-      <div class="detail-hero glass">
+      <div class="detail-hero">
         <div class="stamp ${stampClass}">${stampText}</div>
         <div class="detail-poster"><span class="avatar">${esc(initials(t.username))}</span>
           <div><div class="detail-poster-name">${esc(t.username)}</div><div class="timeago">${timeAgo(t.createdAt)}</div></div>
@@ -1306,9 +1021,8 @@ function paintDetail(tradeId, t){
         </div>
         ${(offering.length || wantFruits.length) ? fairnessBarHtml(offering, wantFruits) : ''}
         ${acceptedOffer ? `<div class="result-banner">✓ Traded with <b>${esc(acceptedOffer.username)}</b> for ${acceptedOffer.offering.map(f=>esc(f.name)).join(', ') || 'the requested items'}.</div>` : ''}
-        ${(isOwner || isAdmin) ? `<div class="form-actions" style="margin-top:6px">
-            ${(t.status==='open' && !t.cancelled) ? `<button class="btn btn-danger btn-sm" id="cancel-trade">Cancel this post</button>` : ''}
-            ${isAdmin ? `<button class="btn btn-admin btn-sm" id="admin-delete-trade">Admin: Delete permanently</button>` : ''}
+        ${isOwner ? `<div class="form-actions" style="margin-top:6px">
+            ${isOpen ? `<button class="btn btn-danger btn-sm" id="cancel-trade">Cancel this post</button>` : ''}
           </div>` : ''}
       </div>
 
@@ -1318,36 +1032,23 @@ function paintDetail(tradeId, t){
       </div>
 
       ${isOpen ? `
-      <div class="make-offer-box glass" id="make-offer-box">
+      <div class="make-offer-box" id="make-offer-box">
         <div class="card-row-label" style="margin-bottom:12px">Make an Offer</div>
         <div class="mo-choice">
           <button class="btn btn-brass" id="mo-accept">Send exactly what they want</button>
           <button class="btn btn-ghost" id="mo-counter">Propose a different offer</button>
         </div>
         <div id="mo-form"></div>
-      </div>` : `<div class="closed-banner">${t.cancelled ? 'This trade was cancelled by its poster.' : (stampText==='EXPIRED' ? 'This trade expired 48 hours after posting.' : 'This trade is closed and no longer accepting offers.')}</div>`}
+      </div>` : `<div class="closed-banner">${t.cancelled ? 'This trade was cancelled by its poster.' : 'This trade is closed and no longer accepting offers.'}</div>`}
     </div>
   `;
 
   document.getElementById('back').addEventListener('click', ()=> location.hash = '#/');
-  if ((isOwner || isAdmin) && t.status==='open' && !t.cancelled) {
+  if (isOwner && isOpen) {
     document.getElementById('cancel-trade').addEventListener('click', async ()=>{
       if (!confirm('Cancel this trade post? This cannot be undone.')) return;
       await updateDoc(doc(db,'trades',tradeId), { status:'closed', closedWith:null, cancelled:true });
       showToast('Trade cancelled.', 'warn');
-    });
-  }
-  if (isAdmin) {
-    const delBtn = document.getElementById('admin-delete-trade');
-    if (delBtn) delBtn.addEventListener('click', async ()=>{
-      if (!confirm('Permanently delete this trade? This cannot be undone.')) return;
-      try {
-        await deleteDoc(doc(db,'trades',tradeId));
-        showToast('Trade deleted.', 'warn');
-        location.hash = '#/';
-      } catch(err){
-        showToast('Could not delete: ' + err.message, 'bad');
-      }
     });
   }
 
@@ -1368,7 +1069,7 @@ function paintOffers(tradeId, t, isOwner, isOpen){
   const listEl = document.getElementById('offers-list');
   if (!listEl) return;
   if (!currentOffers.length) {
-    listEl.innerHTML = `<div class="empty-state glass">No offers yet — be the first to counter.</div>`;
+    listEl.innerHTML = `<div class="empty-state">No offers yet — be the first to counter.</div>`;
     return;
   }
   listEl.innerHTML = currentOffers.map(o=>{
@@ -1442,6 +1143,7 @@ function paintOffers(tradeId, t, isOwner, isOpen){
     });
   });
 
+  // Wire up any open chat panels (subscribe + input handlers)
   currentOffers.forEach(o=>{
     if (!expandedChats.has(o.id)) return;
     subscribeChat(o.id);
