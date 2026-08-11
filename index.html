@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   ============================================================================
-  DEALER'S DOCK — Blox Fruits Trading Board
+  RENTAFRUIT — Blox Fruits Trading Board
   ============================================================================
   SETUP (do this once, then never touch the code again):
 
@@ -60,7 +60,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dealer's Dock — Blox Fruits Trade Board</title>
+<title>Rentafruit — Blox Fruits Trade Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -385,7 +385,7 @@
 <div id="app">
   <header class="topbar">
     <div class="brand" id="brand-home">
-      <div class="brand-mark">DEALER'S <span>DOCK</span></div>
+      <div class="brand-mark">RENTA<span>FRUIT</span></div>
     </div>
     <div class="topbar-right">
       <div class="live-pill"><span class="radar-dot"></span><span id="live-count">connecting…</span></div>
@@ -393,7 +393,7 @@
     </div>
   </header>
   <main id="view-root"></main>
-  <footer class="site-foot">Dealer's Dock is a fan-made trading board for Blox Fruits players. Not affiliated with Gamer Robot Inc. or Roblox. Trade values shown are community estimates, not guarantees.</footer>
+  <footer class="site-foot">Rentafruit is a fan-made trading board for Blox Fruits players. Not affiliated with Gamer Robot Inc. or Roblox. Trade values shown are community estimates, not guarantees.</footer>
 </div>
 
 <script type="module">
@@ -918,7 +918,7 @@ function renderPostForm(){
       </div>
     </div>
   `;
-  document.getElementById('back').addEventListener('click', ()=> history.back());
+  document.getElementById('back').addEventListener('click', ()=> location.hash = '#/');
   document.getElementById('cancel-btn').addEventListener('click', ()=> location.hash = '#/');
 
   function refreshFair(){
